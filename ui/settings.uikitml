@@ -98,6 +98,18 @@
     <span id="set-theme" class="theme-label">Neon Holodeck</span>
     <div id="btn-theme-next" class="set-btn" cursor="pointer"><span class="set-btn-text">&gt;</span></div>
   </div>
+  <div class="set-row">
+    <span class="set-label">No Power-ups</span>
+    <div id="btn-mod-nopow" class="set-btn" cursor="pointer"><span id="set-nopow" class="set-btn-text">OFF</span></div>
+  </div>
+  <div class="set-row">
+    <span class="set-label">Mirror Mode</span>
+    <div id="btn-mod-mirror" class="set-btn" cursor="pointer"><span id="set-mirror" class="set-btn-text">OFF</span></div>
+  </div>
+  <div class="set-row">
+    <span class="set-label">Speed Demon</span>
+    <div id="btn-mod-speed" class="set-btn" cursor="pointer"><span id="set-speed" class="set-btn-text">OFF</span></div>
+  </div>
   <div id="btn-set-back" class="back-btn" cursor="pointer">
     <span class="back-text">Back</span>
   </div>

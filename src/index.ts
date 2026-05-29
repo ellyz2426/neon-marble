@@ -62,6 +62,25 @@ const screenShake = new ScreenShake();
 let minimapUsedThisLevel = false;
 const boardBasePos = new THREE.Vector3(0, 1.0, -1.2); // base position for board
 
+// Tutorial messages per level
+const TUTORIAL_MESSAGES: Record<number, { title: string; arrow: string; text: string; hint: string }> = {
+  0: { title: 'Welcome!', arrow: '⬆⬇⬅➡', text: 'Tilt the board to roll the marble to the green goal ring!', hint: 'WASD or Arrow Keys • VR: Left Thumbstick' },
+  1: { title: 'Watch Out!', arrow: '⚠', text: 'Red holes will drop your marble — avoid them! Collect yellow gems for bonus points.', hint: 'Escape to pause • VR: B button' },
+  2: { title: 'Ice & Boosts', arrow: '❄💨', text: 'Blue tiles are slippery ice. Green pads give speed boosts. Beat par time for stars!', hint: 'Check Settings for themes & skins' },
+};
+
+// Level transition state
+let transitionAlpha = 0;
+let transitionDir = 0; // 0=none, 1=fade-out, -1=fade-in
+let transitionCallback: (() => void) | null = null;
+const transitionOverlay = new THREE.Mesh(
+  new THREE.PlaneGeometry(5, 5),
+  new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0, depthTest: false })
+);
+transitionOverlay.position.set(0, 1.5, -1);
+transitionOverlay.renderOrder = 999;
+scene.add(transitionOverlay);
+
 // Input state
 const keys: Record<string, boolean> = {};
 window.addEventListener('keydown', e => { keys[e.key.toLowerCase()] = true; });
@@ -121,7 +140,7 @@ decos = createHolodeckDecorations(scene, 14);
 // ============================================================
 type PanelName = 'title' | 'modeselect' | 'levelselect' | 'hud' | 'pause' | 'levelcomplete'
   | 'gameover' | 'leaderboard' | 'achievements' | 'settings' | 'help' | 'toast' | 'countdown'
-  | 'stats' | 'skins' | 'speedrun';
+  | 'stats' | 'skins' | 'speedrun' | 'tutorial';
 
 const panels: Map<PanelName, { entity: any; doc: UIKitDocument | null }> = new Map();
 
@@ -173,6 +192,7 @@ createPanel('countdown', '/ui/countdown.json', { maxWidth: 0.3, maxHeight: 0.15,
 createPanel('stats', '/ui/stats.json', { maxWidth: 0.8, maxHeight: 0.8, worldPos: [0, 1.5, -2] });
 createPanel('skins', '/ui/skins.json', { maxWidth: 0.7, maxHeight: 0.6, worldPos: [0, 1.5, -2] });
 createPanel('speedrun', '/ui/speedrun.json', { maxWidth: 0.8, maxHeight: 0.8, worldPos: [0, 1.5, -2] });
+createPanel('tutorial', '/ui/tutorial.json', { maxWidth: 0.4, maxHeight: 0.3, follower: true, offsetPos: [0, -0.05, -0.55] });
 
 // Minimap entity — 3D bird's-eye view with Follower
 const minimapEntity = world.createTransformEntity(undefined, { persistent: true });
@@ -253,6 +273,9 @@ function showUI(state: GameState) {
       panels.get('achievements')!.entity.object3D.visible = true;
       break;
     case 'settings':
+      setText('settings', 'set-nopow', gsm.modNoPowerups ? 'ON' : 'OFF');
+      setText('settings', 'set-mirror', gsm.modMirrorMode ? 'ON' : 'OFF');
+      setText('settings', 'set-speed', gsm.modSpeedDemon ? 'ON' : 'OFF');
       panels.get('settings')!.entity.object3D.visible = true;
       break;
     case 'help':
@@ -620,6 +643,33 @@ function loadLevel(levelIdx: number) {
   minimapEntity.object3D!.visible = true;
   minimapUsedThisLevel = true;
   gsm.minimapLevelsUsed++;
+
+  // Tutorial for first 3 levels (only first time)
+  if (TUTORIAL_MESSAGES[levelIdx] && !gsm.tutorialShown.has(levelIdx)) {
+    gsm.tutorialShown.add(levelIdx);
+    const msg = TUTORIAL_MESSAGES[levelIdx];
+    setText('tutorial', 'tut-title', msg.title);
+    setText('tutorial', 'tut-arrow', msg.arrow);
+    setText('tutorial', 'tut-text', msg.text);
+    setText('tutorial', 'tut-hint', msg.hint);
+    const tp = panels.get('tutorial');
+    if (tp) tp.entity.object3D.visible = true;
+    gsm.save();
+  }
+
+  // Apply challenge modifiers
+  if (gsm.modNoPowerups && board.powerups) {
+    for (const pu of board.powerups) {
+      pu.collected = true;
+      pu.mesh.visible = false;
+      pu.glowMesh.visible = false;
+    }
+  }
+
+  // Fade in transition
+  transitionAlpha = 1;
+  transitionDir = -1;
+  (transitionOverlay.material as THREE.MeshBasicMaterial).opacity = 1;
 }
 
 function resetMarble() {
@@ -945,6 +995,34 @@ function setupUIEvents() {
   // Speedrun panel back
   const srDoc = getDoc('speedrun');
   srDoc?.getElementById('btn-sr-back')?.addEventListener('click', () => { audio.playButton(); changeState('title'); });
+
+  // Tutorial dismiss
+  const tutDoc = getDoc('tutorial');
+  tutDoc?.getElementById('btn-tut-dismiss')?.addEventListener('click', () => {
+    audio.playButton();
+    const tp = panels.get('tutorial');
+    if (tp) tp.entity.object3D.visible = false;
+  });
+
+  // Challenge modifier toggles in settings
+  setDoc?.getElementById('btn-mod-nopow')?.addEventListener('click', () => {
+    audio.playButton();
+    gsm.modNoPowerups = !gsm.modNoPowerups;
+    setText('settings', 'set-nopow', gsm.modNoPowerups ? 'ON' : 'OFF');
+    gsm.save();
+  });
+  setDoc?.getElementById('btn-mod-mirror')?.addEventListener('click', () => {
+    audio.playButton();
+    gsm.modMirrorMode = !gsm.modMirrorMode;
+    setText('settings', 'set-mirror', gsm.modMirrorMode ? 'ON' : 'OFF');
+    gsm.save();
+  });
+  setDoc?.getElementById('btn-mod-speed')?.addEventListener('click', () => {
+    audio.playButton();
+    gsm.modSpeedDemon = !gsm.modSpeedDemon;
+    setText('settings', 'set-speed', gsm.modSpeedDemon ? 'ON' : 'OFF');
+    gsm.save();
+  });
 }
 
 // ============================================================
@@ -1024,6 +1102,12 @@ function update() {
       }
     }
 
+    // Mirror Mode modifier: flip controls
+    if (gsm.modMirrorMode) {
+      targetTilt.x = -targetTilt.x;
+      targetTilt.y = -targetTilt.y;
+    }
+
     // Pause input
     if (keys['escape']) { keys['escape'] = false; changeState('paused'); }
 
@@ -1038,8 +1122,9 @@ function update() {
     // ---- Gravity ----
     // Gravity component on tilted surface (flipped if gravity switch active)
     const gravMul = gsm.gravityFlipped ? -1 : 1;
-    const gx = Math.sin(boardTilt.x) * GRAVITY * gravMul;
-    const gz = Math.sin(boardTilt.y) * GRAVITY * gravMul;
+    const speedDemonMul = gsm.modSpeedDemon ? 1.5 : 1.0;
+    const gx = Math.sin(boardTilt.x) * GRAVITY * gravMul * speedDemonMul;
+    const gz = Math.sin(boardTilt.y) * GRAVITY * gravMul * speedDemonMul;
 
     // Check current tile
     const tileType = getTileAt(marblePos.x, marblePos.z, board.gridW, board.gridH, board.grid);
@@ -1441,6 +1526,20 @@ function update() {
   // Pause: listen for escape
   if (gsm.state === 'paused') {
     if (keys['escape']) { keys['escape'] = false; changeState('playing'); }
+  }
+
+  // Level transition animation
+  if (transitionDir !== 0) {
+    transitionAlpha += transitionDir * dt * 3; // ~0.33s fade
+    if (transitionDir === 1 && transitionAlpha >= 1) {
+      transitionAlpha = 1;
+      transitionDir = 0;
+      if (transitionCallback) { transitionCallback(); transitionCallback = null; }
+    } else if (transitionDir === -1 && transitionAlpha <= 0) {
+      transitionAlpha = 0;
+      transitionDir = 0;
+    }
+    (transitionOverlay.material as THREE.MeshBasicMaterial).opacity = Math.max(0, Math.min(1, transitionAlpha));
   }
 
   requestAnimationFrame(update);

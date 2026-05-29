@@ -137,6 +137,8 @@ export class TrailSystem {
       case 'chrome': return 0.003;
       case 'emerald': return 0.004;
       case 'royal': return 0.005;
+      case 'glitch': return 0.005;
+      case 'celestial': return 0.004;
       default: return 0.004;
     }
   }
@@ -286,6 +288,30 @@ export class TrailSystem {
         );
         p.life = 0.5 + Math.random() * 0.3;
         mat.color.setHex(Math.random() > 0.5 ? 0xdd88ff : 0xaa44ff);
+        break;
+      }
+      case 'glitch': {
+        // RGB shift — rapid color flickers, jittery movement
+        const rgbColors = [0xff0044, 0x00ff44, 0x4400ff, 0xffff00, 0x00ffff, 0xff00ff];
+        mat.color.setHex(rgbColors[Math.floor(Math.random() * rgbColors.length)]);
+        p.vel.set(
+          (Math.random() - 0.5) * 0.3,
+          Math.random() * 0.12 + 0.04,
+          (Math.random() - 0.5) * 0.3
+        );
+        p.life = 0.2 + Math.random() * 0.25;
+        break;
+      }
+      case 'celestial': {
+        // Starfield — slow drifting sparkles in white/blue/gold
+        const starColors = [0xffffff, 0xaaccff, 0xffd700, 0xeeeeff];
+        mat.color.setHex(starColors[Math.floor(Math.random() * starColors.length)]);
+        p.vel.set(
+          (Math.random() - 0.5) * 0.06,
+          Math.random() * 0.04 + 0.02,
+          (Math.random() - 0.5) * 0.06
+        );
+        p.life = 0.8 + Math.random() * 0.6;
         break;
       }
       default: {

@@ -477,6 +477,9 @@ export function animateBoard(board: BoardObjects, time: number) {
     board.goalMesh.rotation.z = time * 1.5;
     const s = 1 + Math.sin(time * 3) * 0.1;
     board.goalMesh.scale.set(s, s, s);
+    // Enhanced glow pulsing
+    const goalMat = board.goalMesh.material as THREE.MeshStandardMaterial;
+    goalMat.emissiveIntensity = 0.6 + Math.sin(time * 4) * 0.3;
   }
   if (board.teleMeshA) board.teleMeshA.rotation.z = time * 2;
   if (board.teleMeshB) board.teleMeshB.rotation.z = -time * 2;

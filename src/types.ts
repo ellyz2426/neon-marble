@@ -720,7 +720,7 @@ export function calcStars(elapsedTime: number, par: number, gemsCollected: numbe
 
 // ---- Marble skins ----
 export type TrailStyle = 'default' | 'fire' | 'frost' | 'toxic' | 'royal' | 'gold'
-  | 'void' | 'chrome' | 'diamond' | 'nebula' | 'emerald' | 'obsidian';
+  | 'void' | 'chrome' | 'diamond' | 'nebula' | 'emerald' | 'obsidian' | 'glitch' | 'celestial';
 
 export interface MarbleSkin {
   id: string;
@@ -748,6 +748,9 @@ export const MARBLE_SKINS: MarbleSkin[] = [
   { id: 'nebula', name: 'Nebula Drift', color: 0xff44aa, emissive: 0xdd2288, glow: 0xff66cc, trailStyle: 'nebula', trailColor: 0xdd2288, trailParticleColor: 0xff66cc, trailWidth: 1.4, trailParticleRate: 18 },
   { id: 'emerald', name: 'Emerald Vein', color: 0x22cc66, emissive: 0x11aa44, glow: 0x44ee88, trailStyle: 'emerald', trailColor: 0x11aa44, trailParticleColor: 0x44ee88, trailWidth: 1.0, trailParticleRate: 12 },
   { id: 'obsidian', name: 'Obsidian Shard', color: 0x222222, emissive: 0x880044, glow: 0xaa0055, trailStyle: 'obsidian', trailColor: 0x880044, trailParticleColor: 0xaa0055, trailWidth: 0.9, trailParticleRate: 22 },
+  // Round 8 skins
+  { id: 'glitch', name: 'Glitch', color: 0xff0044, emissive: 0x00ff44, glow: 0x4400ff, trailStyle: 'glitch', trailColor: 0xff0044, trailParticleColor: 0x00ff44, trailWidth: 1.3, trailParticleRate: 20 },
+  { id: 'celestial', name: 'Celestial', color: 0x0a0a3a, emissive: 0x6688ff, glow: 0xaaccff, trailStyle: 'celestial', trailColor: 0x6688ff, trailParticleColor: 0xaaccff, trailWidth: 1.1, trailParticleRate: 16 },
 ];
 
 // ---- Zone helpers ----
@@ -904,6 +907,14 @@ export class GameStateManager {
   wallBounces = 0;              // total wall bounces
   victoryCelebrations = 0;      // total victory celebrations triggered
 
+  // Challenge modifiers
+  modNoPowerups = false;
+  modMirrorMode = false;
+  modSpeedDemon = false;
+
+  // Tutorial tracking
+  tutorialShown = new Set<number>(); // level indices where tutorial was shown
+
   // Star ratings per level
   starRatings: number[] = new Array(LEVELS.length).fill(0);
 
@@ -955,6 +966,10 @@ export class GameStateManager {
       if (d.wallBounces) this.wallBounces = d.wallBounces;
       if (d.victoryCelebrations) this.victoryCelebrations = d.victoryCelebrations;
       if (d.minimapLevelsUsed) this.minimapLevelsUsed = d.minimapLevelsUsed;
+      if (d.tutorialShown) this.tutorialShown = new Set(d.tutorialShown);
+      if (d.modNoPowerups) this.modNoPowerups = d.modNoPowerups;
+      if (d.modMirrorMode) this.modMirrorMode = d.modMirrorMode;
+      if (d.modSpeedDemon) this.modSpeedDemon = d.modSpeedDemon;
       // Extend arrays if new levels added
       while (this.campaignProgress.length < LEVELS.length) this.campaignProgress.push(false);
       while (this.bestTimes.length < LEVELS.length) this.bestTimes.push(null);
@@ -992,6 +1007,10 @@ export class GameStateManager {
         wallBounces: this.wallBounces,
         victoryCelebrations: this.victoryCelebrations,
         minimapLevelsUsed: this.minimapLevelsUsed,
+        tutorialShown: Array.from(this.tutorialShown),
+        modNoPowerups: this.modNoPowerups,
+        modMirrorMode: this.modMirrorMode,
+        modSpeedDemon: this.modSpeedDemon,
       }));
     } catch {}
   }

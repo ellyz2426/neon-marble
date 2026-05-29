@@ -1,0 +1,60 @@
+<!-- ui/tutorial.uikitml -->
+<style>
+  .tutorial-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 2;
+    background-color: rgba(0, 20, 40, 0.85);
+    border-color: #00ccff;
+    border-width: 0.08;
+    border-radius: 1;
+    gap: 1;
+  }
+  .tutorial-title {
+    font-size: 2.2;
+    color: #00ffff;
+    font-weight: bold;
+    text-align: center;
+  }
+  .tutorial-text {
+    font-size: 1.5;
+    color: #ccddee;
+    text-align: center;
+  }
+  .tutorial-arrow {
+    font-size: 3;
+    color: #ffcc00;
+    text-align: center;
+  }
+  .tutorial-hint {
+    font-size: 1.2;
+    color: #88aacc;
+    text-align: center;
+    font-style: italic;
+  }
+  .btn-dismiss {
+    display: flex;
+    padding: 1 3;
+    background-color: rgba(0, 200, 255, 0.3);
+    border-color: #00ccff;
+    border-width: 0.06;
+    border-radius: 0.5;
+    cursor: pointer;
+    justify-content: center;
+    margin-top: 1;
+  }
+  .btn-dismiss-text {
+    font-size: 1.5;
+    color: #00ffff;
+    font-weight: bold;
+  }
+</style>
+<div class="tutorial-panel">
+  <span class="tutorial-title" id="tut-title">Welcome!</span>
+  <span class="tutorial-arrow" id="tut-arrow">⬆</span>
+  <span class="tutorial-text" id="tut-text">Tilt the board to roll the marble</span>
+  <span class="tutorial-hint" id="tut-hint">WASD or Arrow Keys • VR: Left Thumbstick</span>
+  <div class="btn-dismiss" id="btn-tut-dismiss" cursor="pointer">
+    <span class="btn-dismiss-text">GOT IT</span>
+  </div>
+</div>
