@@ -1,0 +1,289 @@
+{
+  "element": {
+    "type": "container",
+    "sourceTag": "div",
+    "children": [
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "Welcome!"
+        ],
+        "properties": {
+          "class": "tutorial-title",
+          "id": "tut-title"
+        },
+        "dataUid": "uid-2"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "⬆"
+        ],
+        "properties": {
+          "class": "tutorial-arrow",
+          "id": "tut-arrow"
+        },
+        "dataUid": "uid-3"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "Tilt the board to roll the marble"
+        ],
+        "properties": {
+          "class": "tutorial-text",
+          "id": "tut-text"
+        },
+        "dataUid": "uid-4"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "WASD or Arrow Keys • VR: Left Thumbstick"
+        ],
+        "properties": {
+          "class": "tutorial-hint",
+          "id": "tut-hint"
+        },
+        "dataUid": "uid-5"
+      },
+      {
+        "type": "container",
+        "sourceTag": "div",
+        "children": [
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "GOT IT"
+            ],
+            "properties": {
+              "class": "btn-dismiss-text"
+            },
+            "dataUid": "uid-7"
+          }
+        ],
+        "properties": {
+          "class": "btn-dismiss",
+          "id": "btn-tut-dismiss",
+          "cursor": "pointer"
+        },
+        "dataUid": "uid-6"
+      }
+    ],
+    "properties": {
+      "class": "tutorial-panel"
+    },
+    "dataUid": "uid-1"
+  },
+  "classes": {
+    "tutorial-panel": {
+      "content": {
+        "display": "flex",
+        "flexDirection": "column",
+        "padding": "2",
+        "backgroundColor": "rgba(0, 20, 40, 0.85)",
+        "borderColor": "#00ccff",
+        "borderWidth": "0.08",
+        "borderRadius": 1,
+        "gap": "1"
+      }
+    },
+    "tutorial-title": {
+      "content": {
+        "fontSize": "2.2",
+        "color": "#00ffff",
+        "fontWeight": "bold",
+        "textAlign": "center"
+      }
+    },
+    "tutorial-text": {
+      "content": {
+        "fontSize": "1.5",
+        "color": "#ccddee",
+        "textAlign": "center"
+      }
+    },
+    "tutorial-arrow": {
+      "content": {
+        "fontSize": "3",
+        "color": "#ffcc00",
+        "textAlign": "center"
+      }
+    },
+    "tutorial-hint": {
+      "content": {
+        "fontSize": "1.2",
+        "color": "#88aacc",
+        "textAlign": "center",
+        "fontStyle": "italic"
+      }
+    },
+    "btn-dismiss": {
+      "content": {
+        "display": "flex",
+        "padding": "1 3",
+        "backgroundColor": "rgba(0, 200, 255, 0.3)",
+        "borderColor": "#00ccff",
+        "borderWidth": "0.06",
+        "borderRadius": 0.5,
+        "cursor": "pointer",
+        "justifyContent": "center",
+        "marginTop": "1"
+      }
+    },
+    "btn-dismiss-text": {
+      "content": {
+        "fontSize": "1.5",
+        "color": "#00ffff",
+        "fontWeight": "bold"
+      }
+    }
+  },
+  "ranges": {
+    "tutorial-panel": {
+      "start": {
+        "line": 2,
+        "column": 2
+      },
+      "end": {
+        "line": 2,
+        "column": 17
+      }
+    },
+    "tutorial-title": {
+      "start": {
+        "line": 12,
+        "column": 2
+      },
+      "end": {
+        "line": 12,
+        "column": 17
+      }
+    },
+    "tutorial-text": {
+      "start": {
+        "line": 18,
+        "column": 2
+      },
+      "end": {
+        "line": 18,
+        "column": 16
+      }
+    },
+    "tutorial-arrow": {
+      "start": {
+        "line": 23,
+        "column": 2
+      },
+      "end": {
+        "line": 23,
+        "column": 17
+      }
+    },
+    "tutorial-hint": {
+      "start": {
+        "line": 28,
+        "column": 2
+      },
+      "end": {
+        "line": 28,
+        "column": 16
+      }
+    },
+    "btn-dismiss": {
+      "start": {
+        "line": 34,
+        "column": 2
+      },
+      "end": {
+        "line": 34,
+        "column": 14
+      }
+    },
+    "btn-dismiss-text": {
+      "start": {
+        "line": 45,
+        "column": 2
+      },
+      "end": {
+        "line": 45,
+        "column": 19
+      }
+    },
+    "uid-1": {
+      "start": {
+        "line": 51,
+        "column": 0
+      },
+      "end": {
+        "line": 59,
+        "column": 6
+      }
+    },
+    "uid-2": {
+      "start": {
+        "line": 52,
+        "column": 2
+      },
+      "end": {
+        "line": 52,
+        "column": 61
+      }
+    },
+    "uid-3": {
+      "start": {
+        "line": 53,
+        "column": 2
+      },
+      "end": {
+        "line": 53,
+        "column": 54
+      }
+    },
+    "uid-4": {
+      "start": {
+        "line": 54,
+        "column": 2
+      },
+      "end": {
+        "line": 54,
+        "column": 84
+      }
+    },
+    "uid-5": {
+      "start": {
+        "line": 55,
+        "column": 2
+      },
+      "end": {
+        "line": 55,
+        "column": 91
+      }
+    },
+    "uid-6": {
+      "start": {
+        "line": 56,
+        "column": 2
+      },
+      "end": {
+        "line": 58,
+        "column": 8
+      }
+    },
+    "uid-7": {
+      "start": {
+        "line": 57,
+        "column": 4
+      },
+      "end": {
+        "line": 57,
+        "column": 48
+      }
+    }
+  }
+}
