@@ -51,6 +51,7 @@ let lastTime = performance.now();
 let magnetPullTimer = 0;
 let shieldMesh: THREE.Mesh | null = null;
 let magnetGems = 0; // gems collected while magnet active
+const COMBO_WINDOW = 2.0; // seconds to chain gems
 
 // Input state
 const keys: Record<string, boolean> = {};
@@ -275,10 +276,16 @@ function updateHUD() {
   } else {
     setText('hud', 'hud-gravity', '');
   }
+  // Combo display
+  if (gsm.comboCount >= 2) {
+    setText('hud', 'hud-combo', `${gsm.comboCount}x COMBO`);
+  } else {
+    setText('hud', 'hud-combo', '');
+  }
 }
 
 function updateLevelSelect() {
-  for (let i = 0; i < 24; i++) {
+  for (let i = 0; i < 30; i++) {
     const cleared = gsm.campaignProgress[i] || false;
     const best = gsm.bestTimes[i];
     const stars = gsm.starRatings[i] || 0;
@@ -324,6 +331,8 @@ function updateStatsPanel() {
   const progress = gsm.campaignProgress.filter(Boolean).length;
   setText('stats', 'stat-progress', `${progress}/${LEVELS.length}`);
   setText('stats', 'stat-achievements', `${gsm.unlockedAchievements.size}/${ACHIEVEMENTS.length}`);
+  setText('stats', 'stat-bumpers', `${gsm.bumpersHit}`);
+  setText('stats', 'stat-combo', `${gsm.maxCombo}x`);
 }
 
 function formatPlayTime(seconds: number): string {
@@ -394,6 +403,11 @@ function checkAchievements() {
   check('endgame', gsm.campaignProgress[23] === true);
   check('all_24', gsm.campaignProgress.filter(Boolean).length >= 24);
   check('skins_all', gsm.skinsUsed.size >= MARBLE_SKINS.length);
+  check('bumper_10', gsm.bumpersHit >= 10);
+  check('combo_3', gsm.maxCombo >= 3);
+  check('combo_5', gsm.maxCombo >= 5);
+  check('total_100', gsm.totalClears >= 100);
+  check('all_30', gsm.campaignProgress.filter(Boolean).length >= 30);
 
   for (const id of newlyUnlocked) {
     const ach = ACHIEVEMENTS.find(a => a.id === id);
@@ -535,7 +549,8 @@ function changeState(newState: GameState) {
       const timeBonus = Math.max(0, Math.floor((level.par - gsm.elapsedTime) * 50));
       const gemBonus = gsm.gemsCollected * 200;
       const perfectBonus = isPerfect ? 500 : 0;
-      gsm.score += baseScore + timeBonus + gemBonus + perfectBonus;
+      const comboBonus = gsm.maxCombo >= 3 ? gsm.maxCombo * 100 : 0;
+      gsm.score += baseScore + timeBonus + gemBonus + perfectBonus + comboBonus;
 
       addLeaderboard({
         level: level.name,
@@ -554,6 +569,7 @@ function changeState(newState: GameState) {
       setText('levelcomplete', 'lc-par', underPar ? 'Under par!' : `Par: ${level.par}s`);
       setText('levelcomplete', 'lc-score', `Score: ${gsm.score}`);
       setText('levelcomplete', 'lc-stars', starDisplay);
+      setText('levelcomplete', 'lc-combo', gsm.maxCombo >= 2 ? `Best Combo: ${gsm.maxCombo}x (+${comboBonus})` : '');
 
       audio.playGoal();
       if (particles) particles.burst(marblePos, THEMES[gsm.currentTheme].goal, 25, 0.8, 1.2);
@@ -616,7 +632,7 @@ function setupUIEvents() {
 
   // Level select
   const lvlDoc = getDoc('levelselect');
-  for (let i = 0; i < 24; i++) {
+  for (let i = 0; i < 30; i++) {
     const idx = i;
     lvlDoc?.getElementById(`btn-lvl-${i}`)?.addEventListener('click', () => {
       audio.playButton();
@@ -892,6 +908,15 @@ function update() {
       if (gsm.slowmoTimer <= 0) { gsm.slowmoActive = false; gsm.slowmoTimer = 0; }
     }
 
+    // Combo timer
+    if (gsm.comboTimer > 0) {
+      gsm.comboTimer -= dt;
+      if (gsm.comboTimer <= 0) {
+        gsm.comboCount = 0;
+        gsm.comboTimer = 0;
+      }
+    }
+
     // Magnet effect: attract nearby gems
     if (gsm.magnetActive && board) {
       const bw = board.gridW * BOARD_CELL;
@@ -913,13 +938,20 @@ function update() {
             gem.visible = false;
             gsm.gemsCollected++;
             gsm.totalGems++;
-            gsm.score += 200;
+            // Combo system
+            gsm.comboCount++;
+            gsm.comboTimer = COMBO_WINDOW;
+            if (gsm.comboCount > gsm.maxCombo) gsm.maxCombo = gsm.comboCount;
+            const comboMult = Math.min(gsm.comboCount, 5);
+            const gemScore = 200 * comboMult;
+            gsm.score += gemScore;
             magnetGems++;
             audio.playGemCollect();
+            if (gsm.comboCount >= 2) audio.playCombo(gsm.comboCount);
             magnetPullTimer -= dt;
             if (magnetPullTimer <= 0) { audio.playMagnetPull(); magnetPullTimer = 0.3; }
             if (particles) particles.burst(gem.position.clone(), THEMES[gsm.currentTheme].gem, 8, 0.4, 0.5);
-            showToast(`Magnet Gem! +200`, 0.8);
+            showToast(gsm.comboCount >= 2 ? `${gsm.comboCount}x Combo! +${gemScore}` : `Magnet Gem! +200`, 0.8);
           }
         }
       }
@@ -974,11 +1006,18 @@ function update() {
           gem.visible = false;
           gsm.gemsCollected++;
           gsm.totalGems++;
-          gsm.score += 200;
+          // Combo system
+          gsm.comboCount++;
+          gsm.comboTimer = COMBO_WINDOW;
+          if (gsm.comboCount > gsm.maxCombo) gsm.maxCombo = gsm.comboCount;
+          const comboMult = Math.min(gsm.comboCount, 5);
+          const gemScore = 200 * comboMult;
+          gsm.score += gemScore;
           if (gsm.magnetActive) magnetGems++;
           audio.playGemCollect();
+          if (gsm.comboCount >= 2) audio.playCombo(gsm.comboCount);
           if (particles) particles.burst(gem.position.clone(), THEMES[gsm.currentTheme].gem, 12, 0.5, 0.6);
-          showToast(`Gem! +200`, 1);
+          showToast(gsm.comboCount >= 2 ? `${gsm.comboCount}x Combo! +${gemScore}` : `Gem! +200`, 1);
           break;
         }
       }
@@ -1097,6 +1136,44 @@ function update() {
               0xff8800, 5, 0.3, 0.4
             );
           }
+        }
+      }
+    }
+
+    // Bumper collision check
+    if (board.bumpers) {
+      for (const b of board.bumpers) {
+        const bx = b.mesh.position.x;
+        const bz = b.mesh.position.z;
+        const dx = marblePos.x - bx;
+        const dz = marblePos.z - bz;
+        const dist = Math.sqrt(dx * dx + dz * dz);
+        const bumperRadius = BOARD_CELL * 0.3;
+        if (dist < bumperRadius + MARBLE_RADIUS && dist > 0.0001) {
+          // Push marble out and launch with boosted velocity
+          const overlap = (bumperRadius + MARBLE_RADIUS) - dist;
+          const nx = dx / dist;
+          const nz = dz / dist;
+          marblePos.x += nx * overlap;
+          marblePos.z += nz * overlap;
+          // Launch velocity — 1.5x current speed in bounce direction, minimum impulse
+          const spd = Math.sqrt(marbleVel.x * marbleVel.x + marbleVel.y * marbleVel.y);
+          const launchSpeed = Math.max(spd * 1.5, 1.2);
+          marbleVel.x = nx * launchSpeed;
+          marbleVel.y = nz * launchSpeed;
+          gsm.bumpersHit++;
+          audio.playBumper();
+          if (particles) {
+            particles.burst(
+              new THREE.Vector3(marblePos.x, marblePos.y, marblePos.z),
+              0xff66ff, 15, 0.7, 0.6
+            );
+          }
+          showToast('Bumper!', 0.6);
+          // Visual feedback — scale bump
+          b.mesh.scale.set(1.4, 1.4, 1.4);
+          setTimeout(() => { b.mesh.scale.set(1, 1, 1); }, 150);
+          checkAchievements();
         }
       }
     }

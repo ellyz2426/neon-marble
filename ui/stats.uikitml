@@ -57,7 +57,18 @@
     </panel>
     <panel flex="1" gap="4">
       <text fontSize="10" color="#00ffcc">Achievements</text>
-      <text id="stat-achievements" fontSize="16" fontWeight="bold" color="#ff88ff">0/30</text>
+      <text id="stat-achievements" fontSize="16" fontWeight="bold" color="#ff88ff">0/40</text>
+    </panel>
+  </panel>
+
+  <panel flexDirection="row" gap="12" marginTop="4">
+    <panel flex="1" gap="4">
+      <text fontSize="10" color="#ff66ff">Bumpers Hit</text>
+      <text id="stat-bumpers" fontSize="16" fontWeight="bold" color="#ff88ff">0</text>
+    </panel>
+    <panel flex="1" gap="4">
+      <text fontSize="10" color="#ff66ff">Best Combo</text>
+      <text id="stat-combo" fontSize="16" fontWeight="bold" color="#ff88ff">0x</text>
     </panel>
   </panel>
 

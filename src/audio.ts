@@ -370,4 +370,53 @@ export class AudioManager {
     osc.start();
     osc.stop(ctx.currentTime + 0.12);
   }
+
+  playBumper() {
+    const ctx = this.ensureCtx();
+    if (!this.sfxGain) return;
+    // Springy boing — sine sweep up then down
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(200, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.06);
+    osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.2);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.18, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+    osc.connect(g);
+    g.connect(this.sfxGain);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.25);
+    // Sub-bass thump
+    const sub = ctx.createOscillator();
+    sub.type = 'sine';
+    sub.frequency.value = 80;
+    const sg = ctx.createGain();
+    sg.gain.setValueAtTime(0.12, ctx.currentTime);
+    sg.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+    sub.connect(sg);
+    sg.connect(this.sfxGain);
+    sub.start();
+    sub.stop(ctx.currentTime + 0.1);
+  }
+
+  playCombo(count: number) {
+    const ctx = this.ensureCtx();
+    if (!this.sfxGain) return;
+    // Rising pitch based on combo count
+    const baseFreq = 600 + count * 100;
+    [baseFreq, baseFreq * 1.25, baseFreq * 1.5].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0, ctx.currentTime + i * 0.05);
+      g.gain.linearRampToValueAtTime(0.1, ctx.currentTime + i * 0.05 + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.05 + 0.12);
+      osc.connect(g);
+      g.connect(this.sfxGain!);
+      osc.start(ctx.currentTime + i * 0.05);
+      osc.stop(ctx.currentTime + i * 0.05 + 0.12);
+    });
+  }
 }

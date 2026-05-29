@@ -52,6 +52,18 @@
     cursor: pointer;
     min-width: 10;
   }
+  .lvl-btn-bumper {
+    padding-top: 0.4;
+    padding-bottom: 0.4;
+    padding-left: 0.8;
+    padding-right: 0.8;
+    background-color: rgba(255, 80, 255, 0.12);
+    border-color: #ff66ff;
+    border-width: 0.06;
+    border-radius: 0.5;
+    cursor: pointer;
+    min-width: 10;
+  }
   .lvl-name {
     font-size: 1.2;
     color: #00cccc;
@@ -62,6 +74,11 @@
     color: #ff8844;
     font-weight: bold;
   }
+  .lvl-name-bumper {
+    font-size: 1.2;
+    color: #ff88ff;
+    font-weight: bold;
+  }
   .lvl-status {
     font-size: 0.9;
     color: #668888;
@@ -69,6 +86,12 @@
   .section-label {
     font-size: 1.5;
     color: #ff6600;
+    font-weight: bold;
+    margin-top: 0.5;
+  }
+  .section-label-bumper {
+    font-size: 1.5;
+    color: #ff66ff;
     font-weight: bold;
     margin-top: 0.5;
   }
@@ -97,14 +120,12 @@
       <div id="btn-lvl-1" class="lvl-btn" cursor="pointer"><span id="lvl-name-1" class="lvl-name">2</span><span id="lvl-status-1" class="lvl-status">---</span></div>
       <div id="btn-lvl-2" class="lvl-btn" cursor="pointer"><span id="lvl-name-2" class="lvl-name">3</span><span id="lvl-status-2" class="lvl-status">---</span></div>
       <div id="btn-lvl-3" class="lvl-btn" cursor="pointer"><span id="lvl-name-3" class="lvl-name">4</span><span id="lvl-status-3" class="lvl-status">---</span></div>
-    </div>
-    <div class="lvl-row">
       <div id="btn-lvl-4" class="lvl-btn" cursor="pointer"><span id="lvl-name-4" class="lvl-name">5</span><span id="lvl-status-4" class="lvl-status">---</span></div>
       <div id="btn-lvl-5" class="lvl-btn" cursor="pointer"><span id="lvl-name-5" class="lvl-name">6</span><span id="lvl-status-5" class="lvl-status">---</span></div>
-      <div id="btn-lvl-6" class="lvl-btn" cursor="pointer"><span id="lvl-name-6" class="lvl-name">7</span><span id="lvl-status-6" class="lvl-status">---</span></div>
-      <div id="btn-lvl-7" class="lvl-btn" cursor="pointer"><span id="lvl-name-7" class="lvl-name">8</span><span id="lvl-status-7" class="lvl-status">---</span></div>
     </div>
     <div class="lvl-row">
+      <div id="btn-lvl-6" class="lvl-btn" cursor="pointer"><span id="lvl-name-6" class="lvl-name">7</span><span id="lvl-status-6" class="lvl-status">---</span></div>
+      <div id="btn-lvl-7" class="lvl-btn" cursor="pointer"><span id="lvl-name-7" class="lvl-name">8</span><span id="lvl-status-7" class="lvl-status">---</span></div>
       <div id="btn-lvl-8" class="lvl-btn" cursor="pointer"><span id="lvl-name-8" class="lvl-name">9</span><span id="lvl-status-8" class="lvl-status">---</span></div>
       <div id="btn-lvl-9" class="lvl-btn" cursor="pointer"><span id="lvl-name-9" class="lvl-name">10</span><span id="lvl-status-9" class="lvl-status">---</span></div>
       <div id="btn-lvl-10" class="lvl-btn" cursor="pointer"><span id="lvl-name-10" class="lvl-name">11</span><span id="lvl-status-10" class="lvl-status">---</span></div>
@@ -115,8 +136,6 @@
       <div id="btn-lvl-13" class="lvl-btn" cursor="pointer"><span id="lvl-name-13" class="lvl-name">14</span><span id="lvl-status-13" class="lvl-status">---</span></div>
       <div id="btn-lvl-14" class="lvl-btn" cursor="pointer"><span id="lvl-name-14" class="lvl-name">15</span><span id="lvl-status-14" class="lvl-status">---</span></div>
       <div id="btn-lvl-15" class="lvl-btn" cursor="pointer"><span id="lvl-name-15" class="lvl-name">16</span><span id="lvl-status-15" class="lvl-status">---</span></div>
-    </div>
-    <div class="lvl-row">
       <div id="btn-lvl-16" class="lvl-btn" cursor="pointer"><span id="lvl-name-16" class="lvl-name">17</span><span id="lvl-status-16" class="lvl-status">---</span></div>
       <div id="btn-lvl-17" class="lvl-btn" cursor="pointer"><span id="lvl-name-17" class="lvl-name">18</span><span id="lvl-status-17" class="lvl-status">---</span></div>
     </div>
@@ -125,11 +144,18 @@
       <div id="btn-lvl-18" class="lvl-btn-hard" cursor="pointer"><span id="lvl-name-18" class="lvl-name-hard">19</span><span id="lvl-status-18" class="lvl-status">---</span></div>
       <div id="btn-lvl-19" class="lvl-btn-hard" cursor="pointer"><span id="lvl-name-19" class="lvl-name-hard">20</span><span id="lvl-status-19" class="lvl-status">---</span></div>
       <div id="btn-lvl-20" class="lvl-btn-hard" cursor="pointer"><span id="lvl-name-20" class="lvl-name-hard">21</span><span id="lvl-status-20" class="lvl-status">---</span></div>
-    </div>
-    <div class="lvl-row">
       <div id="btn-lvl-21" class="lvl-btn-hard" cursor="pointer"><span id="lvl-name-21" class="lvl-name-hard">22</span><span id="lvl-status-21" class="lvl-status">---</span></div>
       <div id="btn-lvl-22" class="lvl-btn-hard" cursor="pointer"><span id="lvl-name-22" class="lvl-name-hard">23</span><span id="lvl-status-22" class="lvl-status">---</span></div>
       <div id="btn-lvl-23" class="lvl-btn-hard" cursor="pointer"><span id="lvl-name-23" class="lvl-name-hard">24</span><span id="lvl-status-23" class="lvl-status">---</span></div>
+    </div>
+    <span class="section-label-bumper">— BUMPER ZONE —</span>
+    <div class="lvl-row">
+      <div id="btn-lvl-24" class="lvl-btn-bumper" cursor="pointer"><span id="lvl-name-24" class="lvl-name-bumper">25</span><span id="lvl-status-24" class="lvl-status">---</span></div>
+      <div id="btn-lvl-25" class="lvl-btn-bumper" cursor="pointer"><span id="lvl-name-25" class="lvl-name-bumper">26</span><span id="lvl-status-25" class="lvl-status">---</span></div>
+      <div id="btn-lvl-26" class="lvl-btn-bumper" cursor="pointer"><span id="lvl-name-26" class="lvl-name-bumper">27</span><span id="lvl-status-26" class="lvl-status">---</span></div>
+      <div id="btn-lvl-27" class="lvl-btn-bumper" cursor="pointer"><span id="lvl-name-27" class="lvl-name-bumper">28</span><span id="lvl-status-27" class="lvl-status">---</span></div>
+      <div id="btn-lvl-28" class="lvl-btn-bumper" cursor="pointer"><span id="lvl-name-28" class="lvl-name-bumper">29</span><span id="lvl-status-28" class="lvl-status">---</span></div>
+      <div id="btn-lvl-29" class="lvl-btn-bumper" cursor="pointer"><span id="lvl-name-29" class="lvl-name-bumper">30</span><span id="lvl-status-29" class="lvl-status">---</span></div>
     </div>
   </div>
   <div id="btn-lvl-back" class="back-btn" cursor="pointer">

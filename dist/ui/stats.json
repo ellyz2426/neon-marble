@@ -485,7 +485,7 @@
                 "sourceTag": "text",
                 "type": "custom",
                 "children": [
-                  "0/30"
+                  "0/40"
                 ],
                 "properties": {
                   "id": "stat-achievements",
@@ -515,6 +515,92 @@
         "type": "custom",
         "children": [
           {
+            "sourceTag": "panel",
+            "type": "custom",
+            "children": [
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
+                  "Bumpers Hit"
+                ],
+                "properties": {
+                  "fontsize": "10",
+                  "color": "#ff66ff"
+                },
+                "dataUid": "uid-45"
+              },
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
+                  "0"
+                ],
+                "properties": {
+                  "id": "stat-bumpers",
+                  "fontsize": "16",
+                  "fontweight": "bold",
+                  "color": "#ff88ff"
+                },
+                "dataUid": "uid-46"
+              }
+            ],
+            "properties": {
+              "flex": "1",
+              "gap": "4"
+            },
+            "dataUid": "uid-44"
+          },
+          {
+            "sourceTag": "panel",
+            "type": "custom",
+            "children": [
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
+                  "Best Combo"
+                ],
+                "properties": {
+                  "fontsize": "10",
+                  "color": "#ff66ff"
+                },
+                "dataUid": "uid-48"
+              },
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
+                  "0x"
+                ],
+                "properties": {
+                  "id": "stat-combo",
+                  "fontsize": "16",
+                  "fontweight": "bold",
+                  "color": "#ff88ff"
+                },
+                "dataUid": "uid-49"
+              }
+            ],
+            "properties": {
+              "flex": "1",
+              "gap": "4"
+            },
+            "dataUid": "uid-47"
+          }
+        ],
+        "properties": {
+          "flexdirection": "row",
+          "gap": "12",
+          "margintop": "4"
+        },
+        "dataUid": "uid-43"
+      },
+      {
+        "sourceTag": "panel",
+        "type": "custom",
+        "children": [
+          {
             "sourceTag": "text",
             "type": "custom",
             "children": [
@@ -525,7 +611,7 @@
               "color": "#ffffff",
               "textalign": "center"
             },
-            "dataUid": "uid-44"
+            "dataUid": "uid-51"
           }
         ],
         "properties": {
@@ -537,7 +623,7 @@
           "cursor": "pointer",
           "hover:backgroundcolor": "#333388"
         },
-        "dataUid": "uid-43"
+        "dataUid": "uid-50"
       }
     ],
     "properties": {
@@ -556,7 +642,7 @@
         "column": 0
       },
       "end": {
-        "line": 66,
+        "line": 77,
         "column": 8
       }
     },
@@ -976,7 +1062,7 @@
         "column": 2
       },
       "end": {
-        "line": 65,
+        "line": 72,
         "column": 10
       }
     },
@@ -986,7 +1072,77 @@
         "column": 4
       },
       "end": {
-        "line": 64,
+        "line": 67,
+        "column": 12
+      }
+    },
+    "uid-45": {
+      "start": {
+        "line": 65,
+        "column": 6
+      },
+      "end": {
+        "line": 65,
+        "column": 60
+      }
+    },
+    "uid-46": {
+      "start": {
+        "line": 66,
+        "column": 6
+      },
+      "end": {
+        "line": 66,
+        "column": 86
+      }
+    },
+    "uid-47": {
+      "start": {
+        "line": 68,
+        "column": 4
+      },
+      "end": {
+        "line": 71,
+        "column": 12
+      }
+    },
+    "uid-48": {
+      "start": {
+        "line": 69,
+        "column": 6
+      },
+      "end": {
+        "line": 69,
+        "column": 59
+      }
+    },
+    "uid-49": {
+      "start": {
+        "line": 70,
+        "column": 6
+      },
+      "end": {
+        "line": 70,
+        "column": 85
+      }
+    },
+    "uid-50": {
+      "start": {
+        "line": 74,
+        "column": 2
+      },
+      "end": {
+        "line": 76,
+        "column": 10
+      }
+    },
+    "uid-51": {
+      "start": {
+        "line": 75,
+        "column": 4
+      },
+      "end": {
+        "line": 75,
         "column": 70
       }
     }

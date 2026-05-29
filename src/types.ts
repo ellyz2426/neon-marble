@@ -18,6 +18,7 @@ export const TILE = {
   POWERUP_SLOWMO: 12, // slow-motion — reduce speed for precision
   MOVING_WALL: 13,    // wall that oscillates between positions
   GRAVITY_SWITCH: 14, // reverses tilt gravity for marble
+  BUMPER: 15,         // bouncy bumper — launches marble away with extra force
 } as const;
 
 export type TileType = typeof TILE[keyof typeof TILE];
@@ -479,6 +480,118 @@ export const LEVELS: LevelDef[] = [
       [1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     ],
   },
+  // ---- Bumper levels (25-30) ----
+  {
+    name: 'Bumper Alley',
+    par: 25,
+    gems: 4,
+    grid: [
+      [1,1,1,1,1,1,1,1,1,1],
+      [1,5,0,0,15,0,0,3,0,1],
+      [1,0,1,0,0,0,1,0,0,1],
+      [1,3,0,15,0,0,15,0,3,1],
+      [1,0,1,0,0,0,0,1,0,1],
+      [1,0,0,0,15,0,0,0,0,1],
+      [1,1,0,0,0,0,1,0,1,1],
+      [1,0,0,15,0,15,0,0,0,1],
+      [1,3,0,0,0,0,0,0,4,1],
+      [1,1,1,1,1,1,1,1,1,1],
+    ],
+  },
+  {
+    name: 'Bumper Cascade',
+    par: 35,
+    gems: 5,
+    grid: [
+      [1,1,1,1,1,1,1,1,1,1,1],
+      [1,5,0,3,0,15,0,0,0,0,1],
+      [1,0,15,0,0,0,0,1,3,0,1],
+      [1,0,0,0,15,0,0,0,0,0,1],
+      [1,3,0,0,0,0,15,0,0,1,1],
+      [1,1,0,15,0,0,0,0,15,0,1],
+      [1,0,0,0,0,15,0,0,0,0,1],
+      [1,0,15,0,0,0,0,15,0,3,1],
+      [1,3,0,0,15,0,0,0,0,0,1],
+      [1,0,0,0,0,0,15,0,0,4,1],
+      [1,1,1,1,1,1,1,1,1,1,1],
+    ],
+  },
+  {
+    name: 'Pinball Maze',
+    par: 40,
+    gems: 6,
+    grid: [
+      [1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,5,0,0,15,0,3,0,15,0,0,1],
+      [1,0,1,0,0,0,0,0,0,0,3,1],
+      [1,3,0,15,0,2,0,15,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,1,0,1],
+      [1,0,15,0,1,15,1,0,15,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,3,1],
+      [1,1,0,15,0,2,0,15,0,0,0,1],
+      [1,3,0,0,0,0,0,0,0,1,0,1],
+      [1,0,0,15,0,0,0,15,0,0,3,1],
+      [1,0,0,0,0,0,0,0,0,0,4,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1],
+    ],
+  },
+  {
+    name: 'Bumper Ice Rink',
+    par: 45,
+    gems: 5,
+    grid: [
+      [1,1,1,1,1,1,1,1,1,1,1],
+      [1,5,8,8,15,8,8,0,0,0,1],
+      [1,8,1,8,8,8,1,0,1,3,1],
+      [1,3,8,15,8,8,15,8,0,0,1],
+      [1,8,8,8,1,8,8,8,8,0,1],
+      [1,0,15,8,8,8,1,15,8,3,1],
+      [1,0,0,8,15,8,8,8,0,0,1],
+      [1,3,0,0,8,8,15,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,3,1],
+      [1,0,0,0,0,0,0,0,0,4,1],
+      [1,1,1,1,1,1,1,1,1,1,1],
+    ],
+  },
+  {
+    name: 'Gravity Bumpers',
+    par: 55,
+    gems: 6,
+    grid: [
+      [1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,5,0,0,14,0,15,0,0,3,0,1],
+      [1,0,1,15,0,0,0,0,1,0,0,1],
+      [1,3,0,0,0,15,0,0,0,15,3,1],
+      [1,0,0,1,0,0,14,0,0,0,0,1],
+      [1,0,15,0,0,2,0,0,15,0,0,1],
+      [1,3,0,0,0,0,0,0,0,0,1,1],
+      [1,1,0,15,14,0,15,0,0,3,0,1],
+      [1,0,0,0,0,0,0,0,15,0,0,1],
+      [1,0,15,0,0,0,0,0,0,0,3,1],
+      [1,0,0,0,0,0,0,0,0,0,4,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1],
+    ],
+  },
+  {
+    name: 'The Gauntlet II',
+    par: 70,
+    gems: 8,
+    grid: [
+      [1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,5,0,3,15,0,0,2,0,15,0,3,1],
+      [1,0,1,0,0,0,1,0,0,0,1,0,1],
+      [1,15,0,0,14,0,15,0,14,0,0,15,1],
+      [1,0,0,1,0,2,0,0,1,0,0,0,1],
+      [1,3,15,0,0,0,13,0,0,15,3,0,1],
+      [1,1,0,0,15,0,0,0,15,0,0,1,1],
+      [1,0,0,0,0,0,15,0,0,0,0,0,1],
+      [1,0,15,0,1,0,0,0,1,0,15,0,1],
+      [1,3,0,0,13,0,15,0,14,0,0,3,1],
+      [1,0,0,15,0,2,0,0,0,15,0,0,1],
+      [1,3,0,0,0,0,0,0,0,0,0,4,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1],
+    ],
+  },
 ];
 
 // ---- Star rating ----
@@ -506,6 +619,10 @@ export const MARBLE_SKINS: MarbleSkin[] = [
   { id: 'gold', name: 'Molten Gold', color: 0xffd700, emissive: 0xffaa00, glow: 0xffdd44 },
   { id: 'void', name: 'Void Walker', color: 0x331155, emissive: 0x6622aa, glow: 0x8844cc },
   { id: 'chrome', name: 'Chrome Pulse', color: 0xcccccc, emissive: 0xffffff, glow: 0xeeeeff },
+  { id: 'diamond', name: 'Diamond Core', color: 0xbbddff, emissive: 0x99ccff, glow: 0xddeeff },
+  { id: 'nebula', name: 'Nebula Drift', color: 0xff44aa, emissive: 0xdd2288, glow: 0xff66cc },
+  { id: 'emerald', name: 'Emerald Vein', color: 0x22cc66, emissive: 0x11aa44, glow: 0x44ee88 },
+  { id: 'obsidian', name: 'Obsidian Shard', color: 0x222222, emissive: 0x880044, glow: 0xaa0055 },
 ];
 
 // ---- Themes ----
@@ -570,7 +687,12 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   { id: 'wall_dodger', name: 'Wall Dodger', desc: 'Clear a moving wall level without dying' },
   { id: 'endgame', name: 'Endgame', desc: 'Complete The Singularity' },
   { id: 'all_24', name: 'Completionist', desc: 'Clear all 24 campaign levels' },
-  { id: 'skins_all', name: 'Collector', desc: 'Try all 8 marble skins' },
+  { id: 'skins_all', name: 'Collector', desc: 'Try all 12 marble skins' },
+  { id: 'bumper_10', name: 'Pinball Wizard', desc: 'Hit 10 bumpers total' },
+  { id: 'combo_3', name: 'Combo Starter', desc: 'Get a 3x gem combo' },
+  { id: 'combo_5', name: 'Combo King', desc: 'Get a 5x gem combo' },
+  { id: 'total_100', name: 'Marathon Runner', desc: 'Complete 100 levels total' },
+  { id: 'all_30', name: 'True Completionist', desc: 'Clear all 30 campaign levels' },
 ];
 
 // ---- State manager ----
@@ -607,6 +729,12 @@ export class GameStateManager {
 
   // Gravity state (toggled by gravity switch tiles)
   gravityFlipped = false;
+
+  // Combo state
+  comboCount = 0;
+  comboTimer = 0;
+  maxCombo = 0;
+  bumpersHit = 0;
 
   // Star ratings per level
   starRatings: number[] = new Array(LEVELS.length).fill(0);
@@ -651,6 +779,8 @@ export class GameStateManager {
       if (d.powerupsCollected) this.powerupsCollected = d.powerupsCollected;
       if (d.shieldsUsed) this.shieldsUsed = d.shieldsUsed;
       if (d.skinsUsed) this.skinsUsed = new Set(d.skinsUsed);
+      if (d.maxCombo) this.maxCombo = d.maxCombo;
+      if (d.bumpersHit) this.bumpersHit = d.bumpersHit;
       // Extend arrays if new levels added
       while (this.campaignProgress.length < LEVELS.length) this.campaignProgress.push(false);
       while (this.bestTimes.length < LEVELS.length) this.bestTimes.push(null);
@@ -679,6 +809,8 @@ export class GameStateManager {
         powerupsCollected: this.powerupsCollected,
         shieldsUsed: this.shieldsUsed,
         skinsUsed: Array.from(this.skinsUsed),
+        maxCombo: this.maxCombo,
+        bumpersHit: this.bumpersHit,
       }));
     } catch {}
   }
@@ -694,6 +826,8 @@ export class GameStateManager {
     this.magnetTimer = 0;
     this.slowmoTimer = 0;
     this.gravityFlipped = false;
+    this.comboCount = 0;
+    this.comboTimer = 0;
   }
 
   resetGame() {

@@ -216,12 +216,23 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
+          "Pink Spheres: Bumpers (launch marble!)"
+        ],
+        "properties": {
+          "class": "help-text"
+        },
+        "dataUid": "uid-21"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
           "Power-Ups"
         ],
         "properties": {
           "class": "help-section"
         },
-        "dataUid": "uid-21"
+        "dataUid": "uid-22"
       },
       {
         "sourceTag": "span",
@@ -232,7 +243,7 @@
         "properties": {
           "class": "help-text"
         },
-        "dataUid": "uid-22"
+        "dataUid": "uid-23"
       },
       {
         "sourceTag": "span",
@@ -243,7 +254,7 @@
         "properties": {
           "class": "help-text"
         },
-        "dataUid": "uid-23"
+        "dataUid": "uid-24"
       },
       {
         "sourceTag": "span",
@@ -254,27 +265,16 @@
         "properties": {
           "class": "help-text"
         },
-        "dataUid": "uid-24"
-      },
-      {
-        "sourceTag": "span",
-        "type": "custom",
-        "children": [
-          "Star Rating"
-        ],
-        "properties": {
-          "class": "help-section"
-        },
         "dataUid": "uid-25"
       },
       {
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "★ Complete | ★★ Under par | ★★★ Par + all gems"
+          "Combo System"
         ],
         "properties": {
-          "class": "help-text"
+          "class": "help-section"
         },
         "dataUid": "uid-26"
       },
@@ -282,10 +282,10 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "Modes"
+          "Collect gems quickly for combos!"
         ],
         "properties": {
-          "class": "help-section"
+          "class": "help-text"
         },
         "dataUid": "uid-27"
       },
@@ -293,7 +293,7 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "Campaign: 24 levels, 3 lives"
+          "2s window between gems. Up to 5x score!"
         ],
         "properties": {
           "class": "help-text"
@@ -304,10 +304,10 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "Time Attack: Race the par time"
+          "Star Rating"
         ],
         "properties": {
-          "class": "help-text"
+          "class": "help-section"
         },
         "dataUid": "uid-29"
       },
@@ -315,7 +315,7 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "Zen: No timer, just relax"
+          "★ Complete | ★★ Under par | ★★★ Par + all gems"
         ],
         "properties": {
           "class": "help-text"
@@ -326,12 +326,56 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
+          "Modes"
+        ],
+        "properties": {
+          "class": "help-section"
+        },
+        "dataUid": "uid-31"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "Campaign: 30 levels, 3 lives"
+        ],
+        "properties": {
+          "class": "help-text"
+        },
+        "dataUid": "uid-32"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "Time Attack: Race the par time"
+        ],
+        "properties": {
+          "class": "help-text"
+        },
+        "dataUid": "uid-33"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "Zen: No timer, just relax"
+        ],
+        "properties": {
+          "class": "help-text"
+        },
+        "dataUid": "uid-34"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
           "Daily: New puzzle each day"
         ],
         "properties": {
           "class": "help-text"
         },
-        "dataUid": "uid-31"
+        "dataUid": "uid-35"
       },
       {
         "type": "container",
@@ -346,7 +390,7 @@
             "properties": {
               "class": "back-text"
             },
-            "dataUid": "uid-33"
+            "dataUid": "uid-37"
           }
         ],
         "properties": {
@@ -354,7 +398,7 @@
           "class": "back-btn",
           "cursor": "pointer"
         },
-        "dataUid": "uid-32"
+        "dataUid": "uid-36"
       }
     ],
     "properties": {
@@ -488,7 +532,7 @@
         "column": 0
       },
       "end": {
-        "line": 81,
+        "line": 85,
         "column": 6
       }
     },
@@ -689,7 +733,7 @@
       },
       "end": {
         "line": 67,
-        "column": 45
+        "column": 71
       }
     },
     "uid-22": {
@@ -699,7 +743,7 @@
       },
       "end": {
         "line": 68,
-        "column": 71
+        "column": 45
       }
     },
     "uid-23": {
@@ -709,7 +753,7 @@
       },
       "end": {
         "line": 69,
-        "column": 64
+        "column": 71
       }
     },
     "uid-24": {
@@ -719,7 +763,7 @@
       },
       "end": {
         "line": 70,
-        "column": 65
+        "column": 64
       }
     },
     "uid-25": {
@@ -729,7 +773,7 @@
       },
       "end": {
         "line": 71,
-        "column": 47
+        "column": 65
       }
     },
     "uid-26": {
@@ -739,7 +783,7 @@
       },
       "end": {
         "line": 72,
-        "column": 79
+        "column": 48
       }
     },
     "uid-27": {
@@ -749,7 +793,7 @@
       },
       "end": {
         "line": 73,
-        "column": 41
+        "column": 65
       }
     },
     "uid-28": {
@@ -759,7 +803,7 @@
       },
       "end": {
         "line": 74,
-        "column": 61
+        "column": 72
       }
     },
     "uid-29": {
@@ -769,7 +813,7 @@
       },
       "end": {
         "line": 75,
-        "column": 63
+        "column": 47
       }
     },
     "uid-30": {
@@ -779,7 +823,7 @@
       },
       "end": {
         "line": 76,
-        "column": 58
+        "column": 79
       }
     },
     "uid-31": {
@@ -789,7 +833,7 @@
       },
       "end": {
         "line": 77,
-        "column": 59
+        "column": 41
       }
     },
     "uid-32": {
@@ -798,17 +842,57 @@
         "column": 2
       },
       "end": {
-        "line": 80,
-        "column": 8
+        "line": 78,
+        "column": 61
       }
     },
     "uid-33": {
       "start": {
         "line": 79,
-        "column": 4
+        "column": 2
       },
       "end": {
         "line": 79,
+        "column": 63
+      }
+    },
+    "uid-34": {
+      "start": {
+        "line": 80,
+        "column": 2
+      },
+      "end": {
+        "line": 80,
+        "column": 58
+      }
+    },
+    "uid-35": {
+      "start": {
+        "line": 81,
+        "column": 2
+      },
+      "end": {
+        "line": 81,
+        "column": 59
+      }
+    },
+    "uid-36": {
+      "start": {
+        "line": 82,
+        "column": 2
+      },
+      "end": {
+        "line": 84,
+        "column": 8
+      }
+    },
+    "uid-37": {
+      "start": {
+        "line": 83,
+        "column": 4
+      },
+      "end": {
+        "line": 83,
         "column": 39
       }
     }

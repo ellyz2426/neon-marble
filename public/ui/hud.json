@@ -190,6 +190,30 @@
           "class": "hud-item"
         },
         "dataUid": "uid-17"
+      },
+      {
+        "type": "container",
+        "sourceTag": "div",
+        "children": [
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [],
+            "properties": {
+              "id": "hud-combo",
+              "class": "hud-value",
+              "style": {
+                "fontSize": "1.3",
+                "color": "#ff66ff"
+              }
+            },
+            "dataUid": "uid-20"
+          }
+        ],
+        "properties": {
+          "class": "hud-item"
+        },
+        "dataUid": "uid-19"
       }
     ],
     "properties": {
@@ -314,7 +338,7 @@
         "column": 0
       },
       "end": {
-        "line": 62,
+        "line": 65,
         "column": 6
       }
     },
@@ -486,6 +510,26 @@
       "end": {
         "line": 60,
         "column": 93
+      }
+    },
+    "uid-19": {
+      "start": {
+        "line": 62,
+        "column": 2
+      },
+      "end": {
+        "line": 64,
+        "column": 8
+      }
+    },
+    "uid-20": {
+      "start": {
+        "line": 63,
+        "column": 4
+      },
+      "end": {
+        "line": 63,
+        "column": 90
       }
     }
   }

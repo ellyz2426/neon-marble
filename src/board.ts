@@ -23,6 +23,7 @@ export interface BoardObjects {
   powerups: { mesh: THREE.Mesh; glowMesh: THREE.Mesh; type: number; col: number; row: number; collected: boolean }[];
   movingWalls: { mesh: THREE.Mesh; edgeMesh: THREE.LineSegments; col: number; row: number; axis: 'x' | 'z'; speed: number; range: number; basePos: THREE.Vector3 }[];
   gravitySwitches: { mesh: THREE.Mesh; glowMesh: THREE.Mesh; col: number; row: number; cooldown: number }[];
+  bumpers: { mesh: THREE.Mesh; glowMesh: THREE.Mesh; col: number; row: number }[];
   gridW: number;
   gridH: number;
   grid: number[][];
@@ -167,9 +168,18 @@ export function buildBoard(level: LevelDef, themeIdx: number): BoardObjects {
   });
   const gravGlowGeo = new THREE.SphereGeometry(BOARD_CELL * 0.35, 8, 8);
 
+  // Bumper geometry
+  const bumperGeo = new THREE.SphereGeometry(BOARD_CELL * 0.3, 12, 12);
+  const bumperMat = new THREE.MeshStandardMaterial({
+    color: 0xff66ff, emissive: 0xff22cc, emissiveIntensity: 0.7,
+    roughness: 0.2, metalness: 0.6,
+  });
+  const bumperGlowGeo = new THREE.SphereGeometry(BOARD_CELL * 0.45, 8, 8);
+
   const powerups: { mesh: THREE.Mesh; glowMesh: THREE.Mesh; type: number; col: number; row: number; collected: boolean }[] = [];
   const movingWalls: { mesh: THREE.Mesh; edgeMesh: THREE.LineSegments; col: number; row: number; axis: 'x' | 'z'; speed: number; range: number; basePos: THREE.Vector3 }[] = [];
   const gravitySwitches: { mesh: THREE.Mesh; glowMesh: THREE.Mesh; col: number; row: number; cooldown: number }[] = [];
+  const bumpers: { mesh: THREE.Mesh; glowMesh: THREE.Mesh; col: number; row: number }[] = [];
 
   for (let r = 0; r < gridH; r++) {
     for (let c = 0; c < gridW; c++) {
@@ -358,6 +368,26 @@ export function buildBoard(level: LevelDef, themeIdx: number): BoardObjects {
           gravitySwitches.push({ mesh: gs, glowMesh: gg, col: c, row: r, cooldown: 0 });
           break;
         }
+        case TILE.BUMPER: {
+          const bm = new THREE.Mesh(bumperGeo, bumperMat.clone());
+          bm.position.set(x, BOARD_CELL * 0.3, z);
+          group.add(bm);
+          const bg = new THREE.Mesh(bumperGlowGeo, new THREE.MeshBasicMaterial({
+            color: 0xff66ff, transparent: true, opacity: 0.2,
+          }));
+          bg.position.copy(bm.position);
+          group.add(bg);
+          // Ring at base
+          const bRing = new THREE.Mesh(
+            new THREE.TorusGeometry(BOARD_CELL * 0.32, 0.003, 8, 24),
+            new THREE.MeshBasicMaterial({ color: 0xff66ff, transparent: true, opacity: 0.6 })
+          );
+          bRing.position.set(x, 0.002, z);
+          bRing.rotation.x = -Math.PI / 2;
+          group.add(bRing);
+          bumpers.push({ mesh: bm, glowMesh: bg, col: c, row: r });
+          break;
+        }
       }
     }
   }
@@ -365,7 +395,7 @@ export function buildBoard(level: LevelDef, themeIdx: number): BoardObjects {
   return {
     group, floor, walls, holes, gems, goalMesh,
     startPos, goalPos, teleA, teleB, teleMeshA, teleMeshB,
-    iceTiles, boostTiles, powerups, movingWalls, gravitySwitches, gridW, gridH, grid
+    iceTiles, boostTiles, powerups, movingWalls, gravitySwitches, bumpers, gridW, gridH, grid
   };
 }
 
@@ -482,5 +512,13 @@ export function animateBoard(board: BoardObjects, time: number) {
     const pulse = 0.15 + Math.sin(time * 3 + gs.col * 2) * 0.1;
     (gs.glowMesh.material as THREE.MeshBasicMaterial).opacity = pulse;
     gs.glowMesh.scale.setScalar(1 + Math.sin(time * 2) * 0.15);
+  }
+  // Bumpers: bob and pulse
+  for (const b of board.bumpers) {
+    b.mesh.position.y = BOARD_CELL * 0.3 + Math.sin(time * 3 + b.col + b.row) * 0.005;
+    const s = 1 + Math.sin(time * 4 + b.col * 1.5) * 0.08;
+    b.mesh.scale.set(s, s, s);
+    (b.glowMesh.material as THREE.MeshBasicMaterial).opacity = 0.15 + Math.sin(time * 5 + b.row) * 0.1;
+    b.glowMesh.position.y = b.mesh.position.y;
   }
 }

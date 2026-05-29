@@ -60,4 +60,7 @@
   <div class="hud-item">
     <span id="hud-powerups" class="hud-value" style="font-size: 1.2; color: #cc88ff;"></span>
   </div>
+  <div class="hud-item">
+    <span id="hud-combo" class="hud-value" style="font-size: 1.3; color: #ff66ff;"></span>
+  </div>
 </div>

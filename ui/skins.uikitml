@@ -50,6 +50,30 @@
     <text id="skin-status-7" fontSize="10" color="#88aacc">○ Select</text>
   </panel>
 
+  <panel id="btn-skin-8" flexDirection="row" alignItems="center" gap="12" backgroundColor="#112244" borderRadius="8" padding="8" cursor="pointer" hover:backgroundColor="#223355">
+    <panel width="20" height="20" borderRadius="10" backgroundColor="#bbddff" />
+    <panel flex="1"><text id="skin-name-8" fontSize="12" fontWeight="bold" color="#bbddff">Diamond Core</text></panel>
+    <text id="skin-status-8" fontSize="10" color="#88aacc">○ Select</text>
+  </panel>
+
+  <panel id="btn-skin-9" flexDirection="row" alignItems="center" gap="12" backgroundColor="#112244" borderRadius="8" padding="8" cursor="pointer" hover:backgroundColor="#223355">
+    <panel width="20" height="20" borderRadius="10" backgroundColor="#ff44aa" />
+    <panel flex="1"><text id="skin-name-9" fontSize="12" fontWeight="bold" color="#ff66cc">Nebula Drift</text></panel>
+    <text id="skin-status-9" fontSize="10" color="#88aacc">○ Select</text>
+  </panel>
+
+  <panel id="btn-skin-10" flexDirection="row" alignItems="center" gap="12" backgroundColor="#112244" borderRadius="8" padding="8" cursor="pointer" hover:backgroundColor="#223355">
+    <panel width="20" height="20" borderRadius="10" backgroundColor="#22cc66" />
+    <panel flex="1"><text id="skin-name-10" fontSize="12" fontWeight="bold" color="#44ee88">Emerald Vein</text></panel>
+    <text id="skin-status-10" fontSize="10" color="#88aacc">○ Select</text>
+  </panel>
+
+  <panel id="btn-skin-11" flexDirection="row" alignItems="center" gap="12" backgroundColor="#112244" borderRadius="8" padding="8" cursor="pointer" hover:backgroundColor="#223355">
+    <panel width="20" height="20" borderRadius="10" backgroundColor="#880044" />
+    <panel flex="1"><text id="skin-name-11" fontSize="12" fontWeight="bold" color="#aa0055">Obsidian Shard</text></panel>
+    <text id="skin-status-11" fontSize="10" color="#88aacc">○ Select</text>
+  </panel>
+
   <panel id="btn-skins-back" backgroundColor="#222266" borderRadius="8" padding="8" marginTop="4" cursor="pointer" hover:backgroundColor="#333388">
     <text fontSize="14" color="#ffffff" textAlign="center">Back</text>
   </panel>
