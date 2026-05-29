@@ -51,4 +51,7 @@
   <div class="hud-item">
     <span id="hud-level" class="hud-level">Level</span>
   </div>
+  <div class="hud-item">
+    <span id="hud-powerups" class="hud-value" style="font-size: 1.2; color: #cc88ff;"></span>
+  </div>
 </div>

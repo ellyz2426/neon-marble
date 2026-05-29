@@ -84,6 +84,7 @@
   <span id="lc-gems" class="lc-stat">Gems: 0/0</span>
   <span id="lc-par" class="lc-par">Par: 20s</span>
   <span id="lc-score" class="lc-score">Score: 0</span>
+  <span id="lc-stars" style="font-size: 3; color: #ffdd00; margin-top: 0.5;">☆☆☆</span>
   <div id="btn-next" class="lc-btn" cursor="pointer">
     <span class="lc-btn-text">Next Level</span>
   </div>

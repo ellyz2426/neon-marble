@@ -83,4 +83,12 @@
       <span class="small-btn-text">Help</span>
     </div>
   </div>
+  <div class="row">
+    <div id="btn-stats" class="small-btn" cursor="pointer">
+      <span class="small-btn-text">Stats</span>
+    </div>
+    <div id="btn-skins" class="small-btn" cursor="pointer">
+      <span class="small-btn-text">Skins</span>
+    </div>
+  </div>
 </div>

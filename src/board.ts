@@ -20,6 +20,7 @@ export interface BoardObjects {
   teleMeshB: THREE.Mesh | null;
   iceTiles: THREE.Mesh[];
   boostTiles: { mesh: THREE.Mesh; dir: THREE.Vector2 }[];
+  powerups: { mesh: THREE.Mesh; glowMesh: THREE.Mesh; type: number; col: number; row: number; collected: boolean }[];
   gridW: number;
   gridH: number;
   grid: number[][];
@@ -133,6 +134,26 @@ export function buildBoard(level: LevelDef, themeIdx: number): BoardObjects {
     transparent: true,
     opacity: 0.6,
   });
+
+  // Power-up geometries
+  const puShieldGeo = new THREE.SphereGeometry(BOARD_CELL * 0.22, 12, 12);
+  const puShieldMat = new THREE.MeshStandardMaterial({
+    color: 0x4488ff, emissive: 0x2266ff, emissiveIntensity: 0.7,
+    transparent: true, opacity: 0.7, roughness: 0.1, metalness: 0.9,
+  });
+  const puMagnetGeo = new THREE.CylinderGeometry(BOARD_CELL * 0.15, BOARD_CELL * 0.2, BOARD_CELL * 0.2, 6);
+  const puMagnetMat = new THREE.MeshStandardMaterial({
+    color: 0xffcc00, emissive: 0xffaa00, emissiveIntensity: 0.7,
+    roughness: 0.3, metalness: 0.8,
+  });
+  const puSlowmoGeo = new THREE.TorusKnotGeometry(BOARD_CELL * 0.12, BOARD_CELL * 0.04, 32, 8, 2, 3);
+  const puSlowmoMat = new THREE.MeshStandardMaterial({
+    color: 0xcc44ff, emissive: 0xaa22ff, emissiveIntensity: 0.7,
+    roughness: 0.2, metalness: 0.7,
+  });
+  const puGlowGeo = new THREE.SphereGeometry(BOARD_CELL * 0.3, 8, 8);
+
+  const powerups: { mesh: THREE.Mesh; glowMesh: THREE.Mesh; type: number; col: number; row: number; collected: boolean }[] = [];
 
   for (let r = 0; r < gridH; r++) {
     for (let c = 0; c < gridW; c++) {
@@ -252,6 +273,36 @@ export function buildBoard(level: LevelDef, themeIdx: number): BoardObjects {
           boostTiles.push({ mesh: bm, dir: new THREE.Vector2(0, 1) }); // default forward boost
           break;
         }
+        case TILE.POWERUP_SHIELD: {
+          const pm = new THREE.Mesh(puShieldGeo, puShieldMat.clone());
+          pm.position.set(x, BOARD_CELL * 0.25, z);
+          group.add(pm);
+          const pg = new THREE.Mesh(puGlowGeo, new THREE.MeshBasicMaterial({ color: 0x4488ff, transparent: true, opacity: 0.15 }));
+          pg.position.copy(pm.position);
+          group.add(pg);
+          powerups.push({ mesh: pm, glowMesh: pg, type: TILE.POWERUP_SHIELD, col: c, row: r, collected: false });
+          break;
+        }
+        case TILE.POWERUP_MAGNET: {
+          const pm = new THREE.Mesh(puMagnetGeo, puMagnetMat.clone());
+          pm.position.set(x, BOARD_CELL * 0.2, z);
+          group.add(pm);
+          const pg = new THREE.Mesh(puGlowGeo, new THREE.MeshBasicMaterial({ color: 0xffcc00, transparent: true, opacity: 0.15 }));
+          pg.position.copy(pm.position);
+          group.add(pg);
+          powerups.push({ mesh: pm, glowMesh: pg, type: TILE.POWERUP_MAGNET, col: c, row: r, collected: false });
+          break;
+        }
+        case TILE.POWERUP_SLOWMO: {
+          const pm = new THREE.Mesh(puSlowmoGeo, puSlowmoMat.clone());
+          pm.position.set(x, BOARD_CELL * 0.2, z);
+          group.add(pm);
+          const pg = new THREE.Mesh(puGlowGeo, new THREE.MeshBasicMaterial({ color: 0xcc44ff, transparent: true, opacity: 0.15 }));
+          pg.position.copy(pm.position);
+          group.add(pg);
+          powerups.push({ mesh: pm, glowMesh: pg, type: TILE.POWERUP_SLOWMO, col: c, row: r, collected: false });
+          break;
+        }
       }
     }
   }
@@ -259,7 +310,7 @@ export function buildBoard(level: LevelDef, themeIdx: number): BoardObjects {
   return {
     group, floor, walls, holes, gems, goalMesh,
     startPos, goalPos, teleA, teleB, teleMeshA, teleMeshB,
-    iceTiles, boostTiles, gridW, gridH, grid
+    iceTiles, boostTiles, powerups, gridW, gridH, grid
   };
 }
 
@@ -328,7 +379,7 @@ export function checkWallCollision(
   return collided ? pushOut : null;
 }
 
-// Animate board objects (gems rotate, goal pulses, teleporters spin)
+// Animate board objects (gems rotate, goal pulses, teleporters spin, power-ups float)
 export function animateBoard(board: BoardObjects, time: number) {
   for (const gem of board.gems) {
     if (gem.visible) {
@@ -349,5 +400,15 @@ export function animateBoard(board: BoardObjects, time: number) {
   }
   for (const bt of board.boostTiles) {
     (bt.mesh.material as THREE.MeshStandardMaterial).opacity = 0.5 + Math.sin(time * 4) * 0.15;
+  }
+  // Power-ups: float and rotate
+  for (const pu of board.powerups) {
+    if (!pu.collected) {
+      pu.mesh.rotation.y = time * 2.5;
+      pu.mesh.position.y = BOARD_CELL * 0.25 + Math.sin(time * 3 + pu.col) * 0.008;
+      pu.glowMesh.position.y = pu.mesh.position.y;
+      const gs = 1 + Math.sin(time * 4) * 0.15;
+      pu.glowMesh.scale.set(gs, gs, gs);
+    }
   }
 }

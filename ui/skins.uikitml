@@ -1,0 +1,48 @@
+<panel backgroundColor="#0a0a2299" borderRadius="12" padding="20" gap="10">
+  <text fontSize="22" fontWeight="bold" color="#00ffff" textAlign="center">Marble Skins</text>
+  <text fontSize="10" color="#aaaacc" textAlign="center">Select your marble appearance</text>
+
+  <panel id="btn-skin-0" flexDirection="row" alignItems="center" gap="12" backgroundColor="#112244" borderRadius="8" padding="10" cursor="pointer" hover:backgroundColor="#223355">
+    <panel width="24" height="24" borderRadius="12" backgroundColor="#00ddff" />
+    <panel flex="1">
+      <text id="skin-name-0" fontSize="13" fontWeight="bold" color="#00ddff">Neon Cyan</text>
+    </panel>
+    <text id="skin-status-0" fontSize="11" color="#88aacc">● EQUIPPED</text>
+  </panel>
+
+  <panel id="btn-skin-1" flexDirection="row" alignItems="center" gap="12" backgroundColor="#112244" borderRadius="8" padding="10" cursor="pointer" hover:backgroundColor="#223355">
+    <panel width="24" height="24" borderRadius="12" backgroundColor="#ff6633" />
+    <panel flex="1">
+      <text id="skin-name-1" fontSize="13" fontWeight="bold" color="#ff6633">Solar Flare</text>
+    </panel>
+    <text id="skin-status-1" fontSize="11" color="#88aacc">○ Select</text>
+  </panel>
+
+  <panel id="btn-skin-2" flexDirection="row" alignItems="center" gap="12" backgroundColor="#112244" borderRadius="8" padding="10" cursor="pointer" hover:backgroundColor="#223355">
+    <panel width="24" height="24" borderRadius="12" backgroundColor="#aaddff" />
+    <panel flex="1">
+      <text id="skin-name-2" fontSize="13" fontWeight="bold" color="#aaddff">Frost Core</text>
+    </panel>
+    <text id="skin-status-2" fontSize="11" color="#88aacc">○ Select</text>
+  </panel>
+
+  <panel id="btn-skin-3" flexDirection="row" alignItems="center" gap="12" backgroundColor="#112244" borderRadius="8" padding="10" cursor="pointer" hover:backgroundColor="#223355">
+    <panel width="24" height="24" borderRadius="12" backgroundColor="#44ff66" />
+    <panel flex="1">
+      <text id="skin-name-3" fontSize="13" fontWeight="bold" color="#44ff66">Toxic Pulse</text>
+    </panel>
+    <text id="skin-status-3" fontSize="11" color="#88aacc">○ Select</text>
+  </panel>
+
+  <panel id="btn-skin-4" flexDirection="row" alignItems="center" gap="12" backgroundColor="#112244" borderRadius="8" padding="10" cursor="pointer" hover:backgroundColor="#223355">
+    <panel width="24" height="24" borderRadius="12" backgroundColor="#cc66ff" />
+    <panel flex="1">
+      <text id="skin-name-4" fontSize="13" fontWeight="bold" color="#cc66ff">Royal Ember</text>
+    </panel>
+    <text id="skin-status-4" fontSize="11" color="#88aacc">○ Select</text>
+  </panel>
+
+  <panel id="btn-skins-back" backgroundColor="#222266" borderRadius="8" padding="8" marginTop="6" cursor="pointer" hover:backgroundColor="#333388">
+    <text fontSize="14" color="#ffffff" textAlign="center">Back</text>
+  </panel>
+</panel>

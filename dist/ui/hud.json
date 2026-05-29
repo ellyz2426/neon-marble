@@ -156,6 +156,30 @@
           "class": "hud-item"
         },
         "dataUid": "uid-14"
+      },
+      {
+        "type": "container",
+        "sourceTag": "div",
+        "children": [
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [],
+            "properties": {
+              "id": "hud-powerups",
+              "class": "hud-value",
+              "style": {
+                "fontSize": "1.2",
+                "color": "#cc88ff"
+              }
+            },
+            "dataUid": "uid-17"
+          }
+        ],
+        "properties": {
+          "class": "hud-item"
+        },
+        "dataUid": "uid-16"
       }
     ],
     "properties": {
@@ -263,7 +287,7 @@
         "column": 0
       },
       "end": {
-        "line": 53,
+        "line": 56,
         "column": 6
       }
     },
@@ -405,6 +429,26 @@
       "end": {
         "line": 51,
         "column": 55
+      }
+    },
+    "uid-16": {
+      "start": {
+        "line": 53,
+        "column": 2
+      },
+      "end": {
+        "line": 55,
+        "column": 8
+      }
+    },
+    "uid-17": {
+      "start": {
+        "line": 54,
+        "column": 4
+      },
+      "end": {
+        "line": 54,
+        "column": 93
       }
     }
   }

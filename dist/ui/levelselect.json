@@ -489,6 +489,242 @@
               "class": "lvl-row"
             },
             "dataUid": "uid-34"
+          },
+          {
+            "type": "container",
+            "sourceTag": "div",
+            "children": [
+              {
+                "type": "container",
+                "sourceTag": "div",
+                "children": [
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "Level 13"
+                    ],
+                    "properties": {
+                      "id": "lvl-name-12",
+                      "class": "lvl-name"
+                    },
+                    "dataUid": "uid-46"
+                  },
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "---"
+                    ],
+                    "properties": {
+                      "id": "lvl-status-12",
+                      "class": "lvl-status"
+                    },
+                    "dataUid": "uid-47"
+                  }
+                ],
+                "properties": {
+                  "id": "btn-lvl-12",
+                  "class": "lvl-btn",
+                  "cursor": "pointer"
+                },
+                "dataUid": "uid-45"
+              },
+              {
+                "type": "container",
+                "sourceTag": "div",
+                "children": [
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "Level 14"
+                    ],
+                    "properties": {
+                      "id": "lvl-name-13",
+                      "class": "lvl-name"
+                    },
+                    "dataUid": "uid-49"
+                  },
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "---"
+                    ],
+                    "properties": {
+                      "id": "lvl-status-13",
+                      "class": "lvl-status"
+                    },
+                    "dataUid": "uid-50"
+                  }
+                ],
+                "properties": {
+                  "id": "btn-lvl-13",
+                  "class": "lvl-btn",
+                  "cursor": "pointer"
+                },
+                "dataUid": "uid-48"
+              },
+              {
+                "type": "container",
+                "sourceTag": "div",
+                "children": [
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "Level 15"
+                    ],
+                    "properties": {
+                      "id": "lvl-name-14",
+                      "class": "lvl-name"
+                    },
+                    "dataUid": "uid-52"
+                  },
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "---"
+                    ],
+                    "properties": {
+                      "id": "lvl-status-14",
+                      "class": "lvl-status"
+                    },
+                    "dataUid": "uid-53"
+                  }
+                ],
+                "properties": {
+                  "id": "btn-lvl-14",
+                  "class": "lvl-btn",
+                  "cursor": "pointer"
+                },
+                "dataUid": "uid-51"
+              }
+            ],
+            "properties": {
+              "class": "lvl-row"
+            },
+            "dataUid": "uid-44"
+          },
+          {
+            "type": "container",
+            "sourceTag": "div",
+            "children": [
+              {
+                "type": "container",
+                "sourceTag": "div",
+                "children": [
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "Level 16"
+                    ],
+                    "properties": {
+                      "id": "lvl-name-15",
+                      "class": "lvl-name"
+                    },
+                    "dataUid": "uid-56"
+                  },
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "---"
+                    ],
+                    "properties": {
+                      "id": "lvl-status-15",
+                      "class": "lvl-status"
+                    },
+                    "dataUid": "uid-57"
+                  }
+                ],
+                "properties": {
+                  "id": "btn-lvl-15",
+                  "class": "lvl-btn",
+                  "cursor": "pointer"
+                },
+                "dataUid": "uid-55"
+              },
+              {
+                "type": "container",
+                "sourceTag": "div",
+                "children": [
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "Level 17"
+                    ],
+                    "properties": {
+                      "id": "lvl-name-16",
+                      "class": "lvl-name"
+                    },
+                    "dataUid": "uid-59"
+                  },
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "---"
+                    ],
+                    "properties": {
+                      "id": "lvl-status-16",
+                      "class": "lvl-status"
+                    },
+                    "dataUid": "uid-60"
+                  }
+                ],
+                "properties": {
+                  "id": "btn-lvl-16",
+                  "class": "lvl-btn",
+                  "cursor": "pointer"
+                },
+                "dataUid": "uid-58"
+              },
+              {
+                "type": "container",
+                "sourceTag": "div",
+                "children": [
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "Level 18"
+                    ],
+                    "properties": {
+                      "id": "lvl-name-17",
+                      "class": "lvl-name"
+                    },
+                    "dataUid": "uid-62"
+                  },
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "---"
+                    ],
+                    "properties": {
+                      "id": "lvl-status-17",
+                      "class": "lvl-status"
+                    },
+                    "dataUid": "uid-63"
+                  }
+                ],
+                "properties": {
+                  "id": "btn-lvl-17",
+                  "class": "lvl-btn",
+                  "cursor": "pointer"
+                },
+                "dataUid": "uid-61"
+              }
+            ],
+            "properties": {
+              "class": "lvl-row"
+            },
+            "dataUid": "uid-54"
           }
         ],
         "properties": {
@@ -509,7 +745,7 @@
             "properties": {
               "class": "back-text"
             },
-            "dataUid": "uid-45"
+            "dataUid": "uid-65"
           }
         ],
         "properties": {
@@ -517,7 +753,7 @@
           "class": "back-btn",
           "cursor": "pointer"
         },
-        "dataUid": "uid-44"
+        "dataUid": "uid-64"
       }
     ],
     "properties": {
@@ -708,7 +944,7 @@
         "column": 0
       },
       "end": {
-        "line": 95,
+        "line": 105,
         "column": 6
       }
     },
@@ -728,7 +964,7 @@
         "column": 2
       },
       "end": {
-        "line": 91,
+        "line": 101,
         "column": 8
       }
     },
@@ -1134,21 +1370,221 @@
     },
     "uid-44": {
       "start": {
-        "line": 92,
-        "column": 2
+        "line": 91,
+        "column": 4
       },
       "end": {
-        "line": 94,
-        "column": 8
+        "line": 95,
+        "column": 10
       }
     },
     "uid-45": {
       "start": {
+        "line": 92,
+        "column": 6
+      },
+      "end": {
+        "line": 92,
+        "column": 175
+      }
+    },
+    "uid-46": {
+      "start": {
+        "line": 92,
+        "column": 60
+      },
+      "end": {
+        "line": 92,
+        "column": 115
+      }
+    },
+    "uid-47": {
+      "start": {
+        "line": 92,
+        "column": 115
+      },
+      "end": {
+        "line": 92,
+        "column": 169
+      }
+    },
+    "uid-48": {
+      "start": {
         "line": 93,
-        "column": 4
+        "column": 6
       },
       "end": {
         "line": 93,
+        "column": 175
+      }
+    },
+    "uid-49": {
+      "start": {
+        "line": 93,
+        "column": 60
+      },
+      "end": {
+        "line": 93,
+        "column": 115
+      }
+    },
+    "uid-50": {
+      "start": {
+        "line": 93,
+        "column": 115
+      },
+      "end": {
+        "line": 93,
+        "column": 169
+      }
+    },
+    "uid-51": {
+      "start": {
+        "line": 94,
+        "column": 6
+      },
+      "end": {
+        "line": 94,
+        "column": 175
+      }
+    },
+    "uid-52": {
+      "start": {
+        "line": 94,
+        "column": 60
+      },
+      "end": {
+        "line": 94,
+        "column": 115
+      }
+    },
+    "uid-53": {
+      "start": {
+        "line": 94,
+        "column": 115
+      },
+      "end": {
+        "line": 94,
+        "column": 169
+      }
+    },
+    "uid-54": {
+      "start": {
+        "line": 96,
+        "column": 4
+      },
+      "end": {
+        "line": 100,
+        "column": 10
+      }
+    },
+    "uid-55": {
+      "start": {
+        "line": 97,
+        "column": 6
+      },
+      "end": {
+        "line": 97,
+        "column": 175
+      }
+    },
+    "uid-56": {
+      "start": {
+        "line": 97,
+        "column": 60
+      },
+      "end": {
+        "line": 97,
+        "column": 115
+      }
+    },
+    "uid-57": {
+      "start": {
+        "line": 97,
+        "column": 115
+      },
+      "end": {
+        "line": 97,
+        "column": 169
+      }
+    },
+    "uid-58": {
+      "start": {
+        "line": 98,
+        "column": 6
+      },
+      "end": {
+        "line": 98,
+        "column": 175
+      }
+    },
+    "uid-59": {
+      "start": {
+        "line": 98,
+        "column": 60
+      },
+      "end": {
+        "line": 98,
+        "column": 115
+      }
+    },
+    "uid-60": {
+      "start": {
+        "line": 98,
+        "column": 115
+      },
+      "end": {
+        "line": 98,
+        "column": 169
+      }
+    },
+    "uid-61": {
+      "start": {
+        "line": 99,
+        "column": 6
+      },
+      "end": {
+        "line": 99,
+        "column": 175
+      }
+    },
+    "uid-62": {
+      "start": {
+        "line": 99,
+        "column": 60
+      },
+      "end": {
+        "line": 99,
+        "column": 115
+      }
+    },
+    "uid-63": {
+      "start": {
+        "line": 99,
+        "column": 115
+      },
+      "end": {
+        "line": 99,
+        "column": 169
+      }
+    },
+    "uid-64": {
+      "start": {
+        "line": 102,
+        "column": 2
+      },
+      "end": {
+        "line": 104,
+        "column": 8
+      }
+    },
+    "uid-65": {
+      "start": {
+        "line": 103,
+        "column": 4
+      },
+      "end": {
+        "line": 103,
         "column": 39
       }
     }

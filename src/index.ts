@@ -7,6 +7,7 @@ import {
   BOARD_CELL, MARBLE_RADIUS, MAX_TILT, TILT_SPEED, GRAVITY,
   FRICTION, ICE_FRICTION, BOUNCE_DAMP, BOOST_IMPULSE, MARBLE_MAX_SPEED,
   addLeaderboard, getLeaderboard, getDailySeed, seededRandom,
+  calcStars, MARBLE_SKINS,
 } from './types.js';
 import { buildBoard, gridToLocal, getTileAt, checkWallCollision, animateBoard, BoardObjects } from './board.js';
 import { AudioManager } from './audio.js';
@@ -48,6 +49,9 @@ let onIce = false;
 let rollSoundTimer = 0;
 let teleCooldown = 0;
 let lastTime = performance.now();
+let magnetPullTimer = 0;
+let shieldMesh: THREE.Mesh | null = null;
+let magnetGems = 0; // gems collected while magnet active
 
 // Input state
 const keys: Record<string, boolean> = {};
@@ -107,7 +111,8 @@ decos = createHolodeckDecorations(scene, 14);
 // UI Panel Entities
 // ============================================================
 type PanelName = 'title' | 'modeselect' | 'levelselect' | 'hud' | 'pause' | 'levelcomplete'
-  | 'gameover' | 'leaderboard' | 'achievements' | 'settings' | 'help' | 'toast' | 'countdown';
+  | 'gameover' | 'leaderboard' | 'achievements' | 'settings' | 'help' | 'toast' | 'countdown'
+  | 'stats' | 'skins';
 
 const panels: Map<PanelName, { entity: any; doc: UIKitDocument | null }> = new Map();
 
@@ -156,6 +161,8 @@ createPanel('settings', '/ui/settings.json', { maxWidth: 0.7, maxHeight: 0.7, wo
 createPanel('help', '/ui/help.json', { maxWidth: 0.8, maxHeight: 0.7, worldPos: [0, 1.5, -2] });
 createPanel('toast', '/ui/toast.json', { maxWidth: 0.3, maxHeight: 0.08, follower: true, offsetPos: [0, -0.2, -0.5] });
 createPanel('countdown', '/ui/countdown.json', { maxWidth: 0.3, maxHeight: 0.15, follower: true, offsetPos: [0, 0, -0.5] });
+createPanel('stats', '/ui/stats.json', { maxWidth: 0.8, maxHeight: 0.8, worldPos: [0, 1.5, -2] });
+createPanel('skins', '/ui/skins.json', { maxWidth: 0.7, maxHeight: 0.6, worldPos: [0, 1.5, -2] });
 
 // ============================================================
 // UI Helpers
@@ -229,6 +236,14 @@ function showUI(state: GameState) {
     case 'help':
       panels.get('help')!.entity.object3D.visible = true;
       break;
+    case 'stats' as GameState:
+      updateStatsPanel();
+      panels.get('stats')!.entity.object3D.visible = true;
+      break;
+    case 'skins' as GameState:
+      updateSkinsPanel();
+      panels.get('skins')!.entity.object3D.visible = true;
+      break;
   }
 }
 
@@ -250,15 +265,23 @@ function updateHUD() {
   setText('hud', 'hud-score', `${gsm.score}`);
   const level = LEVELS[gsm.level] || LEVELS[0];
   setText('hud', 'hud-level', level.name);
+  // Power-up indicators
+  const puParts: string[] = [];
+  if (gsm.shieldActive) puParts.push(`🛡${Math.ceil(gsm.shieldTimer)}s`);
+  if (gsm.magnetActive) puParts.push(`🧲${Math.ceil(gsm.magnetTimer)}s`);
+  if (gsm.slowmoActive) puParts.push(`⏳${Math.ceil(gsm.slowmoTimer)}s`);
+  setText('hud', 'hud-powerups', puParts.join(' '));
 }
 
 function updateLevelSelect() {
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i < 18; i++) {
     const cleared = gsm.campaignProgress[i] || false;
     const best = gsm.bestTimes[i];
+    const stars = gsm.starRatings[i] || 0;
     const label = i < LEVELS.length ? LEVELS[i].name : `Level ${i + 1}`;
+    const starStr = stars > 0 ? '★'.repeat(stars) + '☆'.repeat(3 - stars) : '';
     setText('levelselect', `lvl-name-${i}`, label);
-    setText('levelselect', `lvl-status-${i}`, cleared ? (best ? `Best: ${best.toFixed(1)}s` : 'Cleared') : '---');
+    setText('levelselect', `lvl-status-${i}`, cleared ? (best ? `${best.toFixed(1)}s ${starStr}` : `Cleared ${starStr}`) : '---');
   }
 }
 
@@ -279,6 +302,39 @@ function updateAchievementsPanel() {
     const unlocked = gsm.unlockedAchievements.has(a.id);
     setText('achievements', `ach-name-${i}`, unlocked ? a.name : '???');
     setText('achievements', `ach-desc-${i}`, unlocked ? a.desc : 'Locked');
+  }
+}
+
+function updateStatsPanel() {
+  setText('stats', 'stat-clears', `${gsm.totalClears}`);
+  setText('stats', 'stat-gems', `${gsm.totalGems}`);
+  setText('stats', 'stat-deaths', `${gsm.totalDeaths}`);
+  setText('stats', 'stat-perfect', `${gsm.perfectLevels}`);
+  setText('stats', 'stat-fastest', gsm.fastestClear < Infinity ? `${gsm.fastestClear.toFixed(1)}s` : '---');
+  setText('stats', 'stat-streak', `${gsm.longestStreak}`);
+  setText('stats', 'stat-playtime', formatPlayTime(gsm.totalPlayTime));
+  setText('stats', 'stat-powerups', `${gsm.powerupsCollected}`);
+  setText('stats', 'stat-shields', `${gsm.shieldsUsed}`);
+  const totalStars = gsm.starRatings.reduce((a, b) => a + b, 0);
+  setText('stats', 'stat-stars', `${totalStars}/${LEVELS.length * 3}`);
+  const progress = gsm.campaignProgress.filter(Boolean).length;
+  setText('stats', 'stat-progress', `${progress}/${LEVELS.length}`);
+  setText('stats', 'stat-achievements', `${gsm.unlockedAchievements.size}/${ACHIEVEMENTS.length}`);
+}
+
+function formatPlayTime(seconds: number): string {
+  const hrs = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  if (hrs > 0) return `${hrs}h ${mins}m`;
+  return `${mins}m`;
+}
+
+function updateSkinsPanel() {
+  for (let i = 0; i < MARBLE_SKINS.length; i++) {
+    const skin = MARBLE_SKINS[i];
+    const selected = i === gsm.currentSkin;
+    setText('skins', `skin-name-${i}`, skin.name);
+    setText('skins', `skin-status-${i}`, selected ? '● EQUIPPED' : '○ Select');
   }
 }
 
@@ -315,6 +371,15 @@ function checkAchievements() {
   check('theme_all', gsm.themesUsed.size >= THEMES.length);
   check('streak_3', gsm.streak >= 3);
   check('total_20', gsm.totalClears >= 20);
+  check('powerup_first', gsm.powerupsCollected >= 1);
+  check('shield_save', gsm.shieldsUsed >= 1);
+  check('three_stars', gsm.starRatings.some(s => s >= 3));
+  check('all_stars', gsm.starRatings.slice(0, LEVELS.length).every(s => s >= 3));
+  check('gems_100', gsm.totalGems >= 100);
+  check('magnet_gems', magnetGems >= 5);
+  check('slowmo_clear', gsm.slowmoActive && gsm.state === 'levelcomplete');
+  check('speed_5', gsm.bestTimes.filter((t, i) => t !== null && t < (LEVELS[i]?.par || 999)).length >= 5);
+  check('total_50', gsm.totalClears >= 50);
 
   for (const id of newlyUnlocked) {
     const ach = ACHIEVEMENTS.find(a => a.id === id);
@@ -351,12 +416,13 @@ function loadLevel(levelIdx: number) {
   boardEntity.position.set(0, 1.0, -1.2);  // floating in front of player at table height
   scene.add(boardEntity);
 
-  // Create marble
+  // Create marble with selected skin
   const theme = THEMES[gsm.currentTheme];
+  const skin = MARBLE_SKINS[gsm.currentSkin] || MARBLE_SKINS[0];
   const marbleGeo = new THREE.SphereGeometry(MARBLE_RADIUS, 16, 16);
   const marbleMat = new THREE.MeshStandardMaterial({
-    color: theme.marble,
-    emissive: new THREE.Color(theme.marble),
+    color: skin.color,
+    emissive: new THREE.Color(skin.emissive),
     emissiveIntensity: 0.4,
     roughness: 0.2,
     metalness: 0.7,
@@ -367,9 +433,16 @@ function loadLevel(levelIdx: number) {
   // Marble glow
   marbleGlow = new THREE.Mesh(
     new THREE.SphereGeometry(MARBLE_RADIUS * 1.8, 8, 8),
-    new THREE.MeshBasicMaterial({ color: theme.glow, transparent: true, opacity: 0.15 })
+    new THREE.MeshBasicMaterial({ color: skin.glow, transparent: true, opacity: 0.15 })
   );
   boardEntity.add(marbleGlow);
+
+  // Shield mesh (hidden until active)
+  shieldMesh = new THREE.Mesh(
+    new THREE.SphereGeometry(MARBLE_RADIUS * 2.5, 12, 12),
+    new THREE.MeshBasicMaterial({ color: 0x4488ff, transparent: true, opacity: 0, wireframe: true })
+  );
+  boardEntity.add(shieldMesh);
 
   // Place marble at start
   const startLocal = gridToLocal(board.startPos.x, board.startPos.y, board.gridW, board.gridH);
@@ -394,6 +467,7 @@ function resetMarble() {
   marblePos.copy(startLocal);
   marbleMesh.position.copy(marblePos);
   marbleGlow.position.copy(marblePos);
+  if (shieldMesh) shieldMesh.position.copy(marblePos);
   marbleVel.set(0, 0);
   boardTilt.set(0, 0);
   targetTilt.set(0, 0);
@@ -423,8 +497,11 @@ function changeState(newState: GameState) {
       const underPar = gsm.elapsedTime < level.par;
       gsm.totalClears++;
       gsm.streak++;
+      if (gsm.streak > gsm.longestStreak) gsm.longestStreak = gsm.streak;
       gsm.noDeathStreak++;
       if (isPerfect) gsm.perfectLevels++;
+      if (gsm.elapsedTime < gsm.fastestClear) gsm.fastestClear = gsm.elapsedTime;
+      gsm.totalPlayTime += gsm.elapsedTime;
       if (gsm.mode === 'campaign') {
         gsm.campaignProgress[gsm.level] = true;
         const bt = gsm.bestTimes[gsm.level];
@@ -432,6 +509,12 @@ function changeState(newState: GameState) {
       }
       if (gsm.mode === 'timeattack') gsm.timeAttackClears++;
       if (gsm.mode === 'daily') gsm.dailyCompleted++;
+
+      // Star rating
+      const stars = calcStars(gsm.elapsedTime, level.par, gsm.gemsCollected, gsm.gemsTotal);
+      if (stars > (gsm.starRatings[gsm.level] || 0)) {
+        gsm.starRatings[gsm.level] = stars;
+      }
 
       // Score calculation
       const baseScore = 1000;
@@ -449,12 +532,14 @@ function changeState(newState: GameState) {
         date: new Date().toISOString().split('T')[0],
       });
 
+      const starDisplay = '★'.repeat(stars) + '☆'.repeat(3 - stars);
       setText('levelcomplete', 'lc-title', 'Level Complete!');
       setText('levelcomplete', 'lc-level', level.name);
       setText('levelcomplete', 'lc-time', `Time: ${gsm.elapsedTime.toFixed(1)}s`);
       setText('levelcomplete', 'lc-gems', `Gems: ${gsm.gemsCollected}/${gsm.gemsTotal}`);
       setText('levelcomplete', 'lc-par', underPar ? 'Under par!' : `Par: ${level.par}s`);
       setText('levelcomplete', 'lc-score', `Score: ${gsm.score}`);
+      setText('levelcomplete', 'lc-stars', starDisplay);
 
       audio.playGoal();
       if (particles) particles.burst(marblePos, THEMES[gsm.currentTheme].goal, 25, 0.8, 1.2);
@@ -496,6 +581,8 @@ function setupUIEvents() {
   titleDoc?.getElementById('btn-achievements')?.addEventListener('click', () => { audio.playButton(); changeState('achievements'); });
   titleDoc?.getElementById('btn-settings')?.addEventListener('click', () => { audio.playButton(); changeState('settings'); });
   titleDoc?.getElementById('btn-help')?.addEventListener('click', () => { audio.playButton(); changeState('help'); });
+  titleDoc?.getElementById('btn-stats')?.addEventListener('click', () => { audio.playButton(); changeState('stats' as GameState); });
+  titleDoc?.getElementById('btn-skins')?.addEventListener('click', () => { audio.playButton(); changeState('skins' as GameState); });
 
   // Mode select
   const modeDoc = getDoc('modeselect');
@@ -515,7 +602,7 @@ function setupUIEvents() {
 
   // Level select
   const lvlDoc = getDoc('levelselect');
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i < 18; i++) {
     const idx = i;
     lvlDoc?.getElementById(`btn-lvl-${i}`)?.addEventListener('click', () => {
       audio.playButton();
@@ -578,6 +665,24 @@ function setupUIEvents() {
   // Help back
   const helpDoc = getDoc('help');
   helpDoc?.getElementById('btn-help-back')?.addEventListener('click', () => { audio.playButton(); changeState('title'); });
+
+  // Stats back
+  const statsDoc = getDoc('stats');
+  statsDoc?.getElementById('btn-stats-back')?.addEventListener('click', () => { audio.playButton(); changeState('title'); });
+
+  // Skins
+  const skinsDoc = getDoc('skins');
+  skinsDoc?.getElementById('btn-skins-back')?.addEventListener('click', () => { audio.playButton(); changeState('title'); });
+  for (let i = 0; i < MARBLE_SKINS.length; i++) {
+    const idx = i;
+    skinsDoc?.getElementById(`btn-skin-${i}`)?.addEventListener('click', () => {
+      audio.playButton();
+      gsm.currentSkin = idx;
+      updateSkinsPanel();
+      gsm.save();
+      showToast(`Equipped: ${MARBLE_SKINS[idx].name}`, 1.5);
+    });
+  }
 }
 
 // ============================================================
@@ -693,10 +798,12 @@ function update() {
     }
 
     // Clamp speed
+    const speedMult = gsm.slowmoActive ? 0.5 : 1.0;
     const speed = Math.sqrt(marbleVel.x * marbleVel.x + marbleVel.y * marbleVel.y);
-    if (speed > MARBLE_MAX_SPEED) {
-      marbleVel.x *= MARBLE_MAX_SPEED / speed;
-      marbleVel.y *= MARBLE_MAX_SPEED / speed;
+    const effectiveMaxSpeed = MARBLE_MAX_SPEED * speedMult;
+    if (speed > effectiveMaxSpeed) {
+      marbleVel.x *= effectiveMaxSpeed / speed;
+      marbleVel.y *= effectiveMaxSpeed / speed;
     }
 
     // Move marble
@@ -732,6 +839,16 @@ function update() {
     // Update marble mesh position
     marbleMesh.position.copy(marblePos);
     marbleGlow.position.copy(marblePos);
+    if (shieldMesh) {
+      shieldMesh.position.copy(marblePos);
+      // Shield visual
+      if (gsm.shieldActive) {
+        (shieldMesh.material as THREE.MeshBasicMaterial).opacity = 0.25 + Math.sin(time * 6) * 0.1;
+        shieldMesh.rotation.y = time * 3;
+      } else {
+        (shieldMesh.material as THREE.MeshBasicMaterial).opacity = 0;
+      }
+    }
 
     // Marble rotation based on velocity
     marbleMesh.rotation.z -= marbleVel.x * dt * 15;
@@ -743,21 +860,80 @@ function update() {
     // Teleporter cooldown
     if (teleCooldown > 0) teleCooldown -= dt;
 
+    // Power-up timers
+    if (gsm.shieldActive) {
+      gsm.shieldTimer -= dt;
+      if (gsm.shieldTimer <= 0) { gsm.shieldActive = false; gsm.shieldTimer = 0; }
+    }
+    if (gsm.magnetActive) {
+      gsm.magnetTimer -= dt;
+      if (gsm.magnetTimer <= 0) { gsm.magnetActive = false; gsm.magnetTimer = 0; }
+    }
+    if (gsm.slowmoActive) {
+      gsm.slowmoTimer -= dt;
+      if (gsm.slowmoTimer <= 0) { gsm.slowmoActive = false; gsm.slowmoTimer = 0; }
+    }
+
+    // Magnet effect: attract nearby gems
+    if (gsm.magnetActive && board) {
+      const bw = board.gridW * BOARD_CELL;
+      const bh = board.gridH * BOARD_CELL;
+      for (const gem of board.gems) {
+        if (!gem.visible) continue;
+        const dx = gem.position.x - marblePos.x;
+        const dz = gem.position.z - marblePos.z;
+        const dist = Math.sqrt(dx * dx + dz * dz);
+        if (dist < BOARD_CELL * 2.5 && dist > 0.01) {
+          // Move gem toward marble
+          const pull = Math.min(BOARD_CELL * 3 * dt / dist, 0.8);
+          gem.position.x -= dx * pull;
+          gem.position.z -= dz * pull;
+          // Check if gem is close enough to collect
+          if (dist < MARBLE_RADIUS * 2) {
+            const col = Math.floor((gem.userData?.origX ?? gem.position.x + bw / 2) / BOARD_CELL);
+            const row = Math.floor((gem.userData?.origZ ?? gem.position.z + bh / 2) / BOARD_CELL);
+            gem.visible = false;
+            gsm.gemsCollected++;
+            gsm.totalGems++;
+            gsm.score += 200;
+            magnetGems++;
+            audio.playGemCollect();
+            magnetPullTimer -= dt;
+            if (magnetPullTimer <= 0) { audio.playMagnetPull(); magnetPullTimer = 0.3; }
+            if (particles) particles.burst(gem.position.clone(), THEMES[gsm.currentTheme].gem, 8, 0.4, 0.5);
+            showToast(`Magnet Gem! +200`, 0.8);
+          }
+        }
+      }
+    }
+
     // ---- Tile interactions ----
     const currentTile = getTileAt(marblePos.x, marblePos.z, board.gridW, board.gridH, board.grid);
 
     // Hole: fall!
     if (currentTile === TILE.HOLE) {
-      gsm.lives--;
-      gsm.totalDeaths++;
-      gsm.noDeathStreak = 0;
-      audio.playFall();
-      if (particles) particles.burst(marblePos.clone(), 0xff3333, 15, 0.6, 0.8);
-      if (gsm.lives <= 0) {
-        changeState('gameover');
-      } else {
-        showToast(`Fell! Lives: ${gsm.lives}`, 1.5);
+      if (gsm.shieldActive) {
+        // Shield absorbs the fall
+        gsm.shieldActive = false;
+        gsm.shieldTimer = 0;
+        gsm.shieldsUsed++;
+        audio.playShieldBreak();
+        if (particles) particles.burst(marblePos.clone(), 0x4488ff, 20, 0.8, 1.0);
+        showToast('Shield absorbed fall!', 2);
         resetMarble();
+        checkAchievements();
+      } else {
+        gsm.lives--;
+        gsm.totalDeaths++;
+        gsm.noDeathStreak = 0;
+        audio.playFall();
+        if (particles) particles.burst(marblePos.clone(), 0xff3333, 15, 0.6, 0.8);
+        if (gsm.lives <= 0) {
+          changeState('gameover');
+        } else {
+          showToast(`Fell! Lives: ${gsm.lives}`, 1.5);
+          resetMarble();
+        }
       }
     }
 
@@ -781,6 +957,7 @@ function update() {
           gsm.gemsCollected++;
           gsm.totalGems++;
           gsm.score += 200;
+          if (gsm.magnetActive) magnetGems++;
           audio.playGemCollect();
           if (particles) particles.burst(gem.position.clone(), THEMES[gsm.currentTheme].gem, 12, 0.5, 0.6);
           showToast(`Gem! +200`, 1);
@@ -805,6 +982,46 @@ function update() {
         audio.playTeleport();
         if (particles) particles.burst(marblePos.clone(), 0xff00ff, 15, 0.6, 0.8);
         showToast('Warped!', 1);
+      }
+    }
+
+    // Power-up pickup
+    if (board.powerups) {
+      const bw = board.gridW * BOARD_CELL;
+      const bh = board.gridH * BOARD_CELL;
+      for (const pu of board.powerups) {
+        if (pu.collected) continue;
+        const dx = pu.mesh.position.x - marblePos.x;
+        const dz = pu.mesh.position.z - marblePos.z;
+        const dist = Math.sqrt(dx * dx + dz * dz);
+        if (dist < BOARD_CELL * 0.5) {
+          pu.collected = true;
+          pu.mesh.visible = false;
+          pu.glowMesh.visible = false;
+          board.grid[pu.row][pu.col] = TILE.EMPTY;
+          gsm.powerupsCollected++;
+          if (pu.type === TILE.POWERUP_SHIELD) {
+            gsm.shieldActive = true;
+            gsm.shieldTimer = 15;
+            audio.playPowerup('shield');
+            showToast('Shield Active! (15s)', 2);
+            if (particles) particles.burst(marblePos.clone(), 0x4488ff, 15, 0.6, 0.8);
+          } else if (pu.type === TILE.POWERUP_MAGNET) {
+            gsm.magnetActive = true;
+            gsm.magnetTimer = 10;
+            magnetGems = 0;
+            audio.playPowerup('magnet');
+            showToast('Magnet Active! (10s)', 2);
+            if (particles) particles.burst(marblePos.clone(), 0xffcc00, 15, 0.6, 0.8);
+          } else if (pu.type === TILE.POWERUP_SLOWMO) {
+            gsm.slowmoActive = true;
+            gsm.slowmoTimer = 8;
+            audio.playPowerup('slowmo');
+            showToast('Slow-Mo Active! (8s)', 2);
+            if (particles) particles.burst(marblePos.clone(), 0xcc44ff, 15, 0.6, 0.8);
+          }
+          checkAchievements();
+        }
       }
     }
 

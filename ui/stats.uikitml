@@ -1,0 +1,67 @@
+<panel backgroundColor="#0a0a2299" borderRadius="12" padding="20" gap="8">
+  <text id="stats-title" fontSize="22" fontWeight="bold" color="#00ffff" textAlign="center">Statistics</text>
+
+  <panel flexDirection="row" gap="16" marginTop="8">
+    <panel flex="1" gap="4">
+      <text fontSize="10" color="#00ffcc">Levels Cleared</text>
+      <text id="stat-clears" fontSize="16" fontWeight="bold" color="#ffffff">0</text>
+    </panel>
+    <panel flex="1" gap="4">
+      <text fontSize="10" color="#00ffcc">Total Gems</text>
+      <text id="stat-gems" fontSize="16" fontWeight="bold" color="#ffff00">0</text>
+    </panel>
+    <panel flex="1" gap="4">
+      <text fontSize="10" color="#00ffcc">Total Falls</text>
+      <text id="stat-deaths" fontSize="16" fontWeight="bold" color="#ff4444">0</text>
+    </panel>
+  </panel>
+
+  <panel flexDirection="row" gap="16" marginTop="4">
+    <panel flex="1" gap="4">
+      <text fontSize="10" color="#00ffcc">Perfect Runs</text>
+      <text id="stat-perfect" fontSize="16" fontWeight="bold" color="#44ff88">0</text>
+    </panel>
+    <panel flex="1" gap="4">
+      <text fontSize="10" color="#00ffcc">Fastest Clear</text>
+      <text id="stat-fastest" fontSize="16" fontWeight="bold" color="#ffffff">---</text>
+    </panel>
+    <panel flex="1" gap="4">
+      <text fontSize="10" color="#00ffcc">Best Streak</text>
+      <text id="stat-streak" fontSize="16" fontWeight="bold" color="#ffaa00">0</text>
+    </panel>
+  </panel>
+
+  <panel flexDirection="row" gap="16" marginTop="4">
+    <panel flex="1" gap="4">
+      <text fontSize="10" color="#00ffcc">Play Time</text>
+      <text id="stat-playtime" fontSize="16" fontWeight="bold" color="#ffffff">0m</text>
+    </panel>
+    <panel flex="1" gap="4">
+      <text fontSize="10" color="#00ffcc">Power-ups</text>
+      <text id="stat-powerups" fontSize="16" fontWeight="bold" color="#cc66ff">0</text>
+    </panel>
+    <panel flex="1" gap="4">
+      <text fontSize="10" color="#00ffcc">Shield Saves</text>
+      <text id="stat-shields" fontSize="16" fontWeight="bold" color="#4488ff">0</text>
+    </panel>
+  </panel>
+
+  <panel flexDirection="row" gap="16" marginTop="4">
+    <panel flex="1" gap="4">
+      <text fontSize="10" color="#00ffcc">Stars</text>
+      <text id="stat-stars" fontSize="16" fontWeight="bold" color="#ffdd00">0/54</text>
+    </panel>
+    <panel flex="1" gap="4">
+      <text fontSize="10" color="#00ffcc">Campaign</text>
+      <text id="stat-progress" fontSize="16" fontWeight="bold" color="#00ff88">0/18</text>
+    </panel>
+    <panel flex="1" gap="4">
+      <text fontSize="10" color="#00ffcc">Achievements</text>
+      <text id="stat-achievements" fontSize="16" fontWeight="bold" color="#ff88ff">0/30</text>
+    </panel>
+  </panel>
+
+  <panel id="btn-stats-back" backgroundColor="#222266" borderRadius="8" padding="8" marginTop="12" cursor="pointer" hover:backgroundColor="#333388">
+    <text fontSize="14" color="#ffffff" textAlign="center">Back</text>
+  </panel>
+</panel>

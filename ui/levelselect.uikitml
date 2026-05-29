@@ -89,6 +89,16 @@
       <div id="btn-lvl-10" class="lvl-btn" cursor="pointer"><span id="lvl-name-10" class="lvl-name">Level 11</span><span id="lvl-status-10" class="lvl-status">---</span></div>
       <div id="btn-lvl-11" class="lvl-btn" cursor="pointer"><span id="lvl-name-11" class="lvl-name">Level 12</span><span id="lvl-status-11" class="lvl-status">---</span></div>
     </div>
+    <div class="lvl-row">
+      <div id="btn-lvl-12" class="lvl-btn" cursor="pointer"><span id="lvl-name-12" class="lvl-name">Level 13</span><span id="lvl-status-12" class="lvl-status">---</span></div>
+      <div id="btn-lvl-13" class="lvl-btn" cursor="pointer"><span id="lvl-name-13" class="lvl-name">Level 14</span><span id="lvl-status-13" class="lvl-status">---</span></div>
+      <div id="btn-lvl-14" class="lvl-btn" cursor="pointer"><span id="lvl-name-14" class="lvl-name">Level 15</span><span id="lvl-status-14" class="lvl-status">---</span></div>
+    </div>
+    <div class="lvl-row">
+      <div id="btn-lvl-15" class="lvl-btn" cursor="pointer"><span id="lvl-name-15" class="lvl-name">Level 16</span><span id="lvl-status-15" class="lvl-status">---</span></div>
+      <div id="btn-lvl-16" class="lvl-btn" cursor="pointer"><span id="lvl-name-16" class="lvl-name">Level 17</span><span id="lvl-status-16" class="lvl-status">---</span></div>
+      <div id="btn-lvl-17" class="lvl-btn" cursor="pointer"><span id="lvl-name-17" class="lvl-name">Level 18</span><span id="lvl-status-17" class="lvl-status">---</span></div>
+    </div>
   </div>
   <div id="btn-lvl-back" class="back-btn" cursor="pointer">
     <span class="back-text">Back</span>

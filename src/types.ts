@@ -12,7 +12,10 @@ export const TILE = {
   TELE_A: 6,  // teleporter pair A
   TELE_B: 7,  // teleporter pair B
   ICE: 8,     // reduced friction zone
-  BOOST: 9,   // speed boost pad
+  BOOST: 9,         // speed boost pad
+  POWERUP_SHIELD: 10, // shield — survive one fall
+  POWERUP_MAGNET: 11, // magnet — attract nearby gems
+  POWERUP_SLOWMO: 12, // slow-motion — reduce speed for precision
 } as const;
 
 export type TileType = typeof TILE[keyof typeof TILE];
@@ -252,6 +255,138 @@ export const LEVELS: LevelDef[] = [
       [1,1,1,1,1,1,1,1,1,1,1,1,1],
     ],
   },
+  // --- New levels (13-18) with power-ups ---
+  {
+    name: 'Power Up',
+    par: 30,
+    gems: 4,
+    grid: [
+      [1,1,1,1,1,1,1,1,1],
+      [1,5,0,0,1,0,10,0,1],
+      [1,0,1,3,0,0,1,0,1],
+      [1,0,0,0,1,0,0,3,1],
+      [1,1,0,1,2,1,0,1,1],
+      [1,11,0,0,0,0,3,0,1],
+      [1,0,1,0,1,0,1,0,1],
+      [1,3,0,0,12,0,0,4,1],
+      [1,1,1,1,1,1,1,1,1],
+    ],
+  },
+  {
+    name: 'Frozen Fortress',
+    par: 35,
+    gems: 5,
+    grid: [
+      [1,1,1,1,1,1,1,1,1,1],
+      [1,5,8,8,1,0,0,10,0,1],
+      [1,0,1,8,1,0,1,1,3,1],
+      [1,3,0,8,0,0,8,8,0,1],
+      [1,1,0,1,1,8,8,0,1,1],
+      [1,0,0,2,0,8,1,0,0,1],
+      [1,11,1,1,0,0,0,3,0,1],
+      [1,0,0,3,0,1,0,1,0,1],
+      [1,3,0,0,12,0,0,0,4,1],
+      [1,1,1,1,1,1,1,1,1,1],
+    ],
+  },
+  {
+    name: 'Speed Trap',
+    par: 30,
+    gems: 5,
+    grid: [
+      [1,1,1,1,1,1,1,1,1,1],
+      [1,5,9,0,0,2,0,3,0,1],
+      [1,0,1,1,0,1,9,1,0,1],
+      [1,3,0,0,0,0,0,0,10,1],
+      [1,1,9,1,1,0,1,0,1,1],
+      [1,0,0,2,0,0,9,0,0,1],
+      [1,0,1,0,1,3,1,1,0,1],
+      [1,12,0,3,0,0,0,3,0,1],
+      [1,0,1,0,1,0,9,0,4,1],
+      [1,1,1,1,1,1,1,1,1,1],
+    ],
+  },
+  {
+    name: 'Warp Matrix',
+    par: 50,
+    gems: 6,
+    grid: [
+      [1,1,1,1,1,1,1,1,1,1,1],
+      [1,5,0,0,1,6,0,0,1,3,1],
+      [1,0,1,0,1,0,1,3,0,0,1],
+      [1,0,7,0,0,0,1,0,1,0,1],
+      [1,3,1,1,1,0,0,0,6,0,1],
+      [1,0,0,10,0,0,1,1,1,0,1],
+      [1,0,1,1,1,0,7,0,0,3,1],
+      [1,0,0,0,0,0,1,0,1,0,1],
+      [1,1,0,1,3,11,0,0,1,0,1],
+      [1,3,0,0,1,0,0,0,0,4,1],
+      [1,1,1,1,1,1,1,1,1,1,1],
+    ],
+  },
+  {
+    name: 'The Crucible',
+    par: 60,
+    gems: 7,
+    grid: [
+      [1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,5,0,0,2,0,3,8,8,0,0,1],
+      [1,0,1,0,1,0,1,8,1,0,3,1],
+      [1,10,0,0,0,0,0,0,0,0,1,1],
+      [1,1,1,0,1,6,1,0,1,0,0,1],
+      [1,0,2,0,3,0,0,0,9,0,1,1],
+      [1,3,1,0,1,0,1,1,1,0,0,1],
+      [1,0,0,0,0,0,7,0,0,0,3,1],
+      [1,0,1,1,1,2,1,0,1,11,0,1],
+      [1,0,12,0,3,0,0,0,1,0,0,1],
+      [1,3,0,0,1,0,0,0,0,0,4,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1],
+    ],
+  },
+  {
+    name: 'Infinity Run',
+    par: 90,
+    gems: 10,
+    grid: [
+      [1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,5,0,3,1,0,2,0,10,0,0,3,1],
+      [1,0,1,0,1,0,1,1,0,1,0,0,1],
+      [1,0,0,0,6,0,0,3,0,1,0,1,1],
+      [1,1,0,1,1,8,8,1,0,0,0,0,1],
+      [1,3,0,2,0,8,8,0,0,1,3,0,1],
+      [1,0,1,0,1,1,1,0,1,0,1,0,1],
+      [1,0,0,0,0,3,0,0,7,0,0,0,1],
+      [1,1,11,1,0,1,0,1,1,0,1,0,1],
+      [1,0,0,2,0,0,0,3,0,0,12,0,1],
+      [1,3,1,0,1,0,1,0,1,0,1,0,1],
+      [1,0,0,0,0,0,3,0,0,0,0,4,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1],
+    ],
+  },
+];
+
+// ---- Star rating ----
+export function calcStars(elapsedTime: number, par: number, gemsCollected: number, gemsTotal: number): number {
+  if (gemsCollected >= gemsTotal && elapsedTime < par) return 3;  // all gems + under par
+  if (elapsedTime < par) return 2;                                // under par
+  return 1;                                                       // completed
+}
+
+// ---- Marble skins ----
+export interface MarbleSkin {
+  id: string;
+  name: string;
+  color: number;
+  emissive: number;
+  glow: number;
+}
+
+export const MARBLE_SKINS: MarbleSkin[] = [
+  { id: 'default', name: 'Neon Cyan', color: 0x00ddff, emissive: 0x00ddff, glow: 0x00ffff },
+  { id: 'fire', name: 'Solar Flare', color: 0xff6633, emissive: 0xff4400, glow: 0xff8800 },
+  { id: 'ice', name: 'Frost Core', color: 0xaaddff, emissive: 0x88bbff, glow: 0xccddff },
+  { id: 'toxic', name: 'Toxic Pulse', color: 0x44ff66, emissive: 0x22ff44, glow: 0x66ff88 },
+  { id: 'royal', name: 'Royal Ember', color: 0xcc66ff, emissive: 0xaa44ff, glow: 0xdd88ff },
 ];
 
 // ---- Themes ----
@@ -302,6 +437,16 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   { id: 'theme_all', name: 'Decorator', desc: 'Try all board themes' },
   { id: 'streak_3', name: 'On a Roll', desc: 'Complete 3 levels in a row' },
   { id: 'total_20', name: 'Veteran', desc: 'Complete 20 levels total' },
+  { id: 'powerup_first', name: 'Powered Up', desc: 'Collect your first power-up' },
+  { id: 'shield_save', name: 'Guardian Angel', desc: 'Survive a fall with shield' },
+  { id: 'three_stars', name: 'Triple Star', desc: 'Get 3 stars on any level' },
+  { id: 'all_stars', name: 'Constellation', desc: 'Get 3 stars on all levels' },
+  { id: 'skin_all', name: 'Fashionista', desc: 'Try all marble skins' },
+  { id: 'gems_100', name: 'Gem Lord', desc: 'Collect 100 gems total' },
+  { id: 'magnet_gems', name: 'Attraction', desc: 'Collect 5 gems with magnet active' },
+  { id: 'slowmo_clear', name: 'Time Bender', desc: 'Clear a level with slow-mo active' },
+  { id: 'speed_5', name: 'Speed Freak', desc: 'Beat 5 levels under par' },
+  { id: 'total_50', name: 'Legend', desc: 'Complete 50 levels total' },
 ];
 
 // ---- State manager ----
@@ -322,6 +467,22 @@ export class GameStateManager {
   themesUsed = new Set<number>();
   currentTheme = 0;
 
+  // Power-up state
+  shieldActive = false;
+  magnetActive = false;
+  slowmoActive = false;
+  shieldTimer = 0;
+  magnetTimer = 0;
+  slowmoTimer = 0;
+  powerupsCollected = 0;
+  shieldsUsed = 0;
+
+  // Marble skin
+  currentSkin = 0;
+
+  // Star ratings per level
+  starRatings: number[] = new Array(LEVELS.length).fill(0);
+
   // persistent stats
   totalGems = 0;
   totalClears = 0;
@@ -330,6 +491,9 @@ export class GameStateManager {
   perfectLevels = 0;
   timeAttackClears = 0;
   noDeathStreak = 0;
+  totalPlayTime = 0;     // total seconds played
+  fastestClear = Infinity; // fastest level clear time
+  longestStreak = 0;      // longest win streak
   campaignProgress: boolean[] = new Array(LEVELS.length).fill(false);
   bestTimes: (number | null)[] = new Array(LEVELS.length).fill(null);
   unlockedAchievements: Set<string> = new Set();
@@ -351,6 +515,17 @@ export class GameStateManager {
       if (d.bestTimes) this.bestTimes = d.bestTimes;
       if (d.achievements) this.unlockedAchievements = new Set(d.achievements);
       if (d.currentTheme !== undefined) this.currentTheme = d.currentTheme;
+      if (d.currentSkin !== undefined) this.currentSkin = d.currentSkin;
+      if (d.starRatings) this.starRatings = d.starRatings;
+      if (d.totalPlayTime) this.totalPlayTime = d.totalPlayTime;
+      if (d.fastestClear && d.fastestClear !== Infinity) this.fastestClear = d.fastestClear;
+      if (d.longestStreak) this.longestStreak = d.longestStreak;
+      if (d.powerupsCollected) this.powerupsCollected = d.powerupsCollected;
+      if (d.shieldsUsed) this.shieldsUsed = d.shieldsUsed;
+      // Extend arrays if new levels added
+      while (this.campaignProgress.length < LEVELS.length) this.campaignProgress.push(false);
+      while (this.bestTimes.length < LEVELS.length) this.bestTimes.push(null);
+      while (this.starRatings.length < LEVELS.length) this.starRatings.push(0);
     } catch {}
   }
 
@@ -367,6 +542,13 @@ export class GameStateManager {
         bestTimes: this.bestTimes,
         achievements: Array.from(this.unlockedAchievements),
         currentTheme: this.currentTheme,
+        currentSkin: this.currentSkin,
+        starRatings: this.starRatings,
+        totalPlayTime: this.totalPlayTime,
+        fastestClear: this.fastestClear === Infinity ? null : this.fastestClear,
+        longestStreak: this.longestStreak,
+        powerupsCollected: this.powerupsCollected,
+        shieldsUsed: this.shieldsUsed,
       }));
     } catch {}
   }
@@ -375,6 +557,12 @@ export class GameStateManager {
     this.gemsCollected = 0;
     this.startTime = performance.now();
     this.elapsedTime = 0;
+    this.shieldActive = false;
+    this.magnetActive = false;
+    this.slowmoActive = false;
+    this.shieldTimer = 0;
+    this.magnetTimer = 0;
+    this.slowmoTimer = 0;
   }
 
   resetGame() {
@@ -385,6 +573,12 @@ export class GameStateManager {
     this.streak = 0;
     this.gemsCollected = 0;
     this.gemsTotal = 0;
+    this.shieldActive = false;
+    this.magnetActive = false;
+    this.slowmoActive = false;
+    this.shieldTimer = 0;
+    this.magnetTimer = 0;
+    this.slowmoTimer = 0;
   }
 }
 

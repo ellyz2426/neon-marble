@@ -63,8 +63,16 @@
   <span class="help-text">Pink/Purple Rings: Teleporters</span>
   <span class="help-text">Blue Tiles: Ice (less friction)</span>
   <span class="help-text">Green Tiles: Boost pads</span>
+  <span class="help-section">Power-Ups</span>
+  <span class="help-text">Blue Sphere: Shield (survive one fall)</span>
+  <span class="help-text">Gold Hex: Magnet (attract gems)</span>
+  <span class="help-text">Purple Knot: Slow-Mo (precision)</span>
+  <span class="help-section">Star Rating</span>
+  <span class="help-text">★: Complete the level</span>
+  <span class="help-text">★★: Beat the par time</span>
+  <span class="help-text">★★★: Beat par + collect all gems</span>
   <span class="help-section">Modes</span>
-  <span class="help-text">Campaign: 12 levels, 3 lives</span>
+  <span class="help-text">Campaign: 18 levels, 3 lives</span>
   <span class="help-text">Time Attack: Race the par time</span>
   <span class="help-text">Zen: No timer, just relax</span>
   <span class="help-text">Daily: New puzzle each day</span>

@@ -312,4 +312,62 @@ export class AudioManager {
     noise.start();
     noise.stop(ctx.currentTime + 0.08);
   }
+
+  playPowerup(type: 'shield' | 'magnet' | 'slowmo') {
+    const ctx = this.ensureCtx();
+    if (!this.sfxGain) return;
+    const baseFreq = type === 'shield' ? 440 : type === 'magnet' ? 550 : 660;
+    const color = type === 'shield' ? 'sine' as OscillatorType : type === 'magnet' ? 'triangle' as OscillatorType : 'square' as OscillatorType;
+    // Rising arpeggio
+    [baseFreq, baseFreq * 1.25, baseFreq * 1.5, baseFreq * 2].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      osc.type = color;
+      osc.frequency.value = freq;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0, ctx.currentTime + i * 0.06);
+      g.gain.linearRampToValueAtTime(0.1, ctx.currentTime + i * 0.06 + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.06 + 0.2);
+      osc.connect(g);
+      g.connect(this.sfxGain!);
+      osc.start(ctx.currentTime + i * 0.06);
+      osc.stop(ctx.currentTime + i * 0.06 + 0.2);
+    });
+  }
+
+  playShieldBreak() {
+    const ctx = this.ensureCtx();
+    if (!this.sfxGain) return;
+    const osc = ctx.createOscillator();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(800, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.3);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.15, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+    const f = ctx.createBiquadFilter();
+    f.type = 'lowpass';
+    f.frequency.setValueAtTime(2000, ctx.currentTime);
+    f.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.3);
+    osc.connect(f);
+    f.connect(g);
+    g.connect(this.sfxGain);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.35);
+  }
+
+  playMagnetPull() {
+    const ctx = this.ensureCtx();
+    if (!this.sfxGain) return;
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(600, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.1);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.06, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+    osc.connect(g);
+    g.connect(this.sfxGain);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.12);
+  }
 }
