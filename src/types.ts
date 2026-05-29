@@ -16,6 +16,8 @@ export const TILE = {
   POWERUP_SHIELD: 10, // shield — survive one fall
   POWERUP_MAGNET: 11, // magnet — attract nearby gems
   POWERUP_SLOWMO: 12, // slow-motion — reduce speed for precision
+  MOVING_WALL: 13,    // wall that oscillates between positions
+  GRAVITY_SWITCH: 14, // reverses tilt gravity for marble
 } as const;
 
 export type TileType = typeof TILE[keyof typeof TILE];
@@ -28,7 +30,8 @@ export interface LevelDef {
 }
 
 export type GameState = 'title' | 'modeselect' | 'levelselect' | 'playing' | 'paused'
-  | 'levelcomplete' | 'gameover' | 'leaderboard' | 'achievements' | 'settings' | 'help';
+  | 'levelcomplete' | 'gameover' | 'leaderboard' | 'achievements' | 'settings' | 'help'
+  | 'stats' | 'skins';
 export type GameMode = 'campaign' | 'timeattack' | 'zen' | 'daily';
 
 export const BOARD_CELL = 0.12;           // meters per grid cell
@@ -363,6 +366,119 @@ export const LEVELS: LevelDef[] = [
       [1,1,1,1,1,1,1,1,1,1,1,1,1],
     ],
   },
+  // --- Levels 19-24: Endgame gauntlet with moving walls and gravity switches ---
+  {
+    name: 'Shifting Walls',
+    par: 45,
+    gems: 5,
+    grid: [
+      [1,1,1,1,1,1,1,1,1,1],
+      [1,5,0,0,13,0,0,3,0,1],
+      [1,0,1,0,1,0,1,0,0,1],
+      [1,3,0,0,0,13,0,0,1,1],
+      [1,1,0,1,1,0,1,3,0,1],
+      [1,0,0,13,0,0,0,0,0,1],
+      [1,0,1,0,1,0,1,0,1,1],
+      [1,3,0,0,0,0,13,0,0,1],
+      [1,0,1,3,0,10,0,0,4,1],
+      [1,1,1,1,1,1,1,1,1,1],
+    ],
+  },
+  {
+    name: 'Gravity Flip',
+    par: 40,
+    gems: 5,
+    grid: [
+      [1,1,1,1,1,1,1,1,1,1],
+      [1,5,0,0,14,0,0,3,0,1],
+      [1,0,1,3,1,0,1,0,0,1],
+      [1,0,0,0,0,0,14,0,1,1],
+      [1,1,0,1,2,1,0,0,0,1],
+      [1,3,0,0,0,0,1,0,0,1],
+      [1,0,1,14,1,0,0,3,0,1],
+      [1,0,0,0,0,0,1,0,0,1],
+      [1,3,0,11,0,0,0,0,4,1],
+      [1,1,1,1,1,1,1,1,1,1],
+    ],
+  },
+  {
+    name: 'Chaos Engine',
+    par: 55,
+    gems: 7,
+    grid: [
+      [1,1,1,1,1,1,1,1,1,1,1],
+      [1,5,0,13,0,0,3,0,14,0,1],
+      [1,0,1,0,1,0,1,0,1,0,1],
+      [1,3,0,0,14,0,13,0,0,3,1],
+      [1,1,0,1,0,2,0,1,0,1,1],
+      [1,0,0,0,0,10,0,0,0,0,1],
+      [1,0,1,3,1,0,1,14,0,0,1],
+      [1,0,13,0,0,0,0,0,1,3,1],
+      [1,3,0,0,1,0,13,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,4,1],
+      [1,1,1,1,1,1,1,1,1,1,1],
+    ],
+  },
+  {
+    name: 'Frozen Gauntlet',
+    par: 65,
+    gems: 8,
+    grid: [
+      [1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,5,8,8,13,0,3,0,14,0,0,1],
+      [1,0,1,8,1,0,1,0,1,0,3,1],
+      [1,3,0,8,0,0,0,0,0,0,1,1],
+      [1,1,0,1,1,2,13,1,0,0,0,1],
+      [1,0,8,0,0,0,8,8,0,3,0,1],
+      [1,0,1,3,1,14,1,0,1,0,1,1],
+      [1,10,0,0,0,0,0,0,13,0,0,1],
+      [1,1,0,1,3,0,1,0,1,0,0,1],
+      [1,0,0,0,1,2,0,0,0,0,3,1],
+      [1,3,12,0,0,0,14,0,0,0,4,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1],
+    ],
+  },
+  {
+    name: 'Warp Nightmare',
+    par: 75,
+    gems: 9,
+    grid: [
+      [1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,5,0,0,13,0,6,3,0,14,0,0,1],
+      [1,0,1,3,1,0,1,0,1,0,1,0,1],
+      [1,0,0,0,0,14,0,0,13,0,0,3,1],
+      [1,1,0,1,1,0,1,2,1,0,1,0,1],
+      [1,3,0,0,7,0,0,0,0,0,0,0,1],
+      [1,0,1,0,1,13,1,0,1,14,1,0,1],
+      [1,0,13,0,0,0,3,0,0,0,0,3,1],
+      [1,3,1,0,1,0,1,6,1,0,1,0,1],
+      [1,0,0,0,0,14,0,0,0,0,13,0,1],
+      [1,0,1,3,1,0,1,0,1,3,0,0,1],
+      [1,11,0,0,7,0,0,0,0,0,0,4,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1],
+    ],
+  },
+  {
+    name: 'The Singularity',
+    par: 100,
+    gems: 12,
+    grid: [
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,5,0,3,13,0,0,2,0,14,0,3,0,1],
+      [1,0,1,0,1,0,1,1,0,1,0,0,0,1],
+      [1,0,14,0,0,0,3,0,0,13,0,1,3,1],
+      [1,3,1,1,1,0,1,0,1,0,1,0,0,1],
+      [1,0,0,0,6,0,0,0,13,0,0,0,1,1],
+      [1,0,1,0,1,2,1,14,1,0,1,3,0,1],
+      [1,10,0,0,0,0,3,0,0,0,0,0,0,1],
+      [1,1,13,1,0,1,1,0,1,0,1,0,1,1],
+      [1,3,0,0,0,0,7,0,14,0,13,0,0,1],
+      [1,0,1,0,1,3,1,0,1,0,1,3,0,1],
+      [1,0,14,0,0,0,0,0,0,0,0,0,0,1],
+      [1,3,0,12,1,0,3,0,1,0,3,0,4,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    ],
+  },
 ];
 
 // ---- Star rating ----
@@ -387,6 +503,9 @@ export const MARBLE_SKINS: MarbleSkin[] = [
   { id: 'ice', name: 'Frost Core', color: 0xaaddff, emissive: 0x88bbff, glow: 0xccddff },
   { id: 'toxic', name: 'Toxic Pulse', color: 0x44ff66, emissive: 0x22ff44, glow: 0x66ff88 },
   { id: 'royal', name: 'Royal Ember', color: 0xcc66ff, emissive: 0xaa44ff, glow: 0xdd88ff },
+  { id: 'gold', name: 'Molten Gold', color: 0xffd700, emissive: 0xffaa00, glow: 0xffdd44 },
+  { id: 'void', name: 'Void Walker', color: 0x331155, emissive: 0x6622aa, glow: 0x8844cc },
+  { id: 'chrome', name: 'Chrome Pulse', color: 0xcccccc, emissive: 0xffffff, glow: 0xeeeeff },
 ];
 
 // ---- Themes ----
@@ -447,6 +566,11 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   { id: 'slowmo_clear', name: 'Time Bender', desc: 'Clear a level with slow-mo active' },
   { id: 'speed_5', name: 'Speed Freak', desc: 'Beat 5 levels under par' },
   { id: 'total_50', name: 'Legend', desc: 'Complete 50 levels total' },
+  { id: 'gravity_master', name: 'Gravity Master', desc: 'Clear a gravity switch level' },
+  { id: 'wall_dodger', name: 'Wall Dodger', desc: 'Clear a moving wall level without dying' },
+  { id: 'endgame', name: 'Endgame', desc: 'Complete The Singularity' },
+  { id: 'all_24', name: 'Completionist', desc: 'Clear all 24 campaign levels' },
+  { id: 'skins_all', name: 'Collector', desc: 'Try all 8 marble skins' },
 ];
 
 // ---- State manager ----
@@ -479,6 +603,10 @@ export class GameStateManager {
 
   // Marble skin
   currentSkin = 0;
+  skinsUsed = new Set<number>();
+
+  // Gravity state (toggled by gravity switch tiles)
+  gravityFlipped = false;
 
   // Star ratings per level
   starRatings: number[] = new Array(LEVELS.length).fill(0);
@@ -522,6 +650,7 @@ export class GameStateManager {
       if (d.longestStreak) this.longestStreak = d.longestStreak;
       if (d.powerupsCollected) this.powerupsCollected = d.powerupsCollected;
       if (d.shieldsUsed) this.shieldsUsed = d.shieldsUsed;
+      if (d.skinsUsed) this.skinsUsed = new Set(d.skinsUsed);
       // Extend arrays if new levels added
       while (this.campaignProgress.length < LEVELS.length) this.campaignProgress.push(false);
       while (this.bestTimes.length < LEVELS.length) this.bestTimes.push(null);
@@ -549,6 +678,7 @@ export class GameStateManager {
         longestStreak: this.longestStreak,
         powerupsCollected: this.powerupsCollected,
         shieldsUsed: this.shieldsUsed,
+        skinsUsed: Array.from(this.skinsUsed),
       }));
     } catch {}
   }
@@ -563,6 +693,7 @@ export class GameStateManager {
     this.shieldTimer = 0;
     this.magnetTimer = 0;
     this.slowmoTimer = 0;
+    this.gravityFlipped = false;
   }
 
   resetGame() {

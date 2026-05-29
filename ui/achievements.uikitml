@@ -20,22 +20,22 @@
   .ach-row {
     display: flex;
     flex-direction: row;
-    margin-top: 0.3;
+    margin-top: 0.25;
     gap: 1;
   }
   .ach-name {
-    font-size: 1.2;
+    font-size: 1.1;
     color: #cc66ff;
     font-weight: bold;
     min-width: 12;
   }
   .ach-desc {
-    font-size: 1;
+    font-size: 0.9;
     color: #886699;
     min-width: 18;
   }
   .back-btn {
-    margin-top: 1;
+    margin-top: 0.8;
     padding-top: 0.5;
     padding-bottom: 0.5;
     padding-left: 2;
@@ -83,6 +83,11 @@
   <div class="ach-row"><span id="ach-name-27" class="ach-name">???</span><span id="ach-desc-27" class="ach-desc">Locked</span></div>
   <div class="ach-row"><span id="ach-name-28" class="ach-name">???</span><span id="ach-desc-28" class="ach-desc">Locked</span></div>
   <div class="ach-row"><span id="ach-name-29" class="ach-name">???</span><span id="ach-desc-29" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-30" class="ach-name">???</span><span id="ach-desc-30" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-31" class="ach-name">???</span><span id="ach-desc-31" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-32" class="ach-name">???</span><span id="ach-desc-32" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-33" class="ach-name">???</span><span id="ach-desc-33" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-34" class="ach-name">???</span><span id="ach-desc-34" class="ach-desc">Locked</span></div>
   <div id="btn-ach-back" class="back-btn" cursor="pointer">
     <span class="back-text">Back</span>
   </div>

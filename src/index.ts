@@ -23,7 +23,6 @@ const world = await World.create(container, {
 });
 
 const scene = world.scene;
-const camera = (world as any).render?.camera || (scene.children.find((c: any) => c.isCamera) as THREE.PerspectiveCamera);
 
 // ============================================================
 // Game State
@@ -137,7 +136,7 @@ function createPanel(name: PanelName, config: string, opts: {
       tolerance: 0.3,
     });
   } else if (opts.worldPos) {
-    entity.object3D.position.set(...opts.worldPos);
+    entity.object3D!.position.set(...opts.worldPos);
   }
   if (opts.screenSpace) {
     entity.addComponent(ScreenSpace, {
@@ -183,12 +182,12 @@ function setText(name: PanelName, id: string, text: string) {
   if (el) (el as any).text.value = text;
 }
 
-function showPanel(name: PanelName) {
+function showPanel(name: PanelName | 'playing') {
   panels.forEach((p, n) => {
     p.entity.object3D.visible = n === name || (name === 'playing' && n === 'hud');
   });
   // HUD is always visible during play
-  if (name === 'playing' as any) {
+  if (name === 'playing') {
     const hudP = panels.get('hud');
     if (hudP) hudP.entity.object3D.visible = true;
   }
@@ -236,11 +235,11 @@ function showUI(state: GameState) {
     case 'help':
       panels.get('help')!.entity.object3D.visible = true;
       break;
-    case 'stats' as GameState:
+    case 'stats':
       updateStatsPanel();
       panels.get('stats')!.entity.object3D.visible = true;
       break;
-    case 'skins' as GameState:
+    case 'skins':
       updateSkinsPanel();
       panels.get('skins')!.entity.object3D.visible = true;
       break;
@@ -271,10 +270,15 @@ function updateHUD() {
   if (gsm.magnetActive) puParts.push(`🧲${Math.ceil(gsm.magnetTimer)}s`);
   if (gsm.slowmoActive) puParts.push(`⏳${Math.ceil(gsm.slowmoTimer)}s`);
   setText('hud', 'hud-powerups', puParts.join(' '));
+  if (gsm.gravityFlipped) {
+    setText('hud', 'hud-gravity', '⬆ REVERSED');
+  } else {
+    setText('hud', 'hud-gravity', '');
+  }
 }
 
 function updateLevelSelect() {
-  for (let i = 0; i < 18; i++) {
+  for (let i = 0; i < 24; i++) {
     const cleared = gsm.campaignProgress[i] || false;
     const best = gsm.bestTimes[i];
     const stars = gsm.starRatings[i] || 0;
@@ -336,6 +340,11 @@ function updateSkinsPanel() {
     setText('skins', `skin-name-${i}`, skin.name);
     setText('skins', `skin-status-${i}`, selected ? '● EQUIPPED' : '○ Select');
   }
+  // Clear extra slots if panel has more
+  for (let i = MARBLE_SKINS.length; i < 10; i++) {
+    setText('skins', `skin-name-${i}`, '');
+    setText('skins', `skin-status-${i}`, '');
+  }
 }
 
 // ============================================================
@@ -380,6 +389,11 @@ function checkAchievements() {
   check('slowmo_clear', gsm.slowmoActive && gsm.state === 'levelcomplete');
   check('speed_5', gsm.bestTimes.filter((t, i) => t !== null && t < (LEVELS[i]?.par || 999)).length >= 5);
   check('total_50', gsm.totalClears >= 50);
+  check('gravity_master', gsm.level >= 19 && gsm.level <= 23 && gsm.state === 'levelcomplete');
+  check('wall_dodger', gsm.level >= 18 && gsm.state === 'levelcomplete' && gsm.lives === 3);
+  check('endgame', gsm.campaignProgress[23] === true);
+  check('all_24', gsm.campaignProgress.filter(Boolean).length >= 24);
+  check('skins_all', gsm.skinsUsed.size >= MARBLE_SKINS.length);
 
   for (const id of newlyUnlocked) {
     const ach = ACHIEVEMENTS.find(a => a.id === id);
@@ -581,8 +595,8 @@ function setupUIEvents() {
   titleDoc?.getElementById('btn-achievements')?.addEventListener('click', () => { audio.playButton(); changeState('achievements'); });
   titleDoc?.getElementById('btn-settings')?.addEventListener('click', () => { audio.playButton(); changeState('settings'); });
   titleDoc?.getElementById('btn-help')?.addEventListener('click', () => { audio.playButton(); changeState('help'); });
-  titleDoc?.getElementById('btn-stats')?.addEventListener('click', () => { audio.playButton(); changeState('stats' as GameState); });
-  titleDoc?.getElementById('btn-skins')?.addEventListener('click', () => { audio.playButton(); changeState('skins' as GameState); });
+  titleDoc?.getElementById('btn-stats')?.addEventListener('click', () => { audio.playButton(); changeState('stats'); });
+  titleDoc?.getElementById('btn-skins')?.addEventListener('click', () => { audio.playButton(); changeState('skins'); });
 
   // Mode select
   const modeDoc = getDoc('modeselect');
@@ -602,7 +616,7 @@ function setupUIEvents() {
 
   // Level select
   const lvlDoc = getDoc('levelselect');
-  for (let i = 0; i < 18; i++) {
+  for (let i = 0; i < 24; i++) {
     const idx = i;
     lvlDoc?.getElementById(`btn-lvl-${i}`)?.addEventListener('click', () => {
       audio.playButton();
@@ -678,9 +692,11 @@ function setupUIEvents() {
     skinsDoc?.getElementById(`btn-skin-${i}`)?.addEventListener('click', () => {
       audio.playButton();
       gsm.currentSkin = idx;
+      gsm.skinsUsed.add(idx);
       updateSkinsPanel();
       gsm.save();
       showToast(`Equipped: ${MARBLE_SKINS[idx].name}`, 1.5);
+      checkAchievements();
     });
   }
 }
@@ -688,7 +704,8 @@ function setupUIEvents() {
 // ============================================================
 // Main Game Loop
 // ============================================================
-const _tmpV3 = new THREE.Vector3();
+
+let gravitySwitchCooldown = 0;
 
 function update() {
   const now = performance.now();
@@ -772,10 +789,11 @@ function update() {
     boardEntity!.rotation.x = boardTilt.y;
     boardEntity!.rotation.z = -boardTilt.x;
 
-    // ---- Physics: marble on tilted board ----
-    // Gravity component on tilted surface
-    const gx = Math.sin(boardTilt.x) * GRAVITY;
-    const gz = Math.sin(boardTilt.y) * GRAVITY;
+    // ---- Gravity ----
+    // Gravity component on tilted surface (flipped if gravity switch active)
+    const gravMul = gsm.gravityFlipped ? -1 : 1;
+    const gx = Math.sin(boardTilt.x) * GRAVITY * gravMul;
+    const gz = Math.sin(boardTilt.y) * GRAVITY * gravMul;
 
     // Check current tile
     const tileType = getTileAt(marblePos.x, marblePos.z, board.gridW, board.gridH, board.grid);
@@ -1021,6 +1039,64 @@ function update() {
             if (particles) particles.burst(marblePos.clone(), 0xcc44ff, 15, 0.6, 0.8);
           }
           checkAchievements();
+        }
+      }
+    }
+
+    // Gravity switch detection
+    if (gravitySwitchCooldown > 0) gravitySwitchCooldown -= dt;
+    if (board.gravitySwitches && gravitySwitchCooldown <= 0) {
+      for (const gs of board.gravitySwitches) {
+        const bw = board.gridW * BOARD_CELL;
+        const bh = board.gridH * BOARD_CELL;
+        const gx = gs.col * BOARD_CELL - bw / 2 + BOARD_CELL / 2;
+        const gz = gs.row * BOARD_CELL - bh / 2 + BOARD_CELL / 2;
+        const dx = gx - marblePos.x;
+        const dz = gz - marblePos.z;
+        const dist = Math.sqrt(dx * dx + dz * dz);
+        if (dist < BOARD_CELL * 0.4) {
+          gsm.gravityFlipped = !gsm.gravityFlipped;
+          gravitySwitchCooldown = 0.8;
+          audio.playTeleport(); // reuse teleport sound
+          showToast(gsm.gravityFlipped ? 'Gravity Reversed!' : 'Gravity Normal!', 1.5);
+          if (particles) {
+            particles.burst(
+              new THREE.Vector3(marblePos.x, marblePos.y, marblePos.z),
+              0x00ff00, 12, 0.5, 0.6
+            );
+          }
+        }
+      }
+    }
+
+    // Moving wall collision check
+    if (board.movingWalls) {
+      for (const mw of board.movingWalls) {
+        const wPos = mw.mesh.position;
+        const hw = BOARD_CELL * 0.475;
+        // Closest point on moving wall box to marble center
+        const cx = Math.max(wPos.x - hw, Math.min(marblePos.x, wPos.x + hw));
+        const cz = Math.max(wPos.z - hw, Math.min(marblePos.z, wPos.z + hw));
+        const dx = marblePos.x - cx;
+        const dz = marblePos.z - cz;
+        const dist = Math.sqrt(dx * dx + dz * dz);
+        if (dist < MARBLE_RADIUS && dist > 0.0001) {
+          const overlap = MARBLE_RADIUS - dist;
+          marblePos.x += (dx / dist) * overlap;
+          marblePos.z += (dz / dist) * overlap;
+          if (Math.abs(dx) > Math.abs(dz)) {
+            marbleVel.x = -marbleVel.x * BOUNCE_DAMP;
+          } else {
+            marbleVel.y = -marbleVel.y * BOUNCE_DAMP;
+          }
+          const spd = Math.sqrt(marbleVel.x * marbleVel.x + marbleVel.y * marbleVel.y);
+          audio.playBounce(spd);
+          if (particles) {
+            particles.burst(
+              new THREE.Vector3(marblePos.x, marblePos.y, marblePos.z),
+              0xff8800, 5, 0.3, 0.4
+            );
+          }
         }
       }
     }

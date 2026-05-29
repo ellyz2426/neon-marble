@@ -21,6 +21,8 @@ export interface BoardObjects {
   iceTiles: THREE.Mesh[];
   boostTiles: { mesh: THREE.Mesh; dir: THREE.Vector2 }[];
   powerups: { mesh: THREE.Mesh; glowMesh: THREE.Mesh; type: number; col: number; row: number; collected: boolean }[];
+  movingWalls: { mesh: THREE.Mesh; edgeMesh: THREE.LineSegments; col: number; row: number; axis: 'x' | 'z'; speed: number; range: number; basePos: THREE.Vector3 }[];
+  gravitySwitches: { mesh: THREE.Mesh; glowMesh: THREE.Mesh; col: number; row: number; cooldown: number }[];
   gridW: number;
   gridH: number;
   grid: number[][];
@@ -153,7 +155,21 @@ export function buildBoard(level: LevelDef, themeIdx: number): BoardObjects {
   });
   const puGlowGeo = new THREE.SphereGeometry(BOARD_CELL * 0.3, 8, 8);
 
+  // Moving wall and gravity switch materials
+  const movWallMat = new THREE.MeshStandardMaterial({
+    color: 0xff8800, emissive: 0xff4400, emissiveIntensity: 0.5,
+    roughness: 0.3, metalness: 0.6,
+  });
+  const gravSwitchGeo = new THREE.CylinderGeometry(BOARD_CELL * 0.25, BOARD_CELL * 0.25, 0.01, 8);
+  const gravSwitchMat = new THREE.MeshStandardMaterial({
+    color: 0x00ff00, emissive: 0x00ff00, emissiveIntensity: 0.6,
+    roughness: 0.2, metalness: 0.8,
+  });
+  const gravGlowGeo = new THREE.SphereGeometry(BOARD_CELL * 0.35, 8, 8);
+
   const powerups: { mesh: THREE.Mesh; glowMesh: THREE.Mesh; type: number; col: number; row: number; collected: boolean }[] = [];
+  const movingWalls: { mesh: THREE.Mesh; edgeMesh: THREE.LineSegments; col: number; row: number; axis: 'x' | 'z'; speed: number; range: number; basePos: THREE.Vector3 }[] = [];
+  const gravitySwitches: { mesh: THREE.Mesh; glowMesh: THREE.Mesh; col: number; row: number; cooldown: number }[] = [];
 
   for (let r = 0; r < gridH; r++) {
     for (let c = 0; c < gridW; c++) {
@@ -303,6 +319,45 @@ export function buildBoard(level: LevelDef, themeIdx: number): BoardObjects {
           powerups.push({ mesh: pm, glowMesh: pg, type: TILE.POWERUP_SLOWMO, col: c, row: r, collected: false });
           break;
         }
+        case TILE.MOVING_WALL: {
+          const mw = new THREE.Mesh(wallGeo, movWallMat.clone());
+          mw.position.set(x, WALL_HEIGHT / 2, z);
+          group.add(mw);
+          const mwe = new THREE.LineSegments(
+            new THREE.EdgesGeometry(wallGeo),
+            new THREE.LineBasicMaterial({ color: 0xff8800, transparent: true, opacity: 0.7 })
+          );
+          mwe.position.copy(mw.position);
+          group.add(mwe);
+          // Alternate axis based on position for variety
+          const axis = (c + r) % 2 === 0 ? 'x' : 'z';
+          movingWalls.push({
+            mesh: mw, edgeMesh: mwe, col: c, row: r,
+            axis, speed: 0.8 + (c % 3) * 0.3, range: BOARD_CELL * 0.9,
+            basePos: new THREE.Vector3(x, WALL_HEIGHT / 2, z),
+          });
+          break;
+        }
+        case TILE.GRAVITY_SWITCH: {
+          const gs = new THREE.Mesh(gravSwitchGeo, gravSwitchMat.clone());
+          gs.position.set(x, 0.005, z);
+          group.add(gs);
+          const gg = new THREE.Mesh(gravGlowGeo, new THREE.MeshBasicMaterial({
+            color: 0x00ff00, transparent: true, opacity: 0.2,
+          }));
+          gg.position.set(x, 0.02, z);
+          group.add(gg);
+          // Arrow indicator
+          const arrow = new THREE.Mesh(
+            new THREE.ConeGeometry(BOARD_CELL * 0.1, BOARD_CELL * 0.15, 4),
+            new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.5 })
+          );
+          arrow.position.set(x, 0.03, z);
+          arrow.rotation.x = Math.PI; // pointing down (gravity)
+          group.add(arrow);
+          gravitySwitches.push({ mesh: gs, glowMesh: gg, col: c, row: r, cooldown: 0 });
+          break;
+        }
       }
     }
   }
@@ -310,7 +365,7 @@ export function buildBoard(level: LevelDef, themeIdx: number): BoardObjects {
   return {
     group, floor, walls, holes, gems, goalMesh,
     startPos, goalPos, teleA, teleB, teleMeshA, teleMeshB,
-    iceTiles, boostTiles, powerups, gridW, gridH, grid
+    iceTiles, boostTiles, powerups, movingWalls, gravitySwitches, gridW, gridH, grid
   };
 }
 
@@ -410,5 +465,22 @@ export function animateBoard(board: BoardObjects, time: number) {
       const gs = 1 + Math.sin(time * 4) * 0.15;
       pu.glowMesh.scale.set(gs, gs, gs);
     }
+  }
+  // Moving walls: oscillate along axis
+  for (const mw of board.movingWalls) {
+    const offset = Math.sin(time * mw.speed) * mw.range;
+    if (mw.axis === 'x') {
+      mw.mesh.position.x = mw.basePos.x + offset;
+      mw.edgeMesh.position.x = mw.basePos.x + offset;
+    } else {
+      mw.mesh.position.z = mw.basePos.z + offset;
+      mw.edgeMesh.position.z = mw.basePos.z + offset;
+    }
+  }
+  // Gravity switches: pulse glow
+  for (const gs of board.gravitySwitches) {
+    const pulse = 0.15 + Math.sin(time * 3 + gs.col * 2) * 0.1;
+    (gs.glowMesh.material as THREE.MeshBasicMaterial).opacity = pulse;
+    gs.glowMesh.scale.setScalar(1 + Math.sin(time * 2) * 0.15);
   }
 }
