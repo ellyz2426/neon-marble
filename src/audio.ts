@@ -1,14 +1,25 @@
 // audio.ts — Procedural Web Audio manager for Neon Marble VR
+// Zone-based synthwave music with crossfade transitions
+
+interface ZoneTrack {
+  oscs: OscillatorNode[];
+  gains: GainNode[];
+  masterGain: GainNode;
+}
 
 export class AudioManager {
   private ctx: AudioContext | null = null;
   private master: GainNode | null = null;
   private sfxGain: GainNode | null = null;
   private musicGain: GainNode | null = null;
-  private musicOsc: OscillatorNode | null = null;
-  private musicLfo: OscillatorNode | null = null;
-  private padOsc: OscillatorNode | null = null;
   private musicStarted = false;
+
+  // Zone music system
+  private currentZone = -1;
+  private currentTrack: ZoneTrack | null = null;
+  private fadingTrack: ZoneTrack | null = null;
+  private fadeTimer = 0;
+  private fadeDuration = 1.5; // seconds for crossfade
 
   sfxVolume = 0.7;
   musicVolume = 0.3;
@@ -40,46 +51,195 @@ export class AudioManager {
     const ctx = this.ensureCtx();
     if (!this.musicGain) return;
     this.musicStarted = true;
-
-    // Ambient drone — 55Hz sine base + triangle pad + LFO
-    this.musicOsc = ctx.createOscillator();
-    this.musicOsc.type = 'sine';
-    this.musicOsc.frequency.value = 55;
-    const droneGain = ctx.createGain();
-    droneGain.gain.value = 0.15;
-    this.musicOsc.connect(droneGain);
-    droneGain.connect(this.musicGain);
-    this.musicOsc.start();
-
-    this.padOsc = ctx.createOscillator();
-    this.padOsc.type = 'triangle';
-    this.padOsc.frequency.value = 82.5;
-    const padGain = ctx.createGain();
-    padGain.gain.value = 0.08;
-    this.padOsc.connect(padGain);
-    padGain.connect(this.musicGain);
-    this.padOsc.start();
-
-    // LFO modulating drone volume
-    this.musicLfo = ctx.createOscillator();
-    this.musicLfo.type = 'sine';
-    this.musicLfo.frequency.value = 0.15;
-    const lfoGain = ctx.createGain();
-    lfoGain.gain.value = 0.04;
-    this.musicLfo.connect(lfoGain);
-    lfoGain.connect(droneGain.gain);
-    this.musicLfo.start();
+    this.setZone(0); // Start with Classic zone
   }
 
   stopMusic() {
-    try { this.musicOsc?.stop(); } catch {}
-    try { this.padOsc?.stop(); } catch {}
-    try { this.musicLfo?.stop(); } catch {}
-    this.musicOsc = null;
-    this.padOsc = null;
-    this.musicLfo = null;
+    this.stopTrack(this.currentTrack);
+    this.stopTrack(this.fadingTrack);
+    this.currentTrack = null;
+    this.fadingTrack = null;
+    this.currentZone = -1;
     this.musicStarted = false;
   }
+
+  private stopTrack(track: ZoneTrack | null) {
+    if (!track) return;
+    try {
+      for (const osc of track.oscs) { try { osc.stop(); } catch {} }
+      track.masterGain.disconnect();
+    } catch {}
+  }
+
+  // Create a zone-specific synthwave track
+  private createZoneTrack(zone: number): ZoneTrack {
+    const ctx = this.ensureCtx();
+    const trackGain = ctx.createGain();
+    trackGain.gain.value = 0; // Start silent for crossfade
+    trackGain.connect(this.musicGain!);
+
+    const oscs: OscillatorNode[] = [];
+    const gains: GainNode[] = [];
+
+    // Zone-specific musical parameters
+    const configs = [
+      // Zone 0 - Classic: Calm, atmospheric — C minor ambient
+      {
+        layers: [
+          { type: 'sine' as OscillatorType, freq: 65.41, gain: 0.12, detune: 0 },      // C2 bass drone
+          { type: 'triangle' as OscillatorType, freq: 130.81, gain: 0.06, detune: 3 },  // C3 octave
+          { type: 'sine' as OscillatorType, freq: 155.56, gain: 0.05, detune: -2 },     // Eb3 minor color
+          { type: 'sine' as OscillatorType, freq: 196.0, gain: 0.04, detune: 5 },       // G3 fifth
+        ],
+        lfoRate: 0.12,
+        lfoDepth: 0.03,
+        filterFreq: 800,
+      },
+      // Zone 1 - Power-Up: Driving, energetic — F minor
+      {
+        layers: [
+          { type: 'sawtooth' as OscillatorType, freq: 87.31, gain: 0.08, detune: 0 },   // F2 bass
+          { type: 'square' as OscillatorType, freq: 174.61, gain: 0.04, detune: 7 },    // F3
+          { type: 'triangle' as OscillatorType, freq: 207.65, gain: 0.05, detune: -3 }, // Ab3 minor
+          { type: 'sine' as OscillatorType, freq: 261.63, gain: 0.04, detune: 5 },      // C4 fifth
+          { type: 'square' as OscillatorType, freq: 349.23, gain: 0.02, detune: -5 },   // F4 octave shimmer
+        ],
+        lfoRate: 0.25,
+        lfoDepth: 0.04,
+        filterFreq: 1200,
+      },
+      // Zone 2 - Endgame: Intense, dark — D minor
+      {
+        layers: [
+          { type: 'sawtooth' as OscillatorType, freq: 73.42, gain: 0.10, detune: 0 },   // D2 bass
+          { type: 'sawtooth' as OscillatorType, freq: 146.83, gain: 0.05, detune: -8 }, // D3 detuned
+          { type: 'triangle' as OscillatorType, freq: 174.61, gain: 0.06, detune: 3 },  // F3 minor
+          { type: 'sine' as OscillatorType, freq: 220.0, gain: 0.04, detune: 0 },       // A3 fifth
+          { type: 'sawtooth' as OscillatorType, freq: 293.66, gain: 0.02, detune: 12 }, // D4 high
+        ],
+        lfoRate: 0.35,
+        lfoDepth: 0.05,
+        filterFreq: 1000,
+      },
+      // Zone 3 - Bumper: Funky, bouncy — G minor
+      {
+        layers: [
+          { type: 'square' as OscillatorType, freq: 98.0, gain: 0.08, detune: 0 },      // G2 bass
+          { type: 'triangle' as OscillatorType, freq: 196.0, gain: 0.06, detune: 5 },   // G3
+          { type: 'sine' as OscillatorType, freq: 233.08, gain: 0.05, detune: -4 },     // Bb3 minor
+          { type: 'square' as OscillatorType, freq: 293.66, gain: 0.03, detune: 8 },    // D4 fifth
+        ],
+        lfoRate: 0.4,
+        lfoDepth: 0.06,
+        filterFreq: 1500,
+      },
+      // Zone 4 - Master: Epic, full — E minor
+      {
+        layers: [
+          { type: 'sawtooth' as OscillatorType, freq: 82.41, gain: 0.10, detune: 0 },   // E2 bass
+          { type: 'sawtooth' as OscillatorType, freq: 164.81, gain: 0.06, detune: -5 }, // E3
+          { type: 'triangle' as OscillatorType, freq: 196.0, gain: 0.05, detune: 3 },   // G3 minor
+          { type: 'sine' as OscillatorType, freq: 246.94, gain: 0.04, detune: 0 },      // B3 fifth
+          { type: 'square' as OscillatorType, freq: 329.63, gain: 0.03, detune: 7 },    // E4 octave
+          { type: 'sine' as OscillatorType, freq: 493.88, gain: 0.02, detune: -3 },     // B4 high shimmer
+        ],
+        lfoRate: 0.2,
+        lfoDepth: 0.04,
+        filterFreq: 1400,
+      },
+    ];
+
+    const cfg = configs[zone] || configs[0];
+
+    // Shared filter for the zone
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = cfg.filterFreq;
+    filter.Q.value = 1.5;
+    filter.connect(trackGain);
+
+    // Create oscillator layers
+    for (const layer of cfg.layers) {
+      const osc = ctx.createOscillator();
+      osc.type = layer.type;
+      osc.frequency.value = layer.freq;
+      osc.detune.value = layer.detune;
+      const g = ctx.createGain();
+      g.gain.value = layer.gain;
+      osc.connect(g);
+      g.connect(filter);
+      osc.start();
+      oscs.push(osc);
+      gains.push(g);
+    }
+
+    // LFO modulating filter cutoff for movement
+    const lfo = ctx.createOscillator();
+    lfo.type = 'sine';
+    lfo.frequency.value = cfg.lfoRate;
+    const lfoGain = ctx.createGain();
+    lfoGain.gain.value = cfg.filterFreq * cfg.lfoDepth;
+    lfo.connect(lfoGain);
+    lfoGain.connect(filter.frequency);
+    lfo.start();
+    oscs.push(lfo);
+    gains.push(lfoGain);
+
+    // Second LFO for slow volume swell
+    const lfo2 = ctx.createOscillator();
+    lfo2.type = 'sine';
+    lfo2.frequency.value = cfg.lfoRate * 0.5;
+    const lfo2Gain = ctx.createGain();
+    lfo2Gain.gain.value = 0.02;
+    lfo2.connect(lfo2Gain);
+    // Modulate the first oscillator's gain for breathing effect
+    if (gains.length > 0) {
+      lfo2Gain.connect(gains[0].gain);
+    }
+    lfo2.start();
+    oscs.push(lfo2);
+    gains.push(lfo2Gain);
+
+    return { oscs, gains, masterGain: trackGain };
+  }
+
+  // Set the active music zone with crossfade
+  setZone(zone: number) {
+    if (!this.musicStarted) return;
+    if (zone === this.currentZone) return;
+    const ctx = this.ensureCtx();
+    if (!this.musicGain) return;
+
+    // Stop any existing fade
+    if (this.fadingTrack) {
+      this.stopTrack(this.fadingTrack);
+      this.fadingTrack = null;
+    }
+
+    // Move current track to fading out
+    if (this.currentTrack) {
+      this.fadingTrack = this.currentTrack;
+      // Fade out old track
+      this.fadingTrack.masterGain.gain.setValueAtTime(
+        this.fadingTrack.masterGain.gain.value, ctx.currentTime
+      );
+      this.fadingTrack.masterGain.gain.linearRampToValueAtTime(0, ctx.currentTime + this.fadeDuration);
+      // Schedule cleanup
+      const oldTrack = this.fadingTrack;
+      setTimeout(() => {
+        this.stopTrack(oldTrack);
+        if (this.fadingTrack === oldTrack) this.fadingTrack = null;
+      }, this.fadeDuration * 1000 + 100);
+    }
+
+    // Create and fade in new track
+    this.currentZone = zone;
+    this.currentTrack = this.createZoneTrack(zone);
+    this.currentTrack.masterGain.gain.setValueAtTime(0, ctx.currentTime);
+    this.currentTrack.masterGain.gain.linearRampToValueAtTime(1, ctx.currentTime + this.fadeDuration);
+  }
+
+  getCurrentZone(): number { return this.currentZone; }
 
   // --- SFX ---
 
@@ -318,7 +478,6 @@ export class AudioManager {
     if (!this.sfxGain) return;
     const baseFreq = type === 'shield' ? 440 : type === 'magnet' ? 550 : 660;
     const color = type === 'shield' ? 'sine' as OscillatorType : type === 'magnet' ? 'triangle' as OscillatorType : 'square' as OscillatorType;
-    // Rising arpeggio
     [baseFreq, baseFreq * 1.25, baseFreq * 1.5, baseFreq * 2].forEach((freq, i) => {
       const osc = ctx.createOscillator();
       osc.type = color;
@@ -374,7 +533,6 @@ export class AudioManager {
   playBumper() {
     const ctx = this.ensureCtx();
     if (!this.sfxGain) return;
-    // Springy boing — sine sweep up then down
     const osc = ctx.createOscillator();
     osc.type = 'sine';
     osc.frequency.setValueAtTime(200, ctx.currentTime);
@@ -387,7 +545,6 @@ export class AudioManager {
     g.connect(this.sfxGain);
     osc.start();
     osc.stop(ctx.currentTime + 0.25);
-    // Sub-bass thump
     const sub = ctx.createOscillator();
     sub.type = 'sine';
     sub.frequency.value = 80;
@@ -403,7 +560,6 @@ export class AudioManager {
   playCombo(count: number) {
     const ctx = this.ensureCtx();
     if (!this.sfxGain) return;
-    // Rising pitch based on combo count
     const baseFreq = 600 + count * 100;
     [baseFreq, baseFreq * 1.25, baseFreq * 1.5].forEach((freq, i) => {
       const osc = ctx.createOscillator();
@@ -417,6 +573,25 @@ export class AudioManager {
       g.connect(this.sfxGain!);
       osc.start(ctx.currentTime + i * 0.05);
       osc.stop(ctx.currentTime + i * 0.05 + 0.12);
+    });
+  }
+
+  playSplitGood() {
+    const ctx = this.ensureCtx();
+    if (!this.sfxGain) return;
+    // Quick ascending chime for PB split
+    [660, 880].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0, ctx.currentTime + i * 0.06);
+      g.gain.linearRampToValueAtTime(0.08, ctx.currentTime + i * 0.06 + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.06 + 0.12);
+      osc.connect(g);
+      g.connect(this.sfxGain!);
+      osc.start(ctx.currentTime + i * 0.06);
+      osc.stop(ctx.currentTime + i * 0.06 + 0.12);
     });
   }
 }

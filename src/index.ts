@@ -7,7 +7,7 @@ import {
   BOARD_CELL, MARBLE_RADIUS, MAX_TILT, TILT_SPEED, GRAVITY,
   FRICTION, ICE_FRICTION, BOUNCE_DAMP, BOOST_IMPULSE, MARBLE_MAX_SPEED,
   addLeaderboard, getLeaderboard, getDailySeed, seededRandom,
-  calcStars, MARBLE_SKINS,
+  calcStars, MARBLE_SKINS, getLevelZone, ZONE_NAMES,
 } from './types.js';
 import { buildBoard, gridToLocal, getTileAt, checkWallCollision, animateBoard, BoardObjects } from './board.js';
 import { AudioManager } from './audio.js';
@@ -112,7 +112,7 @@ decos = createHolodeckDecorations(scene, 14);
 // ============================================================
 type PanelName = 'title' | 'modeselect' | 'levelselect' | 'hud' | 'pause' | 'levelcomplete'
   | 'gameover' | 'leaderboard' | 'achievements' | 'settings' | 'help' | 'toast' | 'countdown'
-  | 'stats' | 'skins';
+  | 'stats' | 'skins' | 'speedrun';
 
 const panels: Map<PanelName, { entity: any; doc: UIKitDocument | null }> = new Map();
 
@@ -163,6 +163,7 @@ createPanel('toast', '/ui/toast.json', { maxWidth: 0.3, maxHeight: 0.08, followe
 createPanel('countdown', '/ui/countdown.json', { maxWidth: 0.3, maxHeight: 0.15, follower: true, offsetPos: [0, 0, -0.5] });
 createPanel('stats', '/ui/stats.json', { maxWidth: 0.8, maxHeight: 0.8, worldPos: [0, 1.5, -2] });
 createPanel('skins', '/ui/skins.json', { maxWidth: 0.7, maxHeight: 0.6, worldPos: [0, 1.5, -2] });
+createPanel('speedrun', '/ui/speedrun.json', { maxWidth: 0.8, maxHeight: 0.8, worldPos: [0, 1.5, -2] });
 
 // ============================================================
 // UI Helpers
@@ -244,6 +245,10 @@ function showUI(state: GameState) {
       updateSkinsPanel();
       panels.get('skins')!.entity.object3D.visible = true;
       break;
+    case 'speedrun':
+      updateSpeedrunPanel();
+      panels.get('speedrun')!.entity.object3D.visible = true;
+      break;
   }
 }
 
@@ -282,6 +287,29 @@ function updateHUD() {
   } else {
     setText('hud', 'hud-combo', '');
   }
+  // Speed run split delta display
+  if (gsm.speedrunActive && gsm.mode === 'campaign') {
+    const pbSplit = gsm.bestCampaignSplits[gsm.level];
+    if (pbSplit !== null) {
+      const delta = gsm.elapsedTime - pbSplit;
+      const sign = delta >= 0 ? '+' : '';
+      const color = delta < 0 ? '🟢' : '🔴';
+      setText('hud', 'hud-split', `${color} ${sign}${delta.toFixed(1)}s`);
+    } else {
+      setText('hud', 'hud-split', '');
+    }
+    // Total run time
+    const totalRun = gsm.campaignTotalTime + gsm.elapsedTime;
+    const tMins = Math.floor(totalRun / 60);
+    const tSecs = Math.floor(totalRun % 60);
+    setText('hud', 'hud-runtimer', `RUN ${tMins}:${tSecs.toString().padStart(2, '0')}`);
+  } else {
+    setText('hud', 'hud-split', '');
+    setText('hud', 'hud-runtimer', '');
+  }
+  // Zone indicator
+  const zone = getLevelZone(gsm.level);
+  setText('hud', 'hud-zone', ZONE_NAMES[zone] || '');
 }
 
 function updateLevelSelect() {
@@ -355,6 +383,61 @@ function updateSkinsPanel() {
     setText('skins', `skin-name-${i}`, '');
     setText('skins', `skin-status-${i}`, '');
   }
+}
+
+function updateSpeedrunPanel() {
+  // Total time
+  if (gsm.campaignSplits.length > 0) {
+    const total = gsm.campaignSplits.reduce((a, b) => a + b, 0);
+    setText('speedrun', 'sr-total-time', formatSplitTime(total));
+  } else {
+    setText('speedrun', 'sr-total-time', '--:--');
+  }
+
+  // PB total
+  if (gsm.bestCampaignTotal !== null) {
+    setText('speedrun', 'sr-pb-total', formatSplitTime(gsm.bestCampaignTotal));
+  } else {
+    setText('speedrun', 'sr-pb-total', '---');
+  }
+
+  // Individual splits (show up to 12)
+  for (let i = 0; i < 12; i++) {
+    if (i < gsm.campaignSplits.length) {
+      const levelName = i < LEVELS.length ? LEVELS[i].name : `Level ${i + 1}`;
+      const splitTime = gsm.campaignSplits[i];
+      const pbSplit = gsm.bestCampaignSplits[i];
+
+      setText('speedrun', `sr-name-${i}`, levelName);
+      setText('speedrun', `sr-time-${i}`, formatSplitTime(splitTime));
+
+      // Delta vs PB
+      if (pbSplit !== null) {
+        const delta = splitTime - pbSplit;
+        const sign = delta >= 0 ? '+' : '';
+        setText('speedrun', `sr-delta-${i}`, `${sign}${delta.toFixed(1)}s`);
+      } else {
+        setText('speedrun', `sr-delta-${i}`, 'NEW');
+      }
+    } else if (i < LEVELS.length && gsm.bestCampaignSplits[i] !== null) {
+      // Show PB splits for levels not yet completed in this run
+      setText('speedrun', `sr-name-${i}`, LEVELS[i].name);
+      setText('speedrun', `sr-time-${i}`, '---');
+      setText('speedrun', `sr-delta-${i}`, `PB: ${formatSplitTime(gsm.bestCampaignSplits[i]!)}`);
+    } else {
+      setText('speedrun', `sr-name-${i}`, '---');
+      setText('speedrun', `sr-time-${i}`, '---');
+      setText('speedrun', `sr-delta-${i}`, '');
+    }
+  }
+}
+
+function formatSplitTime(seconds: number): string {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  const ms = Math.floor((seconds % 1) * 10);
+  if (mins > 0) return `${mins}:${secs.toString().padStart(2, '0')}.${ms}`;
+  return `${secs}.${ms}s`;
 }
 
 // ============================================================
@@ -492,7 +575,11 @@ function loadLevel(levelIdx: number) {
   if (particles) particles = null;
   particles = new ParticleSystem(boardEntity);
   if (trail) trail = null;
-  trail = new TrailSystem(boardEntity, skin.glow);
+  trail = new TrailSystem(boardEntity, skin.trailColor, skin.trailStyle, skin.trailParticleColor, skin.trailParticleRate, skin.trailWidth);
+
+  // Set music zone based on level
+  const zone = getLevelZone(levelIdx);
+  audio.setZone(zone);
 }
 
 function resetMarble() {
@@ -540,6 +627,28 @@ function changeState(newState: GameState) {
         gsm.campaignProgress[gsm.level] = true;
         const bt = gsm.bestTimes[gsm.level];
         if (!bt || gsm.elapsedTime < bt) gsm.bestTimes[gsm.level] = gsm.elapsedTime;
+
+        // Speed run split tracking
+        gsm.speedrunActive = true;
+        gsm.campaignSplits[gsm.level] = gsm.elapsedTime;
+        gsm.campaignTotalTime += gsm.elapsedTime;
+
+        // Update PB splits
+        const pbSplit = gsm.bestCampaignSplits[gsm.level];
+        if (pbSplit === null || gsm.elapsedTime < pbSplit) {
+          gsm.bestCampaignSplits[gsm.level] = gsm.elapsedTime;
+          audio.playSplitGood();
+        }
+
+        // Check if we have a complete campaign run for PB total
+        const completedLevels = gsm.campaignSplits.filter((_, i) => gsm.campaignSplits[i] !== undefined).length;
+        if (completedLevels === LEVELS.length) {
+          const totalRunTime = gsm.campaignSplits.reduce((a, b) => a + (b || 0), 0);
+          if (gsm.bestCampaignTotal === null || totalRunTime < gsm.bestCampaignTotal) {
+            gsm.bestCampaignTotal = totalRunTime;
+            showToast('NEW CAMPAIGN PB! 🏆', 3);
+          }
+        }
       }
       if (gsm.mode === 'timeattack') gsm.timeAttackClears++;
       if (gsm.mode === 'daily') gsm.dailyCompleted++;
@@ -582,6 +691,19 @@ function changeState(newState: GameState) {
       setText('levelcomplete', 'lc-score', `Score: ${gsm.score}`);
       setText('levelcomplete', 'lc-stars', starDisplay);
       setText('levelcomplete', 'lc-combo', gsm.maxCombo >= 2 ? `Best Combo: ${gsm.maxCombo}x (+${comboBonus})` : '');
+
+      // Speed run split display
+      if (gsm.speedrunActive && gsm.mode === 'campaign') {
+        const pbSplit = gsm.bestCampaignSplits[gsm.level];
+        let splitText = `Split: ${gsm.elapsedTime.toFixed(1)}s`;
+        if (pbSplit !== null && pbSplit < gsm.elapsedTime) {
+          const delta = gsm.elapsedTime - pbSplit;
+          splitText += ` (+${delta.toFixed(1)}s)`;
+        } else if (pbSplit !== null) {
+          splitText += ` (PB!)`;
+        }
+        setText('levelcomplete', 'lc-combo', gsm.maxCombo >= 2 ? `${gsm.maxCombo}x Combo (+${comboBonus}) | ${splitText}` : splitText);
+      }
       if (gsm.mode === 'survival') {
         setText('levelcomplete', 'lc-par', `Survival: ${gsm.survivalLevelsCleared} levels cleared`);
       }
@@ -632,6 +754,7 @@ function setupUIEvents() {
   titleDoc?.getElementById('btn-help')?.addEventListener('click', () => { audio.playButton(); changeState('help'); });
   titleDoc?.getElementById('btn-stats')?.addEventListener('click', () => { audio.playButton(); changeState('stats'); });
   titleDoc?.getElementById('btn-skins')?.addEventListener('click', () => { audio.playButton(); changeState('skins'); });
+  titleDoc?.getElementById('btn-speedrun')?.addEventListener('click', () => { audio.playButton(); changeState('speedrun'); });
 
   // Mode select
   const modeDoc = getDoc('modeselect');
@@ -765,6 +888,10 @@ function setupUIEvents() {
       checkAchievements();
     });
   }
+
+  // Speedrun panel back
+  const srDoc = getDoc('speedrun');
+  srDoc?.getElementById('btn-sr-back')?.addEventListener('click', () => { audio.playButton(); changeState('title'); });
 }
 
 // ============================================================
@@ -939,7 +1066,11 @@ function update() {
     marbleMesh.rotation.x += marbleVel.y * dt * 15;
 
     // Trail
-    if (trail && speed > 0.1) trail.addPoint(marblePos.clone());
+    if (trail && speed > 0.1) {
+      trail.addPoint(marblePos.clone());
+    }
+    // Update trail particles
+    if (trail) trail.updateParticles(dt, marblePos, speed);
 
     // Teleporter cooldown
     if (teleCooldown > 0) teleCooldown -= dt;

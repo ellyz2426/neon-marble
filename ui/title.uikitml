@@ -90,5 +90,8 @@
     <div id="btn-skins" class="small-btn" cursor="pointer">
       <span class="small-btn-text">Skins</span>
     </div>
+    <div id="btn-speedrun" class="small-btn" cursor="pointer">
+      <span class="small-btn-text" style="color: #ff8800;">Splits</span>
+    </div>
   </div>
 </div>

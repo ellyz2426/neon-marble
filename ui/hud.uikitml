@@ -11,6 +11,7 @@
     border-width: 0.06;
     border-radius: 0.5;
     gap: 1.5;
+    flex-wrap: wrap;
   }
   .hud-item {
     display: flex;
@@ -35,11 +36,25 @@
     color: #00ff00;
     font-weight: bold;
   }
+  .hud-zone {
+    font-size: 0.8;
+    color: #888888;
+  }
+  .hud-split {
+    font-size: 1.1;
+    color: #ffaa44;
+    font-weight: bold;
+  }
+  .hud-runtimer {
+    font-size: 0.9;
+    color: #ff8800;
+  }
 </style>
 <div class="hud-panel">
   <div class="hud-item">
     <span class="hud-label">TIME</span>
     <span id="hud-time" class="hud-value">0:00</span>
+    <span id="hud-split" class="hud-split"></span>
   </div>
   <div class="hud-item">
     <span class="hud-label">GEMS</span>
@@ -55,6 +70,7 @@
   </div>
   <div class="hud-item">
     <span id="hud-level" class="hud-level">Level</span>
+    <span id="hud-zone" class="hud-zone"></span>
     <span id="hud-gravity" class="hud-gravity"></span>
   </div>
   <div class="hud-item">
@@ -62,5 +78,8 @@
   </div>
   <div class="hud-item">
     <span id="hud-combo" class="hud-value" style="font-size: 1.3; color: #ff66ff;"></span>
+  </div>
+  <div class="hud-item">
+    <span id="hud-runtimer" class="hud-runtimer"></span>
   </div>
 </div>

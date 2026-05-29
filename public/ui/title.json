@@ -209,6 +209,32 @@
               "cursor": "pointer"
             },
             "dataUid": "uid-19"
+          },
+          {
+            "type": "container",
+            "sourceTag": "div",
+            "children": [
+              {
+                "sourceTag": "span",
+                "type": "custom",
+                "children": [
+                  "Splits"
+                ],
+                "properties": {
+                  "class": "small-btn-text",
+                  "style": {
+                    "color": "#ff8800"
+                  }
+                },
+                "dataUid": "uid-22"
+              }
+            ],
+            "properties": {
+              "id": "btn-speedrun",
+              "class": "small-btn",
+              "cursor": "pointer"
+            },
+            "dataUid": "uid-21"
           }
         ],
         "properties": {
@@ -388,7 +414,7 @@
         "column": 0
       },
       "end": {
-        "line": 93,
+        "line": 96,
         "column": 6
       }
     },
@@ -538,7 +564,7 @@
         "column": 2
       },
       "end": {
-        "line": 92,
+        "line": 95,
         "column": 8
       }
     },
@@ -580,6 +606,26 @@
       "end": {
         "line": 90,
         "column": 47
+      }
+    },
+    "uid-21": {
+      "start": {
+        "line": 92,
+        "column": 4
+      },
+      "end": {
+        "line": 94,
+        "column": 10
+      }
+    },
+    "uid-22": {
+      "start": {
+        "line": 93,
+        "column": 6
+      },
+      "end": {
+        "line": 93,
+        "column": 72
       }
     }
   }

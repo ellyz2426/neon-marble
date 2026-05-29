@@ -76,14 +76,69 @@ export class TrailSystem {
   private maxPoints = 30;
   private geo: THREE.BufferGeometry;
 
-  constructor(parent: THREE.Object3D, color: number) {
+  // Skin trail particles
+  private trailParticles: { mesh: THREE.Mesh; vel: THREE.Vector3; life: number; maxLife: number }[] = [];
+  private trailParticlePool: { mesh: THREE.Mesh; vel: THREE.Vector3; life: number; maxLife: number }[] = [];
+  private trailGroup: THREE.Group;
+  private trailGeo: THREE.SphereGeometry;
+  private emitTimer = 0;
+
+  // Skin trail config
+  private trailStyle = 'default';
+  private particleColor = 0x00ffff;
+  private particleRate = 8;     // particles per second
+  private trailOpacity = 0.5;
+  private maxTrailParticles = 40;
+
+  constructor(parent: THREE.Object3D, color: number, trailStyle: string = 'default', particleColor: number = 0x00ffff, particleRate: number = 8, trailWidth: number = 1.0) {
     this.geo = new THREE.BufferGeometry();
     const positions = new Float32Array(this.maxPoints * 3);
     this.geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     this.geo.setDrawRange(0, 0);
-    const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.5 });
+    this.trailOpacity = 0.5 * trailWidth;
+    const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: this.trailOpacity });
     this.line = new THREE.Line(this.geo, mat);
     parent.add(this.line);
+
+    // Trail particle system
+    this.trailStyle = trailStyle;
+    this.particleColor = particleColor;
+    this.particleRate = particleRate;
+    this.trailGroup = new THREE.Group();
+    parent.add(this.trailGroup);
+
+    // Particle geometry varies by style
+    this.trailGeo = new THREE.SphereGeometry(this.getParticleSize(), 4, 4);
+
+    // Pre-allocate trail particles
+    for (let i = 0; i < this.maxTrailParticles; i++) {
+      const mat = new THREE.MeshBasicMaterial({
+        color: particleColor,
+        transparent: true,
+        opacity: 0.8,
+      });
+      const mesh = new THREE.Mesh(this.trailGeo, mat);
+      mesh.visible = false;
+      this.trailGroup.add(mesh);
+      this.trailParticlePool.push({ mesh, vel: new THREE.Vector3(), life: 0, maxLife: 1 });
+    }
+  }
+
+  private getParticleSize(): number {
+    switch (this.trailStyle) {
+      case 'fire': return 0.005;
+      case 'frost': return 0.004;
+      case 'toxic': return 0.006;
+      case 'void': return 0.007;
+      case 'obsidian': return 0.004;
+      case 'diamond': return 0.003;
+      case 'nebula': return 0.006;
+      case 'gold': return 0.005;
+      case 'chrome': return 0.003;
+      case 'emerald': return 0.004;
+      case 'royal': return 0.005;
+      default: return 0.004;
+    }
   }
 
   addPoint(pos: THREE.Vector3) {
@@ -97,9 +152,210 @@ export class TrailSystem {
     this.geo.setDrawRange(0, this.points.length);
   }
 
+  // Emit trail particles based on skin style
+  emitTrailParticle(pos: THREE.Vector3, speed: number) {
+    if (this.trailStyle === 'default' && this.particleRate <= 8) return; // default skin: minimal particles
+    if (speed < 0.3) return; // Don't emit when barely moving
+
+    const p = this.trailParticlePool.pop();
+    if (!p) return;
+
+    p.mesh.position.copy(pos);
+    const mat = p.mesh.material as THREE.MeshBasicMaterial;
+    mat.color.setHex(this.particleColor);
+
+    switch (this.trailStyle) {
+      case 'fire': {
+        // Embers that rise and fade
+        p.vel.set(
+          (Math.random() - 0.5) * 0.15,
+          Math.random() * 0.25 + 0.1,
+          (Math.random() - 0.5) * 0.15
+        );
+        p.life = 0.5 + Math.random() * 0.4;
+        // Randomize between orange/red
+        mat.color.setHex(Math.random() > 0.5 ? 0xff6600 : 0xff2200);
+        break;
+      }
+      case 'frost': {
+        // Crystalline sparkles that drift slowly
+        p.vel.set(
+          (Math.random() - 0.5) * 0.08,
+          Math.random() * 0.05 + 0.02,
+          (Math.random() - 0.5) * 0.08
+        );
+        p.life = 0.8 + Math.random() * 0.5;
+        mat.color.setHex(Math.random() > 0.3 ? 0xccddff : 0x88bbff);
+        break;
+      }
+      case 'toxic': {
+        // Green wisps that swirl
+        const angle = Math.random() * Math.PI * 2;
+        p.vel.set(
+          Math.cos(angle) * 0.12,
+          Math.random() * 0.15 + 0.05,
+          Math.sin(angle) * 0.12
+        );
+        p.life = 0.6 + Math.random() * 0.3;
+        break;
+      }
+      case 'void': {
+        // Dark particles that implode inward slightly
+        p.vel.set(
+          (Math.random() - 0.5) * 0.05,
+          -Math.random() * 0.1 - 0.02,
+          (Math.random() - 0.5) * 0.05
+        );
+        p.life = 0.7 + Math.random() * 0.4;
+        mat.color.setHex(Math.random() > 0.4 ? 0x6622aa : 0x440088);
+        break;
+      }
+      case 'gold': {
+        // Golden shimmer sparks
+        p.vel.set(
+          (Math.random() - 0.5) * 0.2,
+          Math.random() * 0.2 + 0.08,
+          (Math.random() - 0.5) * 0.2
+        );
+        p.life = 0.4 + Math.random() * 0.3;
+        mat.color.setHex(Math.random() > 0.5 ? 0xffdd44 : 0xffaa00);
+        break;
+      }
+      case 'diamond': {
+        // Prismatic sparkles — cycle colors
+        const colors = [0xddeeff, 0xffddee, 0xddffee, 0xeeddff];
+        mat.color.setHex(colors[Math.floor(Math.random() * colors.length)]);
+        p.vel.set(
+          (Math.random() - 0.5) * 0.1,
+          Math.random() * 0.12 + 0.05,
+          (Math.random() - 0.5) * 0.1
+        );
+        p.life = 0.6 + Math.random() * 0.4;
+        break;
+      }
+      case 'nebula': {
+        // Swirling pink/magenta clouds
+        const a = Math.random() * Math.PI * 2;
+        p.vel.set(
+          Math.cos(a) * 0.15,
+          (Math.random() - 0.5) * 0.1,
+          Math.sin(a) * 0.15
+        );
+        p.life = 0.7 + Math.random() * 0.5;
+        mat.color.setHex(Math.random() > 0.5 ? 0xff66cc : 0xdd2288);
+        break;
+      }
+      case 'obsidian': {
+        // Dark red embers that crackle
+        p.vel.set(
+          (Math.random() - 0.5) * 0.18,
+          Math.random() * 0.15 + 0.05,
+          (Math.random() - 0.5) * 0.18
+        );
+        p.life = 0.3 + Math.random() * 0.3;
+        mat.color.setHex(Math.random() > 0.6 ? 0xaa0055 : 0x660022);
+        break;
+      }
+      case 'chrome': {
+        // Sharp white sparks
+        p.vel.set(
+          (Math.random() - 0.5) * 0.25,
+          Math.random() * 0.1 + 0.05,
+          (Math.random() - 0.5) * 0.25
+        );
+        p.life = 0.25 + Math.random() * 0.2;
+        break;
+      }
+      case 'emerald': {
+        // Green gem dust
+        p.vel.set(
+          (Math.random() - 0.5) * 0.12,
+          Math.random() * 0.1 + 0.04,
+          (Math.random() - 0.5) * 0.12
+        );
+        p.life = 0.5 + Math.random() * 0.4;
+        mat.color.setHex(Math.random() > 0.5 ? 0x44ee88 : 0x22cc44);
+        break;
+      }
+      case 'royal': {
+        // Purple sparkle stars
+        p.vel.set(
+          (Math.random() - 0.5) * 0.15,
+          Math.random() * 0.18 + 0.06,
+          (Math.random() - 0.5) * 0.15
+        );
+        p.life = 0.5 + Math.random() * 0.3;
+        mat.color.setHex(Math.random() > 0.5 ? 0xdd88ff : 0xaa44ff);
+        break;
+      }
+      default: {
+        // Default cyan particles
+        p.vel.set(
+          (Math.random() - 0.5) * 0.08,
+          Math.random() * 0.08 + 0.03,
+          (Math.random() - 0.5) * 0.08
+        );
+        p.life = 0.5;
+        break;
+      }
+    }
+
+    p.maxLife = p.life;
+    p.mesh.visible = true;
+    mat.opacity = 0.8;
+    this.trailParticles.push(p);
+  }
+
+  updateParticles(dt: number, marblePos: THREE.Vector3, speed: number) {
+    // Emit new particles
+    this.emitTimer += dt;
+    const emitInterval = 1 / this.particleRate;
+    while (this.emitTimer >= emitInterval) {
+      this.emitTimer -= emitInterval;
+      this.emitTrailParticle(marblePos, speed);
+    }
+
+    // Update existing particles
+    for (let i = this.trailParticles.length - 1; i >= 0; i--) {
+      const p = this.trailParticles[i];
+      p.life -= dt;
+      if (p.life <= 0) {
+        p.mesh.visible = false;
+        this.trailParticlePool.push(p);
+        this.trailParticles.splice(i, 1);
+        continue;
+      }
+
+      // Style-specific movement
+      if (this.trailStyle === 'void') {
+        // Void particles contract slightly
+        p.vel.multiplyScalar(0.95);
+      } else if (this.trailStyle === 'fire') {
+        // Fire particles slow + gravity resist
+        p.vel.y *= 0.98;
+      } else {
+        // Standard gravity effect
+        p.vel.y -= 0.3 * dt;
+      }
+
+      p.mesh.position.addScaledVector(p.vel, dt);
+      const t = p.life / p.maxLife;
+      (p.mesh.material as THREE.MeshBasicMaterial).opacity = t * 0.8;
+      const s = 0.4 + t * 0.6;
+      p.mesh.scale.set(s, s, s);
+    }
+  }
+
   clear() {
     this.points = [];
     this.geo.setDrawRange(0, 0);
+    // Clear trail particles
+    for (const p of this.trailParticles) {
+      p.mesh.visible = false;
+      this.trailParticlePool.push(p);
+    }
+    this.trailParticles = [];
+    this.emitTimer = 0;
   }
 
   setColor(color: number) {

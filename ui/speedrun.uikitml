@@ -1,0 +1,130 @@
+<style>
+  .speedrun-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5;
+    background-color: rgba(0, 0, 0, 0.9);
+    border-color: #ff8800;
+    border-width: 0.12;
+    border-radius: 0.8;
+    gap: 0.6;
+  }
+  .sr-title {
+    font-size: 2.8;
+    color: #ff8800;
+    font-weight: bold;
+    text-align: center;
+  }
+  .sr-total-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.4;
+    background-color: rgba(255, 136, 0, 0.15);
+    border-radius: 0.4;
+  }
+  .sr-total-label {
+    font-size: 1.8;
+    color: #ffaa44;
+    font-weight: bold;
+  }
+  .sr-total-value {
+    font-size: 1.8;
+    color: #ffffff;
+    font-weight: bold;
+  }
+  .sr-pb-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.3;
+  }
+  .sr-pb-label {
+    font-size: 1.4;
+    color: #888888;
+  }
+  .sr-pb-value {
+    font-size: 1.4;
+    color: #ffdd44;
+  }
+  .sr-header-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.3;
+    border-color: rgba(255, 136, 0, 0.3);
+    border-width: 0 0 0.05 0;
+  }
+  .sr-header {
+    font-size: 1.2;
+    color: #888888;
+    font-weight: bold;
+  }
+  .sr-split-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.2;
+  }
+  .sr-split-name {
+    font-size: 1.2;
+    color: #cccccc;
+  }
+  .sr-split-time {
+    font-size: 1.2;
+    color: #ffffff;
+  }
+  .sr-split-delta {
+    font-size: 1.2;
+    color: #888888;
+  }
+  .sr-back-btn {
+    padding: 0.5 1;
+    background-color: rgba(255, 136, 0, 0.3);
+    border-color: #ff8800;
+    border-width: 0.08;
+    border-radius: 0.4;
+    cursor: pointer;
+    margin-top: 0.4;
+    align-self: center;
+  }
+  .sr-back-text {
+    font-size: 1.6;
+    color: #ff8800;
+    text-align: center;
+  }
+</style>
+<div class="speedrun-panel">
+  <span class="sr-title">SPEED RUN SPLITS</span>
+
+  <div class="sr-total-row">
+    <span class="sr-total-label">Total Time</span>
+    <span id="sr-total-time" class="sr-total-value">--:--</span>
+  </div>
+
+  <div class="sr-pb-row">
+    <span class="sr-pb-label">Personal Best</span>
+    <span id="sr-pb-total" class="sr-pb-value">---</span>
+  </div>
+
+  <div class="sr-header-row">
+    <span class="sr-header">Level</span>
+    <span class="sr-header">Split</span>
+    <span class="sr-header">Delta</span>
+  </div>
+
+  <div class="sr-split-row"><span id="sr-name-0" class="sr-split-name">---</span><span id="sr-time-0" class="sr-split-time">---</span><span id="sr-delta-0" class="sr-split-delta"></span></div>
+  <div class="sr-split-row"><span id="sr-name-1" class="sr-split-name">---</span><span id="sr-time-1" class="sr-split-time">---</span><span id="sr-delta-1" class="sr-split-delta"></span></div>
+  <div class="sr-split-row"><span id="sr-name-2" class="sr-split-name">---</span><span id="sr-time-2" class="sr-split-time">---</span><span id="sr-delta-2" class="sr-split-delta"></span></div>
+  <div class="sr-split-row"><span id="sr-name-3" class="sr-split-name">---</span><span id="sr-time-3" class="sr-split-time">---</span><span id="sr-delta-3" class="sr-split-delta"></span></div>
+  <div class="sr-split-row"><span id="sr-name-4" class="sr-split-name">---</span><span id="sr-time-4" class="sr-split-time">---</span><span id="sr-delta-4" class="sr-split-delta"></span></div>
+  <div class="sr-split-row"><span id="sr-name-5" class="sr-split-name">---</span><span id="sr-time-5" class="sr-split-time">---</span><span id="sr-delta-5" class="sr-split-delta"></span></div>
+  <div class="sr-split-row"><span id="sr-name-6" class="sr-split-name">---</span><span id="sr-time-6" class="sr-split-time">---</span><span id="sr-delta-6" class="sr-split-delta"></span></div>
+  <div class="sr-split-row"><span id="sr-name-7" class="sr-split-name">---</span><span id="sr-time-7" class="sr-split-time">---</span><span id="sr-delta-7" class="sr-split-delta"></span></div>
+  <div class="sr-split-row"><span id="sr-name-8" class="sr-split-name">---</span><span id="sr-time-8" class="sr-split-time">---</span><span id="sr-delta-8" class="sr-split-delta"></span></div>
+  <div class="sr-split-row"><span id="sr-name-9" class="sr-split-name">---</span><span id="sr-time-9" class="sr-split-time">---</span><span id="sr-delta-9" class="sr-split-delta"></span></div>
+  <div class="sr-split-row"><span id="sr-name-10" class="sr-split-name">---</span><span id="sr-time-10" class="sr-split-time">---</span><span id="sr-delta-10" class="sr-split-delta"></span></div>
+  <div class="sr-split-row"><span id="sr-name-11" class="sr-split-name">---</span><span id="sr-time-11" class="sr-split-time">---</span><span id="sr-delta-11" class="sr-split-delta"></span></div>
+
+  <div id="btn-sr-back" class="sr-back-btn"><span class="sr-back-text">BACK</span></div>
+</div>

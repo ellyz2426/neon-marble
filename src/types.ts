@@ -32,7 +32,7 @@ export interface LevelDef {
 
 export type GameState = 'title' | 'modeselect' | 'levelselect' | 'playing' | 'paused'
   | 'levelcomplete' | 'gameover' | 'leaderboard' | 'achievements' | 'settings' | 'help'
-  | 'stats' | 'skins';
+  | 'stats' | 'skins' | 'speedrun';
 export type GameMode = 'campaign' | 'timeattack' | 'zen' | 'daily' | 'survival';
 
 export const BOARD_CELL = 0.12;           // meters per grid cell
@@ -719,28 +719,47 @@ export function calcStars(elapsedTime: number, par: number, gemsCollected: numbe
 }
 
 // ---- Marble skins ----
+export type TrailStyle = 'default' | 'fire' | 'frost' | 'toxic' | 'royal' | 'gold'
+  | 'void' | 'chrome' | 'diamond' | 'nebula' | 'emerald' | 'obsidian';
+
 export interface MarbleSkin {
   id: string;
   name: string;
   color: number;
   emissive: number;
   glow: number;
+  trailStyle: TrailStyle;
+  trailColor: number;
+  trailParticleColor: number;
+  trailWidth: number;      // line opacity multiplier
+  trailParticleRate: number; // particles per second
 }
 
 export const MARBLE_SKINS: MarbleSkin[] = [
-  { id: 'default', name: 'Neon Cyan', color: 0x00ddff, emissive: 0x00ddff, glow: 0x00ffff },
-  { id: 'fire', name: 'Solar Flare', color: 0xff6633, emissive: 0xff4400, glow: 0xff8800 },
-  { id: 'ice', name: 'Frost Core', color: 0xaaddff, emissive: 0x88bbff, glow: 0xccddff },
-  { id: 'toxic', name: 'Toxic Pulse', color: 0x44ff66, emissive: 0x22ff44, glow: 0x66ff88 },
-  { id: 'royal', name: 'Royal Ember', color: 0xcc66ff, emissive: 0xaa44ff, glow: 0xdd88ff },
-  { id: 'gold', name: 'Molten Gold', color: 0xffd700, emissive: 0xffaa00, glow: 0xffdd44 },
-  { id: 'void', name: 'Void Walker', color: 0x331155, emissive: 0x6622aa, glow: 0x8844cc },
-  { id: 'chrome', name: 'Chrome Pulse', color: 0xcccccc, emissive: 0xffffff, glow: 0xeeeeff },
-  { id: 'diamond', name: 'Diamond Core', color: 0xbbddff, emissive: 0x99ccff, glow: 0xddeeff },
-  { id: 'nebula', name: 'Nebula Drift', color: 0xff44aa, emissive: 0xdd2288, glow: 0xff66cc },
-  { id: 'emerald', name: 'Emerald Vein', color: 0x22cc66, emissive: 0x11aa44, glow: 0x44ee88 },
-  { id: 'obsidian', name: 'Obsidian Shard', color: 0x222222, emissive: 0x880044, glow: 0xaa0055 },
+  { id: 'default', name: 'Neon Cyan', color: 0x00ddff, emissive: 0x00ddff, glow: 0x00ffff, trailStyle: 'default', trailColor: 0x00ffff, trailParticleColor: 0x00ffff, trailWidth: 1.0, trailParticleRate: 8 },
+  { id: 'fire', name: 'Solar Flare', color: 0xff6633, emissive: 0xff4400, glow: 0xff8800, trailStyle: 'fire', trailColor: 0xff4400, trailParticleColor: 0xff8800, trailWidth: 1.3, trailParticleRate: 18 },
+  { id: 'ice', name: 'Frost Core', color: 0xaaddff, emissive: 0x88bbff, glow: 0xccddff, trailStyle: 'frost', trailColor: 0x88ccff, trailParticleColor: 0xccddff, trailWidth: 0.8, trailParticleRate: 12 },
+  { id: 'toxic', name: 'Toxic Pulse', color: 0x44ff66, emissive: 0x22ff44, glow: 0x66ff88, trailStyle: 'toxic', trailColor: 0x22ff44, trailParticleColor: 0x66ff88, trailWidth: 1.1, trailParticleRate: 14 },
+  { id: 'royal', name: 'Royal Ember', color: 0xcc66ff, emissive: 0xaa44ff, glow: 0xdd88ff, trailStyle: 'royal', trailColor: 0xaa44ff, trailParticleColor: 0xdd88ff, trailWidth: 1.0, trailParticleRate: 10 },
+  { id: 'gold', name: 'Molten Gold', color: 0xffd700, emissive: 0xffaa00, glow: 0xffdd44, trailStyle: 'gold', trailColor: 0xffaa00, trailParticleColor: 0xffdd44, trailWidth: 1.2, trailParticleRate: 15 },
+  { id: 'void', name: 'Void Walker', color: 0x331155, emissive: 0x6622aa, glow: 0x8844cc, trailStyle: 'void', trailColor: 0x6622aa, trailParticleColor: 0x8844cc, trailWidth: 0.7, trailParticleRate: 20 },
+  { id: 'chrome', name: 'Chrome Pulse', color: 0xcccccc, emissive: 0xffffff, glow: 0xeeeeff, trailStyle: 'chrome', trailColor: 0xffffff, trailParticleColor: 0xeeeeff, trailWidth: 0.6, trailParticleRate: 6 },
+  { id: 'diamond', name: 'Diamond Core', color: 0xbbddff, emissive: 0x99ccff, glow: 0xddeeff, trailStyle: 'diamond', trailColor: 0x99ccff, trailParticleColor: 0xddeeff, trailWidth: 0.9, trailParticleRate: 16 },
+  { id: 'nebula', name: 'Nebula Drift', color: 0xff44aa, emissive: 0xdd2288, glow: 0xff66cc, trailStyle: 'nebula', trailColor: 0xdd2288, trailParticleColor: 0xff66cc, trailWidth: 1.4, trailParticleRate: 18 },
+  { id: 'emerald', name: 'Emerald Vein', color: 0x22cc66, emissive: 0x11aa44, glow: 0x44ee88, trailStyle: 'emerald', trailColor: 0x11aa44, trailParticleColor: 0x44ee88, trailWidth: 1.0, trailParticleRate: 12 },
+  { id: 'obsidian', name: 'Obsidian Shard', color: 0x222222, emissive: 0x880044, glow: 0xaa0055, trailStyle: 'obsidian', trailColor: 0x880044, trailParticleColor: 0xaa0055, trailWidth: 0.9, trailParticleRate: 22 },
 ];
+
+// ---- Zone helpers ----
+export function getLevelZone(levelIdx: number): number {
+  if (levelIdx < 12) return 0;  // Classic
+  if (levelIdx < 18) return 1;  // Power-Up
+  if (levelIdx < 24) return 2;  // Endgame
+  if (levelIdx < 30) return 3;  // Bumper
+  return 4;                      // Master
+}
+
+export const ZONE_NAMES = ['Classic', 'Power-Up', 'Endgame', 'Bumper', 'Master'];
 
 // ---- Themes ----
 export interface BoardTheme {
@@ -864,6 +883,15 @@ export class GameStateManager {
   survivalOrder: number[] = [];
   survivalIndex = 0;
 
+  // Speed Run Timer
+  speedrunActive = false;
+  campaignSplits: number[] = [];           // current run split times (per level)
+  bestCampaignSplits: (number | null)[] = new Array(LEVELS.length).fill(null);
+  campaignRunStart = 0;                     // when the current campaign run started
+  campaignTotalTime = 0;                    // accumulated total time across levels
+  bestCampaignTotal: number | null = null;  // best total campaign time
+  currentLevelStartTime = 0;               // precise start of current level for split
+
   // Star ratings per level
   starRatings: number[] = new Array(LEVELS.length).fill(0);
 
@@ -910,10 +938,13 @@ export class GameStateManager {
       if (d.maxCombo) this.maxCombo = d.maxCombo;
       if (d.bumpersHit) this.bumpersHit = d.bumpersHit;
       if (d.survivalBestRun) this.survivalBestRun = d.survivalBestRun;
+      if (d.bestCampaignSplits) this.bestCampaignSplits = d.bestCampaignSplits;
+      if (d.bestCampaignTotal !== undefined && d.bestCampaignTotal !== null) this.bestCampaignTotal = d.bestCampaignTotal;
       // Extend arrays if new levels added
       while (this.campaignProgress.length < LEVELS.length) this.campaignProgress.push(false);
       while (this.bestTimes.length < LEVELS.length) this.bestTimes.push(null);
       while (this.starRatings.length < LEVELS.length) this.starRatings.push(0);
+      while (this.bestCampaignSplits.length < LEVELS.length) this.bestCampaignSplits.push(null);
     } catch {}
   }
 
@@ -941,6 +972,8 @@ export class GameStateManager {
         maxCombo: this.maxCombo,
         bumpersHit: this.bumpersHit,
         survivalBestRun: this.survivalBestRun,
+        bestCampaignSplits: this.bestCampaignSplits,
+        bestCampaignTotal: this.bestCampaignTotal,
       }));
     } catch {}
   }
@@ -958,6 +991,7 @@ export class GameStateManager {
     this.gravityFlipped = false;
     this.comboCount = 0;
     this.comboTimer = 0;
+    this.currentLevelStartTime = performance.now();
   }
 
   resetGame() {
@@ -974,6 +1008,10 @@ export class GameStateManager {
     this.shieldTimer = 0;
     this.magnetTimer = 0;
     this.slowmoTimer = 0;
+    this.campaignSplits = [];
+    this.campaignTotalTime = 0;
+    this.campaignRunStart = performance.now();
+    this.speedrunActive = false;
   }
 }
 
