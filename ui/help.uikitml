@@ -1,0 +1,74 @@
+<style>
+  .help-panel {
+    display: flex;
+    flex-direction: column;
+    padding-top: 2;
+    padding-bottom: 2;
+    padding-left: 3;
+    padding-right: 3;
+    background-color: rgba(0, 4, 15, 0.92);
+    border-color: #00ffff;
+    border-width: 0.12;
+    border-radius: 1.2;
+  }
+  .help-title {
+    font-size: 3;
+    color: #00ffff;
+    font-weight: bold;
+  }
+  .help-section {
+    font-size: 1.8;
+    color: #00dddd;
+    font-weight: bold;
+    margin-top: 1;
+  }
+  .help-text {
+    font-size: 1.2;
+    color: #88aacc;
+    margin-top: 0.3;
+  }
+  .back-btn {
+    margin-top: 1.5;
+    padding-top: 0.5;
+    padding-bottom: 0.5;
+    padding-left: 2;
+    padding-right: 2;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: #555;
+    border-width: 0.06;
+    border-radius: 0.5;
+    cursor: pointer;
+    align-self: center;
+  }
+  .back-text {
+    font-size: 1.5;
+    color: #888;
+  }
+</style>
+<div class="help-panel">
+  <span class="help-title">HOW TO PLAY</span>
+  <span class="help-section">Browser Controls</span>
+  <span class="help-text">WASD / Arrow Keys: Tilt the board</span>
+  <span class="help-text">ESC: Pause game</span>
+  <span class="help-section">VR Controls</span>
+  <span class="help-text">Left Thumbstick: Tilt the board</span>
+  <span class="help-text">B Button: Pause</span>
+  <span class="help-text">Laser Pointer: Click UI buttons</span>
+  <span class="help-section">Gameplay</span>
+  <span class="help-text">Tilt the board to roll the marble</span>
+  <span class="help-text">Collect gems for bonus points</span>
+  <span class="help-text">Avoid holes - you lose a life!</span>
+  <span class="help-text">Reach the green goal ring</span>
+  <span class="help-section">Special Tiles</span>
+  <span class="help-text">Pink/Purple Rings: Teleporters</span>
+  <span class="help-text">Blue Tiles: Ice (less friction)</span>
+  <span class="help-text">Green Tiles: Boost pads</span>
+  <span class="help-section">Modes</span>
+  <span class="help-text">Campaign: 12 levels, 3 lives</span>
+  <span class="help-text">Time Attack: Race the par time</span>
+  <span class="help-text">Zen: No timer, just relax</span>
+  <span class="help-text">Daily: New puzzle each day</span>
+  <div id="btn-help-back" class="back-btn" cursor="pointer">
+    <span class="back-text">Back</span>
+  </div>
+</div>

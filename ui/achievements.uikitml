@@ -1,0 +1,79 @@
+<style>
+  .ach-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 1.5;
+    padding-bottom: 1.5;
+    padding-left: 2;
+    padding-right: 2;
+    background-color: rgba(0, 4, 15, 0.92);
+    border-color: #aa44ff;
+    border-width: 0.12;
+    border-radius: 1.2;
+  }
+  .ach-title {
+    font-size: 3;
+    color: #aa44ff;
+    font-weight: bold;
+  }
+  .ach-row {
+    display: flex;
+    flex-direction: row;
+    margin-top: 0.3;
+    gap: 1;
+  }
+  .ach-name {
+    font-size: 1.2;
+    color: #cc66ff;
+    font-weight: bold;
+    min-width: 12;
+  }
+  .ach-desc {
+    font-size: 1;
+    color: #886699;
+    min-width: 18;
+  }
+  .back-btn {
+    margin-top: 1;
+    padding-top: 0.5;
+    padding-bottom: 0.5;
+    padding-left: 2;
+    padding-right: 2;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: #555;
+    border-width: 0.06;
+    border-radius: 0.5;
+    cursor: pointer;
+  }
+  .back-text {
+    font-size: 1.5;
+    color: #888;
+  }
+</style>
+<div class="ach-panel">
+  <span class="ach-title">ACHIEVEMENTS</span>
+  <div class="ach-row"><span id="ach-name-0" class="ach-name">???</span><span id="ach-desc-0" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-1" class="ach-name">???</span><span id="ach-desc-1" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-2" class="ach-name">???</span><span id="ach-desc-2" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-3" class="ach-name">???</span><span id="ach-desc-3" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-4" class="ach-name">???</span><span id="ach-desc-4" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-5" class="ach-name">???</span><span id="ach-desc-5" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-6" class="ach-name">???</span><span id="ach-desc-6" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-7" class="ach-name">???</span><span id="ach-desc-7" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-8" class="ach-name">???</span><span id="ach-desc-8" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-9" class="ach-name">???</span><span id="ach-desc-9" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-10" class="ach-name">???</span><span id="ach-desc-10" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-11" class="ach-name">???</span><span id="ach-desc-11" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-12" class="ach-name">???</span><span id="ach-desc-12" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-13" class="ach-name">???</span><span id="ach-desc-13" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-14" class="ach-name">???</span><span id="ach-desc-14" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-15" class="ach-name">???</span><span id="ach-desc-15" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-16" class="ach-name">???</span><span id="ach-desc-16" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-17" class="ach-name">???</span><span id="ach-desc-17" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-18" class="ach-name">???</span><span id="ach-desc-18" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-19" class="ach-name">???</span><span id="ach-desc-19" class="ach-desc">Locked</span></div>
+  <div id="btn-ach-back" class="back-btn" cursor="pointer">
+    <span class="back-text">Back</span>
+  </div>
+</div>

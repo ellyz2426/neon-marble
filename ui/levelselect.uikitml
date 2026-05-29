@@ -1,0 +1,96 @@
+<style>
+  .lvl-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 1.5;
+    padding-bottom: 1.5;
+    padding-left: 2;
+    padding-right: 2;
+    background-color: rgba(0, 4, 15, 0.92);
+    border-color: #00ffff;
+    border-width: 0.12;
+    border-radius: 1.2;
+  }
+  .lvl-title {
+    font-size: 3;
+    color: #00ffff;
+    font-weight: bold;
+  }
+  .lvl-grid {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1;
+    gap: 0.4;
+  }
+  .lvl-row {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5;
+  }
+  .lvl-btn {
+    padding-top: 0.5;
+    padding-bottom: 0.5;
+    padding-left: 1.2;
+    padding-right: 1.2;
+    background-color: rgba(0, 255, 255, 0.08);
+    border-color: #00aaaa;
+    border-width: 0.06;
+    border-radius: 0.5;
+    cursor: pointer;
+    min-width: 12;
+  }
+  .lvl-name {
+    font-size: 1.3;
+    color: #00cccc;
+    font-weight: bold;
+  }
+  .lvl-status {
+    font-size: 1;
+    color: #668888;
+  }
+  .back-btn {
+    margin-top: 1;
+    padding-top: 0.5;
+    padding-bottom: 0.5;
+    padding-left: 2;
+    padding-right: 2;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: #555;
+    border-width: 0.06;
+    border-radius: 0.5;
+    cursor: pointer;
+  }
+  .back-text {
+    font-size: 1.5;
+    color: #888;
+  }
+</style>
+<div class="lvl-panel">
+  <span class="lvl-title">SELECT LEVEL</span>
+  <div class="lvl-grid">
+    <div class="lvl-row">
+      <div id="btn-lvl-0" class="lvl-btn" cursor="pointer"><span id="lvl-name-0" class="lvl-name">Level 1</span><span id="lvl-status-0" class="lvl-status">---</span></div>
+      <div id="btn-lvl-1" class="lvl-btn" cursor="pointer"><span id="lvl-name-1" class="lvl-name">Level 2</span><span id="lvl-status-1" class="lvl-status">---</span></div>
+      <div id="btn-lvl-2" class="lvl-btn" cursor="pointer"><span id="lvl-name-2" class="lvl-name">Level 3</span><span id="lvl-status-2" class="lvl-status">---</span></div>
+    </div>
+    <div class="lvl-row">
+      <div id="btn-lvl-3" class="lvl-btn" cursor="pointer"><span id="lvl-name-3" class="lvl-name">Level 4</span><span id="lvl-status-3" class="lvl-status">---</span></div>
+      <div id="btn-lvl-4" class="lvl-btn" cursor="pointer"><span id="lvl-name-4" class="lvl-name">Level 5</span><span id="lvl-status-4" class="lvl-status">---</span></div>
+      <div id="btn-lvl-5" class="lvl-btn" cursor="pointer"><span id="lvl-name-5" class="lvl-name">Level 6</span><span id="lvl-status-5" class="lvl-status">---</span></div>
+    </div>
+    <div class="lvl-row">
+      <div id="btn-lvl-6" class="lvl-btn" cursor="pointer"><span id="lvl-name-6" class="lvl-name">Level 7</span><span id="lvl-status-6" class="lvl-status">---</span></div>
+      <div id="btn-lvl-7" class="lvl-btn" cursor="pointer"><span id="lvl-name-7" class="lvl-name">Level 8</span><span id="lvl-status-7" class="lvl-status">---</span></div>
+      <div id="btn-lvl-8" class="lvl-btn" cursor="pointer"><span id="lvl-name-8" class="lvl-name">Level 9</span><span id="lvl-status-8" class="lvl-status">---</span></div>
+    </div>
+    <div class="lvl-row">
+      <div id="btn-lvl-9" class="lvl-btn" cursor="pointer"><span id="lvl-name-9" class="lvl-name">Level 10</span><span id="lvl-status-9" class="lvl-status">---</span></div>
+      <div id="btn-lvl-10" class="lvl-btn" cursor="pointer"><span id="lvl-name-10" class="lvl-name">Level 11</span><span id="lvl-status-10" class="lvl-status">---</span></div>
+      <div id="btn-lvl-11" class="lvl-btn" cursor="pointer"><span id="lvl-name-11" class="lvl-name">Level 12</span><span id="lvl-status-11" class="lvl-status">---</span></div>
+    </div>
+  </div>
+  <div id="btn-lvl-back" class="back-btn" cursor="pointer">
+    <span class="back-text">Back</span>
+  </div>
+</div>

@@ -1,0 +1,81 @@
+<style>
+  .lb-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 1.5;
+    padding-bottom: 1.5;
+    padding-left: 2;
+    padding-right: 2;
+    background-color: rgba(0, 4, 15, 0.92);
+    border-color: #ffcc00;
+    border-width: 0.12;
+    border-radius: 1.2;
+  }
+  .lb-title {
+    font-size: 3;
+    color: #ffcc00;
+    font-weight: bold;
+  }
+  .lb-header {
+    display: flex;
+    flex-direction: row;
+    margin-top: 1;
+    gap: 1;
+  }
+  .lb-h-text {
+    font-size: 1.2;
+    color: #aa8800;
+    font-weight: bold;
+    min-width: 5;
+  }
+  .lb-row {
+    display: flex;
+    flex-direction: row;
+    margin-top: 0.3;
+    gap: 1;
+  }
+  .lb-cell {
+    font-size: 1.1;
+    color: #ccaa44;
+    min-width: 5;
+  }
+  .back-btn {
+    margin-top: 1;
+    padding-top: 0.5;
+    padding-bottom: 0.5;
+    padding-left: 2;
+    padding-right: 2;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: #555;
+    border-width: 0.06;
+    border-radius: 0.5;
+    cursor: pointer;
+  }
+  .back-text {
+    font-size: 1.5;
+    color: #888;
+  }
+</style>
+<div class="lb-panel">
+  <span class="lb-title">LEADERBOARD</span>
+  <div class="lb-header">
+    <span class="lb-h-text">#</span>
+    <span class="lb-h-text">Level</span>
+    <span class="lb-h-text">Score</span>
+    <span class="lb-h-text">Time</span>
+  </div>
+  <div class="lb-row"><span id="lb-rank-0" class="lb-cell">1</span><span id="lb-name-0" class="lb-cell">---</span><span id="lb-score-0" class="lb-cell">---</span><span id="lb-time-0" class="lb-cell">---</span></div>
+  <div class="lb-row"><span id="lb-rank-1" class="lb-cell">2</span><span id="lb-name-1" class="lb-cell">---</span><span id="lb-score-1" class="lb-cell">---</span><span id="lb-time-1" class="lb-cell">---</span></div>
+  <div class="lb-row"><span id="lb-rank-2" class="lb-cell">3</span><span id="lb-name-2" class="lb-cell">---</span><span id="lb-score-2" class="lb-cell">---</span><span id="lb-time-2" class="lb-cell">---</span></div>
+  <div class="lb-row"><span id="lb-rank-3" class="lb-cell">4</span><span id="lb-name-3" class="lb-cell">---</span><span id="lb-score-3" class="lb-cell">---</span><span id="lb-time-3" class="lb-cell">---</span></div>
+  <div class="lb-row"><span id="lb-rank-4" class="lb-cell">5</span><span id="lb-name-4" class="lb-cell">---</span><span id="lb-score-4" class="lb-cell">---</span><span id="lb-time-4" class="lb-cell">---</span></div>
+  <div class="lb-row"><span id="lb-rank-5" class="lb-cell">6</span><span id="lb-name-5" class="lb-cell">---</span><span id="lb-score-5" class="lb-cell">---</span><span id="lb-time-5" class="lb-cell">---</span></div>
+  <div class="lb-row"><span id="lb-rank-6" class="lb-cell">7</span><span id="lb-name-6" class="lb-cell">---</span><span id="lb-score-6" class="lb-cell">---</span><span id="lb-time-6" class="lb-cell">---</span></div>
+  <div class="lb-row"><span id="lb-rank-7" class="lb-cell">8</span><span id="lb-name-7" class="lb-cell">---</span><span id="lb-score-7" class="lb-cell">---</span><span id="lb-time-7" class="lb-cell">---</span></div>
+  <div class="lb-row"><span id="lb-rank-8" class="lb-cell">9</span><span id="lb-name-8" class="lb-cell">---</span><span id="lb-score-8" class="lb-cell">---</span><span id="lb-time-8" class="lb-cell">---</span></div>
+  <div class="lb-row"><span id="lb-rank-9" class="lb-cell">10</span><span id="lb-name-9" class="lb-cell">---</span><span id="lb-score-9" class="lb-cell">---</span><span id="lb-time-9" class="lb-cell">---</span></div>
+  <div id="btn-lb-back" class="back-btn" cursor="pointer">
+    <span class="back-text">Back</span>
+  </div>
+</div>

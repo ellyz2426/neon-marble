@@ -1,0 +1,22 @@
+<style>
+  .toast-panel {
+    display: flex;
+    flex-direction: row;
+    padding-top: 0.4;
+    padding-bottom: 0.4;
+    padding-left: 1;
+    padding-right: 1;
+    background-color: rgba(0, 20, 40, 0.85);
+    border-color: #00ffff;
+    border-width: 0.06;
+    border-radius: 0.5;
+  }
+  .toast-text {
+    font-size: 1.4;
+    color: #00ffff;
+    font-weight: bold;
+  }
+</style>
+<div class="toast-panel">
+  <span id="toast-msg" class="toast-text">Message</span>
+</div>

@@ -1,0 +1,60 @@
+<style>
+  .go-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2;
+    padding-bottom: 2;
+    padding-left: 3;
+    padding-right: 3;
+    background-color: rgba(15, 0, 0, 0.92);
+    border-color: #ff3333;
+    border-width: 0.12;
+    border-radius: 1.2;
+  }
+  .go-title {
+    font-size: 4;
+    color: #ff3333;
+    font-weight: bold;
+  }
+  .go-stat {
+    font-size: 1.8;
+    color: #ff8888;
+    margin-top: 0.5;
+  }
+  .go-btn {
+    margin-top: 1.5;
+    padding-top: 0.7;
+    padding-bottom: 0.7;
+    padding-left: 2.5;
+    padding-right: 2.5;
+    background-color: rgba(255, 50, 50, 0.1);
+    border-color: #ff5555;
+    border-width: 0.08;
+    border-radius: 0.7;
+    cursor: pointer;
+  }
+  .go-btn-text {
+    font-size: 1.8;
+    color: #ff5555;
+    font-weight: bold;
+  }
+  .go-row {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5;
+  }
+</style>
+<div class="go-panel">
+  <span class="go-title">GAME OVER</span>
+  <span id="go-score" class="go-stat">Final Score: 0</span>
+  <span id="go-levels" class="go-stat">Levels Cleared: 0</span>
+  <div class="go-row">
+    <div id="btn-go-retry" class="go-btn" cursor="pointer">
+      <span class="go-btn-text">Try Again</span>
+    </div>
+    <div id="btn-go-menu" class="go-btn" cursor="pointer">
+      <span class="go-btn-text">Menu</span>
+    </div>
+  </div>
+</div>

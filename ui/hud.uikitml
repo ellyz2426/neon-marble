@@ -1,0 +1,54 @@
+<style>
+  .hud-panel {
+    display: flex;
+    flex-direction: row;
+    padding-top: 0.5;
+    padding-bottom: 0.5;
+    padding-left: 1;
+    padding-right: 1;
+    background-color: rgba(0, 4, 15, 0.75);
+    border-color: #00ffff;
+    border-width: 0.06;
+    border-radius: 0.5;
+    gap: 1.5;
+  }
+  .hud-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .hud-label {
+    font-size: 0.9;
+    color: #668899;
+  }
+  .hud-value {
+    font-size: 1.6;
+    color: #00ffff;
+    font-weight: bold;
+  }
+  .hud-level {
+    font-size: 1.1;
+    color: #00dddd;
+  }
+</style>
+<div class="hud-panel">
+  <div class="hud-item">
+    <span class="hud-label">TIME</span>
+    <span id="hud-time" class="hud-value">0:00</span>
+  </div>
+  <div class="hud-item">
+    <span class="hud-label">GEMS</span>
+    <span id="hud-gems" class="hud-value">0/0</span>
+  </div>
+  <div class="hud-item">
+    <span class="hud-label">LIVES</span>
+    <span id="hud-lives" class="hud-value">3</span>
+  </div>
+  <div class="hud-item">
+    <span class="hud-label">SCORE</span>
+    <span id="hud-score" class="hud-value">0</span>
+  </div>
+  <div class="hud-item">
+    <span id="hud-level" class="hud-level">Level</span>
+  </div>
+</div>

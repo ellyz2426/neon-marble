@@ -1,0 +1,62 @@
+<style>
+  .pause-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2;
+    padding-bottom: 2;
+    padding-left: 3;
+    padding-right: 3;
+    background-color: rgba(0, 4, 15, 0.95);
+    border-color: #ffcc00;
+    border-width: 0.12;
+    border-radius: 1.2;
+  }
+  .pause-title {
+    font-size: 4;
+    color: #ffcc00;
+    font-weight: bold;
+  }
+  .pause-btn {
+    margin-top: 1.5;
+    padding-top: 0.8;
+    padding-bottom: 0.8;
+    padding-left: 3;
+    padding-right: 3;
+    background-color: rgba(255, 200, 0, 0.1);
+    border-color: #ffcc00;
+    border-width: 0.08;
+    border-radius: 0.8;
+    cursor: pointer;
+  }
+  .pause-btn-text {
+    font-size: 2;
+    color: #ffcc00;
+    font-weight: bold;
+  }
+  .quit-btn {
+    margin-top: 1;
+    padding-top: 0.6;
+    padding-bottom: 0.6;
+    padding-left: 2;
+    padding-right: 2;
+    background-color: rgba(255, 50, 50, 0.1);
+    border-color: #ff3333;
+    border-width: 0.06;
+    border-radius: 0.6;
+    cursor: pointer;
+  }
+  .quit-text {
+    font-size: 1.6;
+    color: #ff5555;
+  }
+</style>
+<div class="pause-panel">
+  <span class="pause-title">PAUSED</span>
+  <div id="btn-resume" class="pause-btn" cursor="pointer">
+    <span class="pause-btn-text">Resume</span>
+  </div>
+  <div id="btn-quit" class="quit-btn" cursor="pointer">
+    <span class="quit-text">Quit to Menu</span>
+  </div>
+</div>

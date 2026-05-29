@@ -1,0 +1,98 @@
+<style>
+  .lc-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2;
+    padding-bottom: 2;
+    padding-left: 3;
+    padding-right: 3;
+    background-color: rgba(0, 4, 15, 0.92);
+    border-color: #00ff88;
+    border-width: 0.12;
+    border-radius: 1.2;
+  }
+  .lc-title {
+    font-size: 3.5;
+    color: #00ff88;
+    font-weight: bold;
+  }
+  .lc-level {
+    font-size: 2;
+    color: #66ffaa;
+    margin-top: 0.5;
+  }
+  .lc-stat {
+    font-size: 1.5;
+    color: #88ccaa;
+    margin-top: 0.3;
+  }
+  .lc-par {
+    font-size: 1.5;
+    color: #ffcc00;
+    margin-top: 0.3;
+  }
+  .lc-score {
+    font-size: 2;
+    color: #00ffff;
+    font-weight: bold;
+    margin-top: 0.5;
+  }
+  .lc-btn {
+    margin-top: 1;
+    padding-top: 0.7;
+    padding-bottom: 0.7;
+    padding-left: 2.5;
+    padding-right: 2.5;
+    background-color: rgba(0, 255, 136, 0.1);
+    border-color: #00ff88;
+    border-width: 0.08;
+    border-radius: 0.7;
+    cursor: pointer;
+  }
+  .lc-btn-text {
+    font-size: 1.8;
+    color: #00ff88;
+    font-weight: bold;
+  }
+  .lc-row {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5;
+  }
+  .lc-small-btn {
+    margin-top: 0.8;
+    padding-top: 0.5;
+    padding-bottom: 0.5;
+    padding-left: 1.5;
+    padding-right: 1.5;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: #666;
+    border-width: 0.06;
+    border-radius: 0.5;
+    cursor: pointer;
+  }
+  .lc-small-text {
+    font-size: 1.4;
+    color: #999;
+  }
+</style>
+<div class="lc-panel">
+  <span id="lc-title" class="lc-title">Level Complete!</span>
+  <span id="lc-level" class="lc-level">Level Name</span>
+  <span id="lc-time" class="lc-stat">Time: 0.0s</span>
+  <span id="lc-gems" class="lc-stat">Gems: 0/0</span>
+  <span id="lc-par" class="lc-par">Par: 20s</span>
+  <span id="lc-score" class="lc-score">Score: 0</span>
+  <div id="btn-next" class="lc-btn" cursor="pointer">
+    <span class="lc-btn-text">Next Level</span>
+  </div>
+  <div class="lc-row">
+    <div id="btn-retry" class="lc-small-btn" cursor="pointer">
+      <span class="lc-small-text">Retry</span>
+    </div>
+    <div id="btn-lc-menu" class="lc-small-btn" cursor="pointer">
+      <span class="lc-small-text">Menu</span>
+    </div>
+  </div>
+</div>

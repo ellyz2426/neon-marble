@@ -1,0 +1,104 @@
+<style>
+  .set-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2;
+    padding-bottom: 2;
+    padding-left: 3;
+    padding-right: 3;
+    background-color: rgba(0, 4, 15, 0.92);
+    border-color: #00ffff;
+    border-width: 0.12;
+    border-radius: 1.2;
+  }
+  .set-title {
+    font-size: 3;
+    color: #00ffff;
+    font-weight: bold;
+  }
+  .set-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 1;
+    gap: 1;
+  }
+  .set-label {
+    font-size: 1.5;
+    color: #88aacc;
+    min-width: 10;
+  }
+  .set-value {
+    font-size: 1.5;
+    color: #00ffff;
+    font-weight: bold;
+    min-width: 5;
+  }
+  .set-btn {
+    padding-top: 0.3;
+    padding-bottom: 0.3;
+    padding-left: 0.8;
+    padding-right: 0.8;
+    background-color: rgba(0, 255, 255, 0.1);
+    border-color: #00aaaa;
+    border-width: 0.06;
+    border-radius: 0.4;
+    cursor: pointer;
+  }
+  .set-btn-text {
+    font-size: 1.4;
+    color: #00aaaa;
+  }
+  .theme-label {
+    font-size: 1.5;
+    color: #00ffff;
+    min-width: 14;
+  }
+  .back-btn {
+    margin-top: 1.5;
+    padding-top: 0.5;
+    padding-bottom: 0.5;
+    padding-left: 2;
+    padding-right: 2;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: #555;
+    border-width: 0.06;
+    border-radius: 0.5;
+    cursor: pointer;
+  }
+  .back-text {
+    font-size: 1.5;
+    color: #888;
+  }
+</style>
+<div class="set-panel">
+  <span class="set-title">SETTINGS</span>
+  <div class="set-row">
+    <span class="set-label">Master</span>
+    <div id="btn-vol-down" class="set-btn" cursor="pointer"><span class="set-btn-text">-</span></div>
+    <span id="set-vol" class="set-value">80%</span>
+    <div id="btn-vol-up" class="set-btn" cursor="pointer"><span class="set-btn-text">+</span></div>
+  </div>
+  <div class="set-row">
+    <span class="set-label">SFX</span>
+    <div id="btn-sfx-down" class="set-btn" cursor="pointer"><span class="set-btn-text">-</span></div>
+    <span id="set-sfx" class="set-value">70%</span>
+    <div id="btn-sfx-up" class="set-btn" cursor="pointer"><span class="set-btn-text">+</span></div>
+  </div>
+  <div class="set-row">
+    <span class="set-label">Music</span>
+    <div id="btn-music-down" class="set-btn" cursor="pointer"><span class="set-btn-text">-</span></div>
+    <span id="set-music" class="set-value">30%</span>
+    <div id="btn-music-up" class="set-btn" cursor="pointer"><span class="set-btn-text">+</span></div>
+  </div>
+  <div class="set-row">
+    <span class="set-label">Theme</span>
+    <div id="btn-theme-prev" class="set-btn" cursor="pointer"><span class="set-btn-text">&lt;</span></div>
+    <span id="set-theme" class="theme-label">Neon Holodeck</span>
+    <div id="btn-theme-next" class="set-btn" cursor="pointer"><span class="set-btn-text">&gt;</span></div>
+  </div>
+  <div id="btn-set-back" class="back-btn" cursor="pointer">
+    <span class="back-text">Back</span>
+  </div>
+</div>
