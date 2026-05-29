@@ -446,3 +446,49 @@ export function animateDecorations(decos: THREE.Object3D[], time: number) {
     decos[i].position.y += Math.sin(time * 0.4 + i * 0.5) * 0.0002;
   }
 }
+
+// Screen shake system
+export class ScreenShake {
+  private intensity = 0;
+  private decay = 8;
+  private offset = new THREE.Vector3();
+
+  trigger(strength: number) {
+    this.intensity = Math.max(this.intensity, strength);
+  }
+
+  update(dt: number, target: THREE.Object3D) {
+    if (this.intensity < 0.0005) {
+      this.offset.set(0, 0, 0);
+      this.intensity = 0;
+      return;
+    }
+    this.offset.set(
+      (Math.random() - 0.5) * 2 * this.intensity,
+      (Math.random() - 0.5) * 2 * this.intensity * 0.5,
+      (Math.random() - 0.5) * 2 * this.intensity
+    );
+    target.position.x += this.offset.x;
+    target.position.y += this.offset.y;
+    target.position.z += this.offset.z;
+    this.intensity *= Math.max(0, 1 - this.decay * dt);
+  }
+}
+
+// Firework burst — multiple staggered bursts of colored particles
+export function fireworkBurst(particles: ParticleSystem, center: THREE.Vector3, burstCount: number = 5) {
+  const colors = [0xff3333, 0xffcc00, 0x00ff88, 0xff66ff, 0x00ccff, 0xff8800, 0xaaffee];
+  for (let b = 0; b < burstCount; b++) {
+    const off = new THREE.Vector3(
+      (Math.random() - 0.5) * 0.15,
+      Math.random() * 0.08 + 0.02,
+      (Math.random() - 0.5) * 0.15
+    );
+    const pos = center.clone().add(off);
+    const color = colors[b % colors.length];
+    // Use setTimeout for staggered effect
+    setTimeout(() => {
+      particles.burst(pos, color, 12, 0.9, 1.0);
+    }, b * 120);
+  }
+}

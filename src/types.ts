@@ -834,6 +834,12 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   { id: 'all_36', name: 'Ultimate Champion', desc: 'Clear all 36 campaign levels' },
   { id: 'survival_10', name: 'Survivor', desc: 'Clear 10 levels in Survival mode' },
   { id: 'survival_25', name: 'Endurance', desc: 'Clear 25 levels in Survival mode' },
+  // Round 7 achievements (46-50)
+  { id: 'ghost_chaser', name: 'Ghost Chaser', desc: 'Race against your ghost replay' },
+  { id: 'cartographer', name: 'Cartographer', desc: 'Use the minimap in 5 levels' },
+  { id: 'shake_it_off', name: 'Shake It Off', desc: 'Bounce off 25 walls total' },
+  { id: 'fireworks_fan', name: 'Fireworks Fan', desc: 'Trigger 10 victory celebrations' },
+  { id: 'half_century', name: 'Half Century', desc: 'Unlock 25 achievements' },
 ];
 
 // ---- State manager ----
@@ -892,6 +898,12 @@ export class GameStateManager {
   bestCampaignTotal: number | null = null;  // best total campaign time
   currentLevelStartTime = 0;               // precise start of current level for split
 
+  // Ghost + minimap + wall bounce tracking
+  ghostRaced = false;           // did player race against ghost this session
+  minimapLevelsUsed = 0;        // levels where minimap was active
+  wallBounces = 0;              // total wall bounces
+  victoryCelebrations = 0;      // total victory celebrations triggered
+
   // Star ratings per level
   starRatings: number[] = new Array(LEVELS.length).fill(0);
 
@@ -940,6 +952,9 @@ export class GameStateManager {
       if (d.survivalBestRun) this.survivalBestRun = d.survivalBestRun;
       if (d.bestCampaignSplits) this.bestCampaignSplits = d.bestCampaignSplits;
       if (d.bestCampaignTotal !== undefined && d.bestCampaignTotal !== null) this.bestCampaignTotal = d.bestCampaignTotal;
+      if (d.wallBounces) this.wallBounces = d.wallBounces;
+      if (d.victoryCelebrations) this.victoryCelebrations = d.victoryCelebrations;
+      if (d.minimapLevelsUsed) this.minimapLevelsUsed = d.minimapLevelsUsed;
       // Extend arrays if new levels added
       while (this.campaignProgress.length < LEVELS.length) this.campaignProgress.push(false);
       while (this.bestTimes.length < LEVELS.length) this.bestTimes.push(null);
@@ -974,6 +989,9 @@ export class GameStateManager {
         survivalBestRun: this.survivalBestRun,
         bestCampaignSplits: this.bestCampaignSplits,
         bestCampaignTotal: this.bestCampaignTotal,
+        wallBounces: this.wallBounces,
+        victoryCelebrations: this.victoryCelebrations,
+        minimapLevelsUsed: this.minimapLevelsUsed,
       }));
     } catch {}
   }

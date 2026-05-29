@@ -11,7 +11,9 @@ import {
 } from './types.js';
 import { buildBoard, gridToLocal, getTileAt, checkWallCollision, animateBoard, BoardObjects } from './board.js';
 import { AudioManager } from './audio.js';
-import { ParticleSystem, TrailSystem, AmbientParticles, createHolodeckDecorations, animateDecorations } from './effects.js';
+import { ParticleSystem, TrailSystem, AmbientParticles, createHolodeckDecorations, animateDecorations, ScreenShake, fireworkBurst } from './effects.js';
+import { GhostSystem } from './ghost.js';
+import { MiniMap } from './minimap.js';
 
 // ============================================================
 // IWSDK World Init
@@ -52,6 +54,13 @@ let magnetPullTimer = 0;
 let shieldMesh: THREE.Mesh | null = null;
 let magnetGems = 0; // gems collected while magnet active
 const COMBO_WINDOW = 2.0; // seconds to chain gems
+
+// Ghost, minimap, screen shake
+let ghost: GhostSystem | null = null;
+const minimap = new MiniMap();
+const screenShake = new ScreenShake();
+let minimapUsedThisLevel = false;
+const boardBasePos = new THREE.Vector3(0, 1.0, -1.2); // base position for board
 
 // Input state
 const keys: Record<string, boolean> = {};
@@ -164,6 +173,18 @@ createPanel('countdown', '/ui/countdown.json', { maxWidth: 0.3, maxHeight: 0.15,
 createPanel('stats', '/ui/stats.json', { maxWidth: 0.8, maxHeight: 0.8, worldPos: [0, 1.5, -2] });
 createPanel('skins', '/ui/skins.json', { maxWidth: 0.7, maxHeight: 0.6, worldPos: [0, 1.5, -2] });
 createPanel('speedrun', '/ui/speedrun.json', { maxWidth: 0.8, maxHeight: 0.8, worldPos: [0, 1.5, -2] });
+
+// Minimap entity — 3D bird's-eye view with Follower
+const minimapEntity = world.createTransformEntity(undefined, { persistent: true });
+minimapEntity.object3D!.add(minimap.group);
+minimapEntity.addComponent(Follower, {
+  target: world.player.head,
+  offsetPosition: [-0.25, -0.12, -0.45],
+  behavior: FollowBehavior.PivotY,
+  speed: 5,
+  tolerance: 0.3,
+});
+minimapEntity.object3D!.visible = false;
 
 // ============================================================
 // UI Helpers
@@ -497,6 +518,12 @@ function checkAchievements() {
   check('all_36', gsm.campaignProgress.filter(Boolean).length >= 36);
   check('survival_10', gsm.survivalLevelsCleared >= 10 || gsm.survivalBestRun >= 10);
   check('survival_25', gsm.survivalLevelsCleared >= 25 || gsm.survivalBestRun >= 25);
+  // Round 7 achievements
+  check('ghost_chaser', gsm.ghostRaced);
+  check('cartographer', gsm.minimapLevelsUsed >= 5);
+  check('shake_it_off', gsm.wallBounces >= 25);
+  check('fireworks_fan', gsm.victoryCelebrations >= 10);
+  check('half_century', gsm.unlockedAchievements.size >= 25);
 
   for (const id of newlyUnlocked) {
     const ach = ACHIEVEMENTS.find(a => a.id === id);
@@ -580,6 +607,19 @@ function loadLevel(levelIdx: number) {
   // Set music zone based on level
   const zone = getLevelZone(levelIdx);
   audio.setZone(zone);
+
+  // Ghost system
+  if (ghost) ghost.cleanup();
+  ghost = new GhostSystem(boardEntity);
+  ghost.startRecording();
+  ghost.startPlayback(levelIdx);
+  if (ghost.playing) gsm.ghostRaced = true;
+
+  // Minimap
+  minimap.build(level.grid, board.gridW, board.gridH);
+  minimapEntity.object3D!.visible = true;
+  minimapUsedThisLevel = true;
+  gsm.minimapLevelsUsed++;
 }
 
 function resetMarble() {
@@ -606,6 +646,8 @@ function changeState(newState: GameState) {
     case 'title':
       audio.startMusic();
       if (boardEntity) { scene.remove(boardEntity); boardEntity = null; }
+      minimapEntity.object3D!.visible = false;
+      if (ghost) ghost.cleanup();
       break;
     case 'playing':
       break;
@@ -709,6 +751,17 @@ function changeState(newState: GameState) {
       }
 
       audio.playGoal();
+      audio.playVictoryFanfare();
+      // Firework victory celebration
+      if (particles) fireworkBurst(particles, marblePos.clone());
+      gsm.victoryCelebrations++;
+      // Save ghost recording
+      if (ghost) {
+        const frames = ghost.stopRecording();
+        GhostSystem.saveGhost(gsm.level, frames, gsm.elapsedTime);
+      }
+      // Hide minimap during results
+      minimapEntity.object3D!.visible = false;
       if (particles) particles.burst(marblePos, THEMES[gsm.currentTheme].goal, 25, 0.8, 1.2);
       checkAchievements();
       gsm.save();
@@ -1037,6 +1090,9 @@ function update() {
         new THREE.Vector3(marblePos.x, marblePos.y, marblePos.z),
         THEMES[gsm.currentTheme].accent, 5, 0.3, 0.4
       );
+      // Screen shake on wall bounce
+      screenShake.trigger(0.003 + Math.min(speed * 0.002, 0.005));
+      gsm.wallBounces++;
     }
 
     // Rolling sound
@@ -1071,6 +1127,23 @@ function update() {
     }
     // Update trail particles
     if (trail) trail.updateParticles(dt, marblePos, speed);
+
+    // Ghost recording + playback
+    if (ghost) {
+      ghost.recordFrame(marblePos.x, marblePos.z, dt);
+      ghost.update(dt);
+    }
+
+    // Minimap marker update
+    if (board && minimap) {
+      minimap.updateMarker(marblePos.x, marblePos.z, board.gridW, board.gridH);
+    }
+
+    // Screen shake
+    if (boardEntity) {
+      boardEntity.position.copy(boardBasePos);
+      screenShake.update(dt, boardEntity);
+    }
 
     // Teleporter cooldown
     if (teleCooldown > 0) teleCooldown -= dt;
@@ -1151,6 +1224,7 @@ function update() {
         audio.playShieldBreak();
         if (particles) particles.burst(marblePos.clone(), 0x4488ff, 20, 0.8, 1.0);
         showToast('Shield absorbed fall!', 2);
+        screenShake.trigger(0.008);
         resetMarble();
         checkAchievements();
       } else {
@@ -1159,6 +1233,7 @@ function update() {
         gsm.noDeathStreak = 0;
         audio.playFall();
         if (particles) particles.burst(marblePos.clone(), 0xff3333, 15, 0.6, 0.8);
+        screenShake.trigger(0.012);
         if (gsm.lives <= 0) {
           changeState('gameover');
         } else {

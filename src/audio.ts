@@ -594,4 +594,60 @@ export class AudioManager {
       osc.stop(ctx.currentTime + i * 0.06 + 0.12);
     });
   }
+
+  playVictoryFanfare() {
+    const ctx = this.ensureCtx();
+    if (!this.sfxGain) return;
+    // Triumphant ascending fanfare: C-E-G-C5 with harmonics
+    const notes = [
+      { freq: 523, delay: 0, dur: 0.3 },    // C5
+      { freq: 659, delay: 0.15, dur: 0.3 },  // E5
+      { freq: 784, delay: 0.3, dur: 0.3 },   // G5
+      { freq: 1047, delay: 0.5, dur: 0.6 },  // C6 (long)
+    ];
+    for (const n of notes) {
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = n.freq;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0, ctx.currentTime + n.delay);
+      g.gain.linearRampToValueAtTime(0.14, ctx.currentTime + n.delay + 0.03);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + n.delay + n.dur);
+      osc.connect(g);
+      g.connect(this.sfxGain!);
+      osc.start(ctx.currentTime + n.delay);
+      osc.stop(ctx.currentTime + n.delay + n.dur);
+      // Harmony (fifth above)
+      const osc2 = ctx.createOscillator();
+      osc2.type = 'triangle';
+      osc2.frequency.value = n.freq * 1.5;
+      const g2 = ctx.createGain();
+      g2.gain.setValueAtTime(0, ctx.currentTime + n.delay);
+      g2.gain.linearRampToValueAtTime(0.05, ctx.currentTime + n.delay + 0.04);
+      g2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + n.delay + n.dur * 0.7);
+      osc2.connect(g2);
+      g2.connect(this.sfxGain!);
+      osc2.start(ctx.currentTime + n.delay);
+      osc2.stop(ctx.currentTime + n.delay + n.dur);
+    }
+  }
+
+  playScreenShake() {
+    const ctx = this.ensureCtx();
+    if (!this.sfxGain) return;
+    const osc = ctx.createOscillator();
+    osc.type = 'sawtooth';
+    osc.frequency.value = 60;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.06, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+    const f = ctx.createBiquadFilter();
+    f.type = 'lowpass';
+    f.frequency.value = 150;
+    osc.connect(f);
+    f.connect(g);
+    g.connect(this.sfxGain);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.08);
+  }
 }
