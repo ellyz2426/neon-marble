@@ -33,7 +33,7 @@ export interface LevelDef {
 export type GameState = 'title' | 'modeselect' | 'levelselect' | 'playing' | 'paused'
   | 'levelcomplete' | 'gameover' | 'leaderboard' | 'achievements' | 'settings' | 'help'
   | 'stats' | 'skins';
-export type GameMode = 'campaign' | 'timeattack' | 'zen' | 'daily';
+export type GameMode = 'campaign' | 'timeattack' | 'zen' | 'daily' | 'survival';
 
 export const BOARD_CELL = 0.12;           // meters per grid cell
 export const MARBLE_RADIUS = 0.035;       // marble sphere radius
@@ -592,6 +592,123 @@ export const LEVELS: LevelDef[] = [
       [1,1,1,1,1,1,1,1,1,1,1,1,1],
     ],
   },
+  // ---- Master Zone levels (31-36): All mechanics combined ----
+  {
+    name: 'Mixed Mastery',
+    par: 55,
+    gems: 7,
+    grid: [
+      [1,1,1,1,1,1,1,1,1,1,1],
+      [1,5,0,0,15,0,8,8,3,0,1],
+      [1,0,1,3,0,0,1,0,0,0,1],
+      [1,0,13,0,0,14,0,0,15,3,1],
+      [1,3,0,1,9,0,1,0,0,0,1],
+      [1,1,0,0,0,10,0,0,1,0,1],
+      [1,0,0,15,0,0,13,0,0,0,1],
+      [1,0,1,3,1,0,0,0,15,3,1],
+      [1,0,0,0,0,14,0,0,0,0,1],
+      [1,3,11,0,0,0,0,0,0,4,1],
+      [1,1,1,1,1,1,1,1,1,1,1],
+    ],
+  },
+  {
+    name: 'Elemental Storm',
+    par: 65,
+    gems: 8,
+    grid: [
+      [1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,5,8,8,15,0,0,3,14,0,0,1],
+      [1,0,1,8,0,0,1,0,0,0,3,1],
+      [1,3,8,15,8,0,13,0,15,0,0,1],
+      [1,0,1,8,1,2,1,0,0,0,1,1],
+      [1,0,0,14,0,0,0,15,0,3,0,1],
+      [1,1,0,0,15,0,1,0,8,8,0,1],
+      [1,3,10,0,0,0,0,0,8,15,3,1],
+      [1,0,1,0,14,0,13,0,0,0,0,1],
+      [1,0,0,3,0,15,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,4,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1],
+    ],
+  },
+  {
+    name: 'Warp Factory',
+    par: 70,
+    gems: 9,
+    grid: [
+      [1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,5,0,0,6,0,13,3,0,0,15,0,1],
+      [1,0,1,0,1,0,1,0,1,0,1,3,1],
+      [1,3,0,10,0,0,0,0,7,0,0,0,1],
+      [1,0,1,1,0,13,1,0,1,0,15,0,1],
+      [1,0,0,3,0,0,0,0,0,14,0,0,1],
+      [1,1,15,0,1,0,11,0,1,0,1,3,1],
+      [1,0,0,0,13,0,0,0,6,0,0,0,1],
+      [1,3,1,0,1,0,1,3,1,0,1,0,1],
+      [1,0,0,0,0,0,15,0,0,0,0,0,1],
+      [1,0,14,3,0,7,0,0,13,0,3,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,4,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1],
+    ],
+  },
+  {
+    name: 'Bumper Gravity',
+    par: 60,
+    gems: 7,
+    grid: [
+      [1,1,1,1,1,1,1,1,1,1,1],
+      [1,5,0,15,14,0,0,3,0,0,1],
+      [1,0,1,0,0,15,1,0,15,0,1],
+      [1,3,0,0,0,0,14,0,0,3,1],
+      [1,0,15,1,0,2,0,1,15,0,1],
+      [1,0,0,0,15,0,15,0,0,0,1],
+      [1,3,1,14,0,0,0,14,1,3,1],
+      [1,0,0,0,15,12,15,0,0,0,1],
+      [1,0,15,1,0,0,0,1,15,0,1],
+      [1,3,0,0,14,0,0,0,0,4,1],
+      [1,1,1,1,1,1,1,1,1,1,1],
+    ],
+  },
+  {
+    name: 'Chaos Theory',
+    par: 80,
+    gems: 10,
+    grid: [
+      [1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,5,0,3,13,0,6,0,15,0,8,3,1],
+      [1,0,1,0,0,15,1,0,0,14,1,0,1],
+      [1,10,0,14,0,0,3,0,13,0,0,0,1],
+      [1,0,1,0,1,2,1,0,1,0,15,3,1],
+      [1,3,15,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,13,1,15,1,14,1,0,1,0,1],
+      [1,0,1,0,0,0,3,0,0,0,15,3,1],
+      [1,3,0,0,15,0,1,0,7,0,0,0,1],
+      [1,0,1,14,0,0,0,0,1,0,1,0,1],
+      [1,0,0,0,13,3,15,0,0,0,0,0,1],
+      [1,3,11,0,0,0,0,0,12,0,0,4,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1],
+    ],
+  },
+  {
+    name: 'The Omega',
+    par: 120,
+    gems: 14,
+    grid: [
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,5,0,3,15,0,6,3,0,13,0,3,0,1],
+      [1,0,1,0,0,14,1,0,1,0,15,0,0,1],
+      [1,10,0,13,0,0,0,0,0,0,0,8,3,1],
+      [1,0,1,0,1,15,1,2,1,14,1,8,0,1],
+      [1,3,0,0,0,0,3,0,0,0,0,0,0,1],
+      [1,1,15,1,0,13,1,0,1,0,15,1,0,1],
+      [1,0,0,0,0,0,0,0,14,0,0,0,3,1],
+      [1,3,1,14,1,0,1,3,1,0,1,0,0,1],
+      [1,0,0,0,15,0,7,0,0,15,0,0,1,1],
+      [1,0,1,13,0,0,1,0,1,0,13,3,0,1],
+      [1,3,0,0,0,15,3,0,0,14,0,0,0,1],
+      [1,0,12,0,1,0,0,11,1,0,15,0,4,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    ],
+  },
 ];
 
 // ---- Star rating ----
@@ -693,6 +810,11 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   { id: 'combo_5', name: 'Combo King', desc: 'Get a 5x gem combo' },
   { id: 'total_100', name: 'Marathon Runner', desc: 'Complete 100 levels total' },
   { id: 'all_30', name: 'True Completionist', desc: 'Clear all 30 campaign levels' },
+  { id: 'master_1', name: 'Master Student', desc: 'Clear any Master Zone level' },
+  { id: 'master_all', name: 'Grand Master', desc: 'Clear all 6 Master Zone levels' },
+  { id: 'all_36', name: 'Ultimate Champion', desc: 'Clear all 36 campaign levels' },
+  { id: 'survival_10', name: 'Survivor', desc: 'Clear 10 levels in Survival mode' },
+  { id: 'survival_25', name: 'Endurance', desc: 'Clear 25 levels in Survival mode' },
 ];
 
 // ---- State manager ----
@@ -735,6 +857,12 @@ export class GameStateManager {
   comboTimer = 0;
   maxCombo = 0;
   bumpersHit = 0;
+
+  // Survival mode state
+  survivalLevelsCleared = 0;
+  survivalBestRun = 0;
+  survivalOrder: number[] = [];
+  survivalIndex = 0;
 
   // Star ratings per level
   starRatings: number[] = new Array(LEVELS.length).fill(0);
@@ -781,6 +909,7 @@ export class GameStateManager {
       if (d.skinsUsed) this.skinsUsed = new Set(d.skinsUsed);
       if (d.maxCombo) this.maxCombo = d.maxCombo;
       if (d.bumpersHit) this.bumpersHit = d.bumpersHit;
+      if (d.survivalBestRun) this.survivalBestRun = d.survivalBestRun;
       // Extend arrays if new levels added
       while (this.campaignProgress.length < LEVELS.length) this.campaignProgress.push(false);
       while (this.bestTimes.length < LEVELS.length) this.bestTimes.push(null);
@@ -811,6 +940,7 @@ export class GameStateManager {
         skinsUsed: Array.from(this.skinsUsed),
         maxCombo: this.maxCombo,
         bumpersHit: this.bumpersHit,
+        survivalBestRun: this.survivalBestRun,
       }));
     } catch {}
   }

@@ -285,7 +285,7 @@ function updateHUD() {
 }
 
 function updateLevelSelect() {
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 36; i++) {
     const cleared = gsm.campaignProgress[i] || false;
     const best = gsm.bestTimes[i];
     const stars = gsm.starRatings[i] || 0;
@@ -333,6 +333,7 @@ function updateStatsPanel() {
   setText('stats', 'stat-achievements', `${gsm.unlockedAchievements.size}/${ACHIEVEMENTS.length}`);
   setText('stats', 'stat-bumpers', `${gsm.bumpersHit}`);
   setText('stats', 'stat-combo', `${gsm.maxCombo}x`);
+  setText('stats', 'stat-survival', `${gsm.survivalBestRun} levels`);
 }
 
 function formatPlayTime(seconds: number): string {
@@ -408,6 +409,11 @@ function checkAchievements() {
   check('combo_5', gsm.maxCombo >= 5);
   check('total_100', gsm.totalClears >= 100);
   check('all_30', gsm.campaignProgress.filter(Boolean).length >= 30);
+  check('master_1', gsm.level >= 30 && gsm.level <= 35 && gsm.state === 'levelcomplete');
+  check('master_all', gsm.campaignProgress.slice(30, 36).every(Boolean));
+  check('all_36', gsm.campaignProgress.filter(Boolean).length >= 36);
+  check('survival_10', gsm.survivalLevelsCleared >= 10 || gsm.survivalBestRun >= 10);
+  check('survival_25', gsm.survivalLevelsCleared >= 25 || gsm.survivalBestRun >= 25);
 
   for (const id of newlyUnlocked) {
     const ach = ACHIEVEMENTS.find(a => a.id === id);
@@ -486,7 +492,7 @@ function loadLevel(levelIdx: number) {
   if (particles) particles = null;
   particles = new ParticleSystem(boardEntity);
   if (trail) trail = null;
-  trail = new TrailSystem(boardEntity, theme.glow);
+  trail = new TrailSystem(boardEntity, skin.glow);
 }
 
 function resetMarble() {
@@ -537,6 +543,12 @@ function changeState(newState: GameState) {
       }
       if (gsm.mode === 'timeattack') gsm.timeAttackClears++;
       if (gsm.mode === 'daily') gsm.dailyCompleted++;
+      if (gsm.mode === 'survival') {
+        gsm.survivalLevelsCleared++;
+        if (gsm.survivalLevelsCleared > gsm.survivalBestRun) {
+          gsm.survivalBestRun = gsm.survivalLevelsCleared;
+        }
+      }
 
       // Star rating
       const stars = calcStars(gsm.elapsedTime, level.par, gsm.gemsCollected, gsm.gemsTotal);
@@ -570,6 +582,9 @@ function changeState(newState: GameState) {
       setText('levelcomplete', 'lc-score', `Score: ${gsm.score}`);
       setText('levelcomplete', 'lc-stars', starDisplay);
       setText('levelcomplete', 'lc-combo', gsm.maxCombo >= 2 ? `Best Combo: ${gsm.maxCombo}x (+${comboBonus})` : '');
+      if (gsm.mode === 'survival') {
+        setText('levelcomplete', 'lc-par', `Survival: ${gsm.survivalLevelsCleared} levels cleared`);
+      }
 
       audio.playGoal();
       if (particles) particles.burst(marblePos, THEMES[gsm.currentTheme].goal, 25, 0.8, 1.2);
@@ -579,7 +594,11 @@ function changeState(newState: GameState) {
     }
     case 'gameover':
       setText('gameover', 'go-score', `Final Score: ${gsm.score}`);
-      setText('gameover', 'go-levels', `Levels Cleared: ${gsm.totalClears}`);
+      if (gsm.mode === 'survival') {
+        setText('gameover', 'go-levels', `Survival Run: ${gsm.survivalLevelsCleared} levels | Best: ${gsm.survivalBestRun}`);
+      } else {
+        setText('gameover', 'go-levels', `Levels Cleared: ${gsm.totalClears}`);
+      }
       audio.playGameOver();
       gsm.save();
       break;
@@ -628,11 +647,26 @@ function setupUIEvents() {
     const dailyLevel = Math.floor(rng() * LEVELS.length);
     startLevel(dailyLevel);
   });
+  modeDoc?.getElementById('btn-survival')?.addEventListener('click', () => {
+    audio.playButton();
+    gsm.mode = 'survival';
+    gsm.resetGame();
+    gsm.lives = 1; // Survival: only 1 life, no extras
+    gsm.survivalLevelsCleared = 0;
+    gsm.survivalIndex = 0;
+    // Shuffle level order for survival
+    gsm.survivalOrder = Array.from({ length: LEVELS.length }, (_, i) => i);
+    for (let i = gsm.survivalOrder.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [gsm.survivalOrder[i], gsm.survivalOrder[j]] = [gsm.survivalOrder[j], gsm.survivalOrder[i]];
+    }
+    startLevel(gsm.survivalOrder[0]);
+  });
   modeDoc?.getElementById('btn-mode-back')?.addEventListener('click', () => { audio.playButton(); changeState('title'); });
 
   // Level select
   const lvlDoc = getDoc('levelselect');
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 36; i++) {
     const idx = i;
     lvlDoc?.getElementById(`btn-lvl-${i}`)?.addEventListener('click', () => {
       audio.playButton();
@@ -650,9 +684,25 @@ function setupUIEvents() {
   const lcDoc = getDoc('levelcomplete');
   lcDoc?.getElementById('btn-next')?.addEventListener('click', () => {
     audio.playButton();
-    const next = gsm.level + 1;
-    if (next < LEVELS.length) { startLevel(next); }
-    else { changeState('title'); showToast('All levels complete!'); }
+    if (gsm.mode === 'survival') {
+      // Survival: advance to next shuffled level
+      gsm.survivalIndex++;
+      if (gsm.survivalIndex < gsm.survivalOrder.length) {
+        startLevel(gsm.survivalOrder[gsm.survivalIndex]);
+      } else {
+        // Ran through all levels! Reshuffle and continue
+        for (let i = gsm.survivalOrder.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [gsm.survivalOrder[i], gsm.survivalOrder[j]] = [gsm.survivalOrder[j], gsm.survivalOrder[i]];
+        }
+        gsm.survivalIndex = 0;
+        startLevel(gsm.survivalOrder[0]);
+      }
+    } else {
+      const next = gsm.level + 1;
+      if (next < LEVELS.length) { startLevel(next); }
+      else { changeState('title'); showToast('All levels complete!'); }
+    }
   });
   lcDoc?.getElementById('btn-retry')?.addEventListener('click', () => { audio.playButton(); startLevel(gsm.level); });
   lcDoc?.getElementById('btn-lc-menu')?.addEventListener('click', () => { audio.playButton(); changeState('title'); });

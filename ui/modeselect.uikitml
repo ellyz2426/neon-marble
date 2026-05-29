@@ -18,9 +18,9 @@
     font-weight: bold;
   }
   .mode-btn {
-    margin-top: 1.2;
-    padding-top: 0.8;
-    padding-bottom: 0.8;
+    margin-top: 1;
+    padding-top: 0.6;
+    padding-bottom: 0.6;
     padding-left: 3;
     padding-right: 3;
     background-color: rgba(0, 255, 255, 0.1);
@@ -40,9 +40,9 @@
     margin-top: 0.2;
   }
   .daily-btn {
-    margin-top: 1.2;
-    padding-top: 0.8;
-    padding-bottom: 0.8;
+    margin-top: 1;
+    padding-top: 0.6;
+    padding-bottom: 0.6;
     padding-left: 3;
     padding-right: 3;
     background-color: rgba(255, 200, 0, 0.1);
@@ -56,8 +56,25 @@
     color: #ffcc00;
     font-weight: bold;
   }
+  .survival-btn {
+    margin-top: 1;
+    padding-top: 0.6;
+    padding-bottom: 0.6;
+    padding-left: 3;
+    padding-right: 3;
+    background-color: rgba(255, 50, 80, 0.1);
+    border-color: #ff3355;
+    border-width: 0.08;
+    border-radius: 0.8;
+    cursor: pointer;
+  }
+  .survival-text {
+    font-size: 2;
+    color: #ff3355;
+    font-weight: bold;
+  }
   .back-btn {
-    margin-top: 1.5;
+    margin-top: 1.2;
     padding-top: 0.5;
     padding-bottom: 0.5;
     padding-left: 2;
@@ -77,7 +94,7 @@
   <span class="mode-title">SELECT MODE</span>
   <div id="btn-campaign" class="mode-btn" cursor="pointer">
     <span class="mode-btn-text">Campaign</span>
-    <span class="mode-desc">12 levels, 3 lives</span>
+    <span class="mode-desc">36 levels, 3 lives</span>
   </div>
   <div id="btn-timeattack" class="mode-btn" cursor="pointer">
     <span class="mode-btn-text">Time Attack</span>
@@ -86,6 +103,10 @@
   <div id="btn-zen" class="mode-btn" cursor="pointer">
     <span class="mode-btn-text">Zen Mode</span>
     <span class="mode-desc">No timer, relax and explore</span>
+  </div>
+  <div id="btn-survival" class="survival-btn" cursor="pointer">
+    <span class="survival-text">Survival</span>
+    <span class="mode-desc">Endless run, no extra lives</span>
   </div>
   <div id="btn-daily" class="daily-btn" cursor="pointer">
     <span class="daily-text">Daily Challenge</span>

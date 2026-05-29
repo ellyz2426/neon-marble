@@ -64,6 +64,18 @@
     cursor: pointer;
     min-width: 10;
   }
+  .lvl-btn-master {
+    padding-top: 0.4;
+    padding-bottom: 0.4;
+    padding-left: 0.8;
+    padding-right: 0.8;
+    background-color: rgba(255, 215, 0, 0.12);
+    border-color: #ffd700;
+    border-width: 0.06;
+    border-radius: 0.5;
+    cursor: pointer;
+    min-width: 10;
+  }
   .lvl-name {
     font-size: 1.2;
     color: #00cccc;
@@ -79,6 +91,11 @@
     color: #ff88ff;
     font-weight: bold;
   }
+  .lvl-name-master {
+    font-size: 1.2;
+    color: #ffd700;
+    font-weight: bold;
+  }
   .lvl-status {
     font-size: 0.9;
     color: #668888;
@@ -92,6 +109,12 @@
   .section-label-bumper {
     font-size: 1.5;
     color: #ff66ff;
+    font-weight: bold;
+    margin-top: 0.5;
+  }
+  .section-label-master {
+    font-size: 1.5;
+    color: #ffd700;
     font-weight: bold;
     margin-top: 0.5;
   }
@@ -156,6 +179,15 @@
       <div id="btn-lvl-27" class="lvl-btn-bumper" cursor="pointer"><span id="lvl-name-27" class="lvl-name-bumper">28</span><span id="lvl-status-27" class="lvl-status">---</span></div>
       <div id="btn-lvl-28" class="lvl-btn-bumper" cursor="pointer"><span id="lvl-name-28" class="lvl-name-bumper">29</span><span id="lvl-status-28" class="lvl-status">---</span></div>
       <div id="btn-lvl-29" class="lvl-btn-bumper" cursor="pointer"><span id="lvl-name-29" class="lvl-name-bumper">30</span><span id="lvl-status-29" class="lvl-status">---</span></div>
+    </div>
+    <span class="section-label-master">— MASTER ZONE —</span>
+    <div class="lvl-row">
+      <div id="btn-lvl-30" class="lvl-btn-master" cursor="pointer"><span id="lvl-name-30" class="lvl-name-master">31</span><span id="lvl-status-30" class="lvl-status">---</span></div>
+      <div id="btn-lvl-31" class="lvl-btn-master" cursor="pointer"><span id="lvl-name-31" class="lvl-name-master">32</span><span id="lvl-status-31" class="lvl-status">---</span></div>
+      <div id="btn-lvl-32" class="lvl-btn-master" cursor="pointer"><span id="lvl-name-32" class="lvl-name-master">33</span><span id="lvl-status-32" class="lvl-status">---</span></div>
+      <div id="btn-lvl-33" class="lvl-btn-master" cursor="pointer"><span id="lvl-name-33" class="lvl-name-master">34</span><span id="lvl-status-33" class="lvl-status">---</span></div>
+      <div id="btn-lvl-34" class="lvl-btn-master" cursor="pointer"><span id="lvl-name-34" class="lvl-name-master">35</span><span id="lvl-status-34" class="lvl-status">---</span></div>
+      <div id="btn-lvl-35" class="lvl-btn-master" cursor="pointer"><span id="lvl-name-35" class="lvl-name-master">36</span><span id="lvl-status-35" class="lvl-status">---</span></div>
     </div>
   </div>
   <div id="btn-lvl-back" class="back-btn" cursor="pointer">

@@ -93,6 +93,11 @@
   <div class="ach-row"><span id="ach-name-37" class="ach-name">???</span><span id="ach-desc-37" class="ach-desc">Locked</span></div>
   <div class="ach-row"><span id="ach-name-38" class="ach-name">???</span><span id="ach-desc-38" class="ach-desc">Locked</span></div>
   <div class="ach-row"><span id="ach-name-39" class="ach-name">???</span><span id="ach-desc-39" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-40" class="ach-name">???</span><span id="ach-desc-40" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-41" class="ach-name">???</span><span id="ach-desc-41" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-42" class="ach-name">???</span><span id="ach-desc-42" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-43" class="ach-name">???</span><span id="ach-desc-43" class="ach-desc">Locked</span></div>
+  <div class="ach-row"><span id="ach-name-44" class="ach-name">???</span><span id="ach-desc-44" class="ach-desc">Locked</span></div>
   <div id="btn-ach-back" class="back-btn" cursor="pointer">
     <span class="back-text">Back</span>
   </div>
